@@ -11,24 +11,24 @@ POI_OPTS="-P tes --setParameterRanges tes=${RANGE} -m 90 --setParameters r=1 --f
 XRTD_OPTS="--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND" #--X-rtd FITTER_DYN_STEP
 CMIN_OPTS="--cminFallbackAlgo Minuit2,Migrad,0:0.5 --cminFallbackAlgo Minuit2,Migrad,0:1.0 --cminPreScan" # --cminPreFit 1 --cminOldRobustMinimize 
 
-./TauES/harvestDatacards_TES.py -y $YEAR -e $EXTRATAG -c $1
+#./TauES/harvestDatacards_TES.py -y $YEAR -e $EXTRATAG -c $1
 
-for DM in $DMS; do
-    echo $DM
-    for var in $VARS; do
+#for DM in $DMS; do
+#    echo $DM
+#    for var in $VARS; do
+#
+#	BINLABEL="mt_${var}-${DM}${TAG}${EXTRATAG}-${YEAR}-13TeV"
+#
+#	text2workspace.py output_UL2018/ztt_${BINLABEL}.txt
+#
+#	WORKSPACE="output_UL2018/ztt_${BINLABEL}.root" 
+#
+#	combine -M MultiDimFit  ${WORKSPACE} ${ALGO} ${POI_OPTS} -n .${BINLABEL} ${FIT_OPTS} ${XRTD_OPTS} ${CMIN_OPTS} --saveNLL --saveSpecifiedNuis all
 
-	BINLABEL="mt_${var}-${DM}${TAG}${EXTRATAG}-${YEAR}-13TeV"
+#    done
+#done
 
-	text2workspace.py output_UL2018/ztt_${BINLABEL}.txt
-
-	WORKSPACE="output_UL2018/ztt_${BINLABEL}.root" 
-
-	combine -M MultiDimFit  ${WORKSPACE} ${ALGO} ${POI_OPTS} -n .${BINLABEL} ${FIT_OPTS} ${XRTD_OPTS} ${CMIN_OPTS} --saveNLL --saveSpecifiedNuis all
-
-    done
-done
-
-mv higgsCombine*root output_$YEAR
+#mv higgsCombine*root output_$YEAR
 
 ./TauES/plotParabola_TES.py -y $YEAR -e $EXTRATAG -r $RANGE -s -a -c $1
 ./TauES/plotPostFitScan_TES.py -y $YEAR -e $EXTRATAG -r $RANGE -c $1

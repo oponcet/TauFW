@@ -18,9 +18,6 @@ baselineCuts: "(q_1*q_2<0) && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017
 # At this point, they do not need to be exclusive; 
 # which regions are included in the fit will be explicitely given when defining the obervables
 regions:
-    signalRegion: 
-        definition: "mt_1<50"
-        title: "signal region"
     DM0: 
         definition: "mt_1<50 && dm_2==0"
         title: "h^{#pm}"
