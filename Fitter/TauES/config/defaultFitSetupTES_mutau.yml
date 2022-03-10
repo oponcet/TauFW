@@ -69,6 +69,7 @@ TESvariations:
 fitSpecs:
     doBBB: doShapes
     signalBBB: True
+    backgroundBBB: True
 
 
 # Samples to be used and association to processes entering analysis
