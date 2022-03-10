@@ -117,6 +117,7 @@ def main(args):
     rmsfs  = [ ] if (setup["channel"]=='mumu' or not notauidsf) else ['idweight_2','ltfweight_2'] # remove tau ID SFs
     split  = ['DY'] if 'tau' in setup["channel"] else [ ] # split these backgrounds into tau components
     sampleset = getsampleset(setup["channel"],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split) #,dyweight="")
+    sampleset = sampleset.shift(setup["TESvariations"]["processes"], "_TES0p980", "_TES0.980", "2% TES", split=True,filter=False,share=True)
     plot(sampleset,setup,parallel=parallel,tag=tag,extratext=extratext,outdir=outdir,era=era,
          varfilter=varfilter,selfilter=selfilter,fraction=fraction,pdf=pdf)
     sampleset.close()
