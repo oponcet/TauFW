@@ -1,0 +1,81 @@
+#
+## Config file for default TES fit in mutau channel
+## contact: saskia.falke@cern.ch
+##
+
+# NOTE: In general, the main information (channel, baselineCuts, etc.) should be given.
+#       More specific sub-options (like weight replacement for systematic uncertainties) are optional
+
+
+# Typically, each channel will have its own config file; combination can be done at datacard level
+channel: mutau
+# Tag can be used to differentiate between scenarios
+tag: "significance"
+
+baselineCuts: "(q_1*q_2<0) && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017v2p1VSjet_2>=32 && idDeepTau2017v2p1VSe_2>=2 && idDeepTau2017v2p1VSmu_2>=8 && !lepton_vetoes_notau && metfilter"
+
+# These regions will be defined when creating inputs or making plots
+# At this point, they do not need to be exclusive; 
+# which regions are included in the fit will be explicitely given when defining the obervables
+regions:
+
+    DM0: 
+        definition: "dm_2==0"
+        title: "h^{#pm}"
+    DM1: 
+        definition: "dm_2==1"
+        title: "h^{#pm}#pi^{0}"
+    DM10: 
+        definition: "dm_2==10"
+        title: "h^{#pm}h^{#mp}h^{#pm}"
+    DM11: 
+        definition: "dm_2==11"
+        title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}"
+
+# Observables to be fitted and plotted
+# binning: as defined in TH1 (nbins, xmin, xmax)
+# regions: (defined separately) to be included in the fit for this observable
+observables:
+    mt_1:
+        binning: [40, 0, 200]
+        title: "m_muon"
+        extra:
+            cut: "0<mt_1 && mt_1<200"
+        fitRegions: [DM0, DM1, DM10, DM11]
+
+# Assume that this code is meant to fit TES variations; more options could be added when adding other POIs
+TESvariations:
+    values: [0.970, 1.030]
+    processes: ["ZTT"]
+
+# Should add bin-by-bin variations (stat. uncertainties) for signal and backgrounds?
+fitSpecs:
+    doBBB: doShapes
+    signalBBB: True
+
+
+# Samples to be used and association to processes entering analysis
+samples:
+    filename: "$PICODIR/$SAMPLE_$CHANNEL$TAG.root"
+    join: ["VV","TT","ST"]
+    split:
+        DY: [ ["ZTT","genmatch_2==5"], ["ZL","genmatch_2>0 && genmatch_2<5"], ["ZJ","genmatch_2==0"] ]
+        TT: [["TTT","genmatch_2==5"], ["TTL","genmatch_2>0 && genmatch_2<5"], ["TTJ","genmatch_2==0"] ]
+        #ST: [("STT","genmatch_2==5"),("STJ","genmatch_2<5")]
+    rename:
+        WJ: "W"
+    data: "data_obs"
+
+# Processes taken into account in analysis
+processes: ["ZTT","ZL","ZJ","W","VV","ST","TTT","TTL","TTJ","QCD","data_obs"]
+
+
+# Additional scale factors per year for specific processes (correction of xsec, reco SFs, etc.)
+scaleFactors:
+    WNFs:
+        processes: ["W"]
+        values:
+            'UL2016_preVFP': { 'DM0': 0.939,  'DM1': 1.031,  'DM10': 1.065,  'DM11': 1.021  }
+            'UL2016_postVFP': { 'DM0': 0.919,  'DM1': 0.972,  'DM10': 1.112,  'DM11': 1.074  }
+            'UL2017': { 'DM0': 0.971,  'DM1': 0.995,  'DM10': 1.109,  'DM11': 1.075  }
+            'UL2018': { 'DM0': 1.007,  'DM1': 0.968,  'DM10': 1.079,  'DM11': 1.044  }

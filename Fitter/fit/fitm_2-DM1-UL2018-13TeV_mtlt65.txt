@@ -1,0 +1,222 @@
+
+  RooFitResult: minimized FCN value: -489.224, estimated distance to minimum: 5.09711e-07
+                covariance matrix quality: Full, accurate covariance matrix
+                Status : MINIMIZE=0 HESSE=0 MINOS=0 
+
+    Constant Parameter    Value     
+  --------------------  ------------
+          CMS_th1x_DM1    6.5000e+00
+   QCD_bin_1_mt_DM1_In    0.0000e+00
+   QCD_bin_2_mt_DM1_In    0.0000e+00
+   QCD_bin_3_mt_DM1_In    0.0000e+00
+   QCD_bin_4_mt_DM1_In    0.0000e+00
+   QCD_bin_5_mt_DM1_In    0.0000e+00
+   QCD_bin_6_mt_DM1_In    0.0000e+00
+   QCD_bin_7_mt_DM1_In    0.0000e+00
+   QCD_bin_8_mt_DM1_In    0.0000e+00
+   QCD_bin_9_mt_DM1_In    0.0000e+00
+    ST_bin_1_mt_DM1_In    0.0000e+00
+    ST_bin_2_mt_DM1_In    0.0000e+00
+    ST_bin_3_mt_DM1_In    0.0000e+00
+    ST_bin_4_mt_DM1_In    0.0000e+00
+    ST_bin_5_mt_DM1_In    0.0000e+00
+    ST_bin_6_mt_DM1_In    0.0000e+00
+    ST_bin_7_mt_DM1_In    0.0000e+00
+    ST_bin_8_mt_DM1_In    0.0000e+00
+    ST_bin_9_mt_DM1_In    0.0000e+00
+   TTJ_bin_1_mt_DM1_In    0.0000e+00
+   TTJ_bin_2_mt_DM1_In    0.0000e+00
+   TTJ_bin_3_mt_DM1_In    0.0000e+00
+   TTJ_bin_4_mt_DM1_In    0.0000e+00
+   TTJ_bin_5_mt_DM1_In    0.0000e+00
+   TTJ_bin_6_mt_DM1_In    0.0000e+00
+   TTJ_bin_7_mt_DM1_In    0.0000e+00
+   TTJ_bin_8_mt_DM1_In    0.0000e+00
+   TTJ_bin_9_mt_DM1_In    0.0000e+00
+   TTL_bin_1_mt_DM1_In    0.0000e+00
+   TTL_bin_2_mt_DM1_In    0.0000e+00
+   TTL_bin_3_mt_DM1_In    0.0000e+00
+   TTL_bin_4_mt_DM1_In    0.0000e+00
+   TTL_bin_5_mt_DM1_In    0.0000e+00
+   TTL_bin_6_mt_DM1_In    0.0000e+00
+   TTL_bin_7_mt_DM1_In    0.0000e+00
+   TTL_bin_8_mt_DM1_In    0.0000e+00
+   TTL_bin_9_mt_DM1_In    0.0000e+00
+   TTT_bin_1_mt_DM1_In    0.0000e+00
+   TTT_bin_2_mt_DM1_In    0.0000e+00
+   TTT_bin_3_mt_DM1_In    0.0000e+00
+   TTT_bin_4_mt_DM1_In    0.0000e+00
+   TTT_bin_5_mt_DM1_In    0.0000e+00
+   TTT_bin_6_mt_DM1_In    0.0000e+00
+   TTT_bin_7_mt_DM1_In    0.0000e+00
+   TTT_bin_8_mt_DM1_In    0.0000e+00
+   TTT_bin_9_mt_DM1_In    0.0000e+00
+    VV_bin_1_mt_DM1_In    0.0000e+00
+    VV_bin_2_mt_DM1_In    0.0000e+00
+    VV_bin_3_mt_DM1_In    0.0000e+00
+    VV_bin_4_mt_DM1_In    0.0000e+00
+    VV_bin_5_mt_DM1_In    0.0000e+00
+    VV_bin_6_mt_DM1_In    0.0000e+00
+    VV_bin_7_mt_DM1_In    0.0000e+00
+    VV_bin_8_mt_DM1_In    0.0000e+00
+    VV_bin_9_mt_DM1_In    0.0000e+00
+     W_bin_1_mt_DM1_In    0.0000e+00
+     W_bin_2_mt_DM1_In    0.0000e+00
+     W_bin_3_mt_DM1_In    0.0000e+00
+     W_bin_4_mt_DM1_In    0.0000e+00
+     W_bin_5_mt_DM1_In    0.0000e+00
+     W_bin_6_mt_DM1_In    0.0000e+00
+     W_bin_7_mt_DM1_In    0.0000e+00
+     W_bin_8_mt_DM1_In    0.0000e+00
+     W_bin_9_mt_DM1_In    0.0000e+00
+    ZJ_bin_1_mt_DM1_In    0.0000e+00
+    ZJ_bin_2_mt_DM1_In    0.0000e+00
+    ZJ_bin_3_mt_DM1_In    0.0000e+00
+    ZJ_bin_4_mt_DM1_In    0.0000e+00
+    ZJ_bin_5_mt_DM1_In    0.0000e+00
+    ZJ_bin_6_mt_DM1_In    0.0000e+00
+    ZJ_bin_7_mt_DM1_In    0.0000e+00
+    ZJ_bin_8_mt_DM1_In    0.0000e+00
+    ZJ_bin_9_mt_DM1_In    0.0000e+00
+    ZL_bin_1_mt_DM1_In    0.0000e+00
+    ZL_bin_2_mt_DM1_In    0.0000e+00
+    ZL_bin_3_mt_DM1_In    0.0000e+00
+    ZL_bin_4_mt_DM1_In    0.0000e+00
+    ZL_bin_5_mt_DM1_In    0.0000e+00
+    ZL_bin_6_mt_DM1_In    0.0000e+00
+    ZL_bin_7_mt_DM1_In    0.0000e+00
+    ZL_bin_8_mt_DM1_In    0.0000e+00
+    ZL_bin_9_mt_DM1_In    0.0000e+00
+   ZTT_bin_1_mt_DM1_In    0.0000e+00
+   ZTT_bin_2_mt_DM1_In    0.0000e+00
+   ZTT_bin_3_mt_DM1_In    0.0000e+00
+   ZTT_bin_4_mt_DM1_In    0.0000e+00
+   ZTT_bin_5_mt_DM1_In    0.0000e+00
+   ZTT_bin_6_mt_DM1_In    0.0000e+00
+   ZTT_bin_7_mt_DM1_In    0.0000e+00
+   ZTT_bin_8_mt_DM1_In    0.0000e+00
+   ZTT_bin_9_mt_DM1_In    0.0000e+00
+              eff_m_In    0.0000e+00
+               lumi_In    0.0000e+00
+           norm_qcd_In    0.0000e+00
+            norm_wj_In    0.0000e+00
+                     r    1.0000e+00
+  rate_jTauFake_DM1_In    0.0000e+00
+           shape_dy_In    0.0000e+00
+  shape_jTauFake_DM1_In    0.0000e+00
+   shape_mTauFakeSF_In    0.0000e+00
+  shape_mTauFake_DM1_In    0.0000e+00
+          shape_tid_In    0.0000e+00
+            xsec_dy_In    0.0000e+00
+            xsec_st_In    0.0000e+00
+            xsec_tt_In    0.0000e+00
+            xsec_vv_In    0.0000e+00
+
+    Floating Parameter  InitialValue    FinalValue (+HiError,-LoError)    GblCorr.
+  --------------------  ------------  ----------------------------------  --------
+      QCD_bin_1_mt_DM1    0.0000e+00    3.3976e-05 (+8.85e-01,-8.93e-01)  <none>
+      QCD_bin_2_mt_DM1    0.0000e+00   -2.6717e-05 (+9.40e-01,-9.41e-01)  <none>
+      QCD_bin_3_mt_DM1    0.0000e+00    5.4672e-05 (+9.31e-01,-9.27e-01)  <none>
+      QCD_bin_4_mt_DM1    0.0000e+00   -1.5760e-04 (+9.36e-01,-9.86e-01)  <none>
+      QCD_bin_5_mt_DM1    0.0000e+00    8.6272e-06 (+9.82e-01,-9.66e-01)  <none>
+      QCD_bin_6_mt_DM1    0.0000e+00    8.2184e-05 (+9.40e-01,-9.45e-01)  <none>
+      QCD_bin_7_mt_DM1    0.0000e+00    3.7756e-05 (+9.46e-01,-9.42e-01)  <none>
+      QCD_bin_8_mt_DM1    0.0000e+00    6.4041e-05 (+9.39e-01,-9.75e-01)  <none>
+      QCD_bin_9_mt_DM1    0.0000e+00    5.6602e-05 (+9.32e-01,-9.25e-01)  <none>
+       ST_bin_1_mt_DM1    0.0000e+00   -1.0365e-05 (+1.00e+00,-1.00e+00)  <none>
+       ST_bin_2_mt_DM1    0.0000e+00    1.8032e-06 (+1.00e+00,-1.00e+00)  <none>
+       ST_bin_3_mt_DM1    0.0000e+00    6.8436e-06 (+9.89e-01,-1.00e+00)  <none>
+       ST_bin_4_mt_DM1    0.0000e+00   -4.8890e-06 (+1.00e+00,-1.00e+00)  <none>
+       ST_bin_5_mt_DM1    0.0000e+00    2.1055e-05 (+1.00e+00,-1.00e+00)  <none>
+       ST_bin_6_mt_DM1    0.0000e+00   -4.3228e-06 (+1.00e+00,-1.00e+00)  <none>
+       ST_bin_7_mt_DM1    0.0000e+00   -9.4639e-06 (+1.00e+00,-1.00e+00)  <none>
+       ST_bin_8_mt_DM1    0.0000e+00    1.1382e-05 (+1.00e+00,-1.00e+00)  <none>
+       ST_bin_9_mt_DM1    0.0000e+00    7.9920e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTJ_bin_1_mt_DM1    0.0000e+00   -1.3887e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTJ_bin_2_mt_DM1    0.0000e+00    1.1827e-05 (+1.00e+00,-1.00e+00)  <none>
+      TTJ_bin_3_mt_DM1    0.0000e+00    9.0492e-06 (+9.90e-01,-1.00e+00)  <none>
+      TTJ_bin_4_mt_DM1    0.0000e+00    9.6268e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTJ_bin_5_mt_DM1    0.0000e+00    6.8161e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTJ_bin_6_mt_DM1    0.0000e+00   -2.4061e-05 (+1.00e+00,-1.00e+00)  <none>
+      TTJ_bin_7_mt_DM1    0.0000e+00   -2.0584e-05 (+1.00e+00,-1.00e+00)  <none>
+      TTJ_bin_8_mt_DM1    0.0000e+00   -5.8769e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTJ_bin_9_mt_DM1    0.0000e+00   -7.8844e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTL_bin_1_mt_DM1    0.0000e+00   -9.8509e-07 (+1.00e+00,-1.00e+00)  <none>
+      TTL_bin_2_mt_DM1    0.0000e+00    2.4105e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTL_bin_3_mt_DM1    0.0000e+00    9.6735e-07 (+1.00e+00,-1.00e+00)  <none>
+      TTL_bin_4_mt_DM1    0.0000e+00    6.0887e-07 (+1.00e+00,-1.00e+00)  <none>
+      TTL_bin_5_mt_DM1    0.0000e+00    1.7384e-07 (+1.00e+00,-1.00e+00)  <none>
+      TTL_bin_6_mt_DM1    0.0000e+00   -4.8285e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTL_bin_7_mt_DM1    0.0000e+00   -4.2422e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTL_bin_8_mt_DM1    0.0000e+00   -1.5732e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTL_bin_9_mt_DM1    0.0000e+00   -1.5838e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTT_bin_1_mt_DM1    0.0000e+00   -1.6110e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTT_bin_2_mt_DM1    0.0000e+00    1.4107e-05 (+1.00e+00,-1.00e+00)  <none>
+      TTT_bin_3_mt_DM1    0.0000e+00    1.6315e-05 (+1.00e+00,-1.00e+00)  <none>
+      TTT_bin_4_mt_DM1    0.0000e+00    2.0386e-05 (+1.00e+00,-1.00e+00)  <none>
+      TTT_bin_5_mt_DM1    0.0000e+00    2.1412e-05 (+1.00e+00,-1.00e+00)  <none>
+      TTT_bin_6_mt_DM1    0.0000e+00   -3.1924e-05 (+1.00e+00,-1.00e+00)  <none>
+      TTT_bin_7_mt_DM1    0.0000e+00   -2.9300e-05 (+1.00e+00,-9.89e-01)  <none>
+      TTT_bin_8_mt_DM1    0.0000e+00   -6.0231e-06 (+1.00e+00,-1.00e+00)  <none>
+      TTT_bin_9_mt_DM1    0.0000e+00   -9.2119e-06 (+1.00e+00,-1.00e+00)  <none>
+       VV_bin_1_mt_DM1    0.0000e+00   -5.7462e-06 (+1.00e+00,-1.00e+00)  <none>
+       VV_bin_2_mt_DM1    0.0000e+00    4.8294e-06 (+1.00e+00,-1.00e+00)  <none>
+       VV_bin_3_mt_DM1    0.0000e+00    6.0588e-06 (+1.00e+00,-1.00e+00)  <none>
+       VV_bin_4_mt_DM1    0.0000e+00    2.5238e-06 (+1.00e+00,-1.00e+00)  <none>
+       VV_bin_5_mt_DM1    0.0000e+00    1.1407e-05 (+1.00e+00,-1.00e+00)  <none>
+       VV_bin_6_mt_DM1    0.0000e+00   -1.2741e-05 (+1.00e+00,-1.00e+00)  <none>
+       VV_bin_7_mt_DM1    0.0000e+00   -1.4638e-05 (+1.00e+00,-1.00e+00)  <none>
+       VV_bin_8_mt_DM1    0.0000e+00    1.2966e-06 (+1.00e+00,-1.00e+00)  <none>
+       VV_bin_9_mt_DM1    0.0000e+00   -5.9239e-08 (+1.00e+00,-1.00e+00)  <none>
+        W_bin_1_mt_DM1    0.0000e+00    6.4101e-05 (+8.47e-01,-8.55e-01)  <none>
+        W_bin_2_mt_DM1    0.0000e+00   -4.2311e-05 (+9.18e-01,-9.21e-01)  <none>
+        W_bin_3_mt_DM1    0.0000e+00    6.1762e-05 (+8.96e-01,-8.91e-01)  <none>
+        W_bin_4_mt_DM1    0.0000e+00   -1.7446e-04 (+9.00e-01,-9.77e-01)  <none>
+        W_bin_5_mt_DM1    0.0000e+00    1.1442e-04 (+9.69e-01,-9.44e-01)  <none>
+        W_bin_6_mt_DM1    0.0000e+00   -1.8137e-05 (+9.07e-01,-9.14e-01)  <none>
+        W_bin_7_mt_DM1    0.0000e+00   -4.9220e-06 (+9.20e-01,-9.11e-01)  <none>
+        W_bin_8_mt_DM1    0.0000e+00    6.1577e-05 (+8.94e-01,-9.54e-01)  <none>
+        W_bin_9_mt_DM1    0.0000e+00    2.5855e-05 (+8.79e-01,-8.62e-01)  <none>
+       ZJ_bin_1_mt_DM1    0.0000e+00   -6.0242e-05 (+9.91e-01,-9.92e-01)  <none>
+       ZJ_bin_2_mt_DM1    0.0000e+00    1.6707e-05 (+9.94e-01,-9.94e-01)  <none>
+       ZJ_bin_3_mt_DM1    0.0000e+00    4.1184e-06 (+9.94e-01,-9.94e-01)  <none>
+       ZJ_bin_4_mt_DM1    0.0000e+00   -2.1672e-05 (+9.93e-01,-9.98e-01)  <none>
+       ZJ_bin_5_mt_DM1    0.0000e+00   -2.4056e-05 (+9.98e-01,-9.95e-01)  <none>
+       ZJ_bin_6_mt_DM1    0.0000e+00   -4.5387e-05 (+9.93e-01,-9.93e-01)  <none>
+       ZJ_bin_7_mt_DM1    0.0000e+00   -7.6738e-05 (+9.95e-01,-9.94e-01)  <none>
+       ZJ_bin_8_mt_DM1    0.0000e+00   -2.8723e-05 (+9.94e-01,-9.98e-01)  <none>
+       ZJ_bin_9_mt_DM1    0.0000e+00   -2.1218e-05 (+9.92e-01,-9.92e-01)  <none>
+       ZL_bin_1_mt_DM1    0.0000e+00    2.2287e-05 (+9.94e-01,-9.94e-01)  <none>
+       ZL_bin_2_mt_DM1    0.0000e+00    6.2327e-05 (+9.96e-01,-9.96e-01)  <none>
+       ZL_bin_3_mt_DM1    0.0000e+00    8.7473e-06 (+9.96e-01,-9.96e-01)  <none>
+       ZL_bin_4_mt_DM1    0.0000e+00   -4.7656e-05 (+9.97e-01,-9.99e-01)  <none>
+       ZL_bin_5_mt_DM1    0.0000e+00    1.0347e-04 (+9.99e-01,-9.98e-01)  <none>
+       ZL_bin_6_mt_DM1    0.0000e+00    1.3528e-04 (+9.97e-01,-9.97e-01)  <none>
+       ZL_bin_7_mt_DM1    0.0000e+00    4.2545e-05 (+9.98e-01,-9.98e-01)  <none>
+       ZL_bin_8_mt_DM1    0.0000e+00    6.8168e-05 (+9.98e-01,-9.99e-01)  <none>
+       ZL_bin_9_mt_DM1    0.0000e+00    4.1576e-05 (+9.99e-01,-1.00e+00)  <none>
+      ZTT_bin_1_mt_DM1    0.0000e+00    4.9453e-06 (+9.51e-01,-9.54e-01)  <none>
+      ZTT_bin_2_mt_DM1    0.0000e+00   -6.4071e-05 (+9.64e-01,-9.66e-01)  <none>
+      ZTT_bin_3_mt_DM1    0.0000e+00    5.6892e-05 (+9.46e-01,-9.46e-01)  <none>
+      ZTT_bin_4_mt_DM1    0.0000e+00   -3.0619e-04 (+9.15e-01,-9.80e-01)  <none>
+      ZTT_bin_5_mt_DM1    0.0000e+00    1.7786e-04 (+9.66e-01,-9.62e-01)  <none>
+      ZTT_bin_6_mt_DM1    0.0000e+00    1.9930e-05 (+9.10e-01,-9.15e-01)  <none>
+      ZTT_bin_7_mt_DM1    0.0000e+00   -2.8822e-05 (+9.31e-01,-9.27e-01)  <none>
+      ZTT_bin_8_mt_DM1    0.0000e+00    3.7093e-05 (+9.14e-01,-9.64e-01)  <none>
+      ZTT_bin_9_mt_DM1    0.0000e+00    1.1597e-04 (+9.29e-01,-9.24e-01)  <none>
+                 eff_m    0.0000e+00   -5.3722e-04 (+9.38e-01,-9.29e-01)  <none>
+                  lumi    0.0000e+00    3.7514e-04 (+9.01e-01,-8.88e-01)  <none>
+              norm_qcd    0.0000e+00   -1.1987e-04 (+9.73e-01,-9.76e-01)  <none>
+               norm_wj    0.0000e+00   -6.0290e-05 (+9.50e-01,-9.55e-01)  <none>
+     rate_jTauFake_DM1    0.0000e+00   -6.8581e-05 (+4.47e-01,-4.73e-01)  <none>
+              shape_dy    0.0000e+00    1.2652e-04 (+9.99e-01,-9.99e-01)  <none>
+    shape_jTauFake_DM1    0.0000e+00    1.8390e-05 (+1.12e-01,-1.68e-01)  <none>
+      shape_mTauFakeSF    0.0000e+00    5.6661e-05 (+9.87e-01,-9.86e-01)  <none>
+    shape_mTauFake_DM1    0.0000e+00   -2.2934e-04 (+9.91e-01,-9.82e-01)  <none>
+             shape_tid    0.0000e+00    2.6582e-04 (+7.62e-01,-7.17e-01)  <none>
+                   tes    9.7000e-01    1.0000e+00 (+3.20e-03,-3.06e-03)  <none>
+               xsec_dy    0.0000e+00   -3.0690e-05 (+9.56e-01,-9.49e-01)  <none>
+               xsec_st    0.0000e+00    3.5510e-05 (+1.00e+00,-1.00e+00)  <none>
+               xsec_tt    0.0000e+00   -1.1648e-05 (+9.96e-01,-9.97e-01)  <none>
+               xsec_vv    0.0000e+00   -2.1730e-05 (+1.00e+00,-1.00e+00)  <none>
+

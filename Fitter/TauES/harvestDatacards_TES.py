@@ -106,7 +106,11 @@ def harvest(setup, year, obs, **kwargs):
     # Bin-by-bin uncertainties
     if "fitSpecs" in setup and "doBBB" in setup["fitSpecs"] and setup["fitSpecs"]["doBBB"] != "":
       print green(">>> generating bbb uncertainties...")
-      procsBBB = backgrounds + signals if ( "signalBBB" in setup["fitSpecs"] and setup["fitSpecs"]["signalBBB"]) else backgrounds
+      procsBBB = []
+      if ( "signalBBB" in setup["fitSpecs"] and setup["fitSpecs"]["signalBBB"]):
+          procsBBB += signals
+      if ( "backgroundBBB" in setup["fitSpecs"] and setup["fitSpecs"]["backgroundBBB"]):
+          procsBBB += backgrounds
       bbb = BinByBinFactory()
       bbb.SetAddThreshold(0.0)
       bbb.SetFixNorm(False)
@@ -147,6 +151,8 @@ def harvest(setup, year, obs, **kwargs):
     # NUISANCE PARAMETER GROUPS
     ## To do: export to config file
     print green(">>> setting nuisance parameter groups...")
+    harvester.SetGroup('all', [ ".*"           ])
+    harvester.SetGroup('sys', [ "^((?!bin).)*$"]) # everything except bin-by-bin
     harvester.SetGroup( 'bin',      [ ".*_bin_.*"        ])
     harvester.SetGroup( 'lumi',     [ ".*lumi"           ])
     harvester.SetGroup( 'eff',      [ ".*eff_.*"         ])
