@@ -110,6 +110,7 @@ def main(args):
     setup = yaml.safe_load(file)
 
   tag = setup["tag"] if "tag" in setup else ""
+  tag += args.tag
 
   for era in eras:
     setera(era) # set era for plot style and lumi-xsec normalization
@@ -129,7 +130,7 @@ if __name__ == "__main__":
   parser = ArgumentParser(prog="plot",description=description,epilog="Good luck!")
   parser.add_argument('-y', '--era',     dest='eras', nargs='*', choices=eras, default=['2017'],
                                          help="set era" )
-  parser.add_argument('-c', '--config', dest='config', type=str, default='ChannelConfigs/defaultFitSetup_mutau.yml', action='store',
+  parser.add_argument('-c', '--config', dest='config', type=str, default='config/setup_mutau.yml', action='store',
                                          help="set config file containing sample & fit setup" )
   parser.add_argument('-V', '--var',     dest='varfilter', nargs='+',
                                          help="only plot the variables passing this filter (glob patterns allowed)" )
@@ -143,6 +144,7 @@ if __name__ == "__main__":
                                          help="create pdf version of each plot" )
   parser.add_argument('-r', '--nosf',    dest='notauidsf', action='store_true',
                                          help="remove DeepTau ID SF" )
+  parser.add_argument('-t', '--tag',     default="", help="extra tag for output" )
   parser.add_argument('-T', '--text',    default="", help="extra text on plot" )
   parser.add_argument('-v', '--verbose', dest='verbosity', type=int, nargs='?', const=1, default=0, action='store',
                                          help="set verbosity" )

@@ -37,7 +37,7 @@ def main(args):
       
     # GET SAMPLESET
     sname     = setup["samples"]["filename"]
-    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False)
+    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]))
 
     # Potentially split up samples in several processes
     if "split" in setup["samples"]:
@@ -51,14 +51,21 @@ def main(args):
         print "Renaming sample %s into %s"%(renamedSample,setup["samples"]["rename"][renamedSample])
         sampleset.rename(renamedSample,setup["samples"]["rename"][renamedSample])
 
-#    # On-the-fly reweighting of specific processes -- do after splitting and renaming!
-#    if "scaleFactors" in setup:
-#      for SF in setup["scaleFactors"]:
-#        SFset = setup["scaleFactors"][SF]
-#        print "Reweighting with SF -- %s -- for the following processes: %s"%(SF, SFset)
-#        if not era in SFset["values"]: continue
-##### TO BE COMPLETED!        
-
+    # On-the-fly reweighting of specific processes -- do after splitting and renaming!
+    if "scaleFactors" in setup:
+      for SF in setup["scaleFactors"]:
+        SFset = setup["scaleFactors"][SF]
+        if not era in SFset["values"]: continue
+        print "Reweighting with SF -- %s -- for the following processes: %s"%(SF, SFset["processes"])
+        for proc in SFset["processes"]:
+          weight = ""
+          for cond in SFset["values"][era]:
+            weight += cond+" ? "+str(SFset["values"][era][cond])+" : ("
+          weight += "1)"
+          for i in range(len(SFset["values"][era])-1):
+            weight += " )"
+          print "Applying weight: %s"%weight
+          sampleset.get(proc, unique=True).addextraweight(weight)
 
     # Name of observed data 
     sampleset.datasample.name = setup["samples"]["data"]
