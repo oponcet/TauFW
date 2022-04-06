@@ -197,7 +197,7 @@ void parabola_syst(Char_t *tag, Char_t *channel, Char_t *observable)
 
     cout << "TES = " << TESvariations[i] << " result = " << result_tot->minNll() << endl;
     g->SetPoint(i, TESvariations[i], result_tot->minNll());
-    //result_tot->Print("v");
+    result_tot->Print("v");
   }
   // // ----------------------------------
   // Graph

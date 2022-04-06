@@ -16,9 +16,9 @@ with open(args.config, 'r') as file:
 RANGE="0.970,1.030"
 EXTRATAG="_DeepTau"
 ALGO="--algo=grid --alignEdges=1 --saveFitResult " # --saveWorkspace 
-FIT_OPTS="--robustFit=1 --points=51  --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.001" #--preFitValue=1. 
-# POI_OPTS="-P tes --setParameterRanges tes=${RANGE} -m 90 --setParameters r=1 --freezeParameters r " 
-POI_OPTS="-P tes --setParameterRanges tes=%s -m 90 --setParameters r=1,tes=1 --freezeParameters r" %(RANGE)
+FIT_OPTS="--robustFit=1 --points=201  --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.001" #--preFitValue=1. 
+# POI_OPTS="-P tes --setParameterRanges tes=${RANGE} -m 90 --setParameters r=1 --freezeParameters r  " 
+POI_OPTS="-P tes --setParameterRanges tes=%s -m 90 --setParameters r=1,tes=1 --freezeParameters r " %(RANGE)
 XRTD_OPTS="--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND" #--X-rtd FITTER_DYN_STEP
 CMIN_OPTS="--cminFallbackAlgo Minuit2,Migrad,0:0.5 --cminFallbackAlgo Minuit2,Migrad,0:1.0 --cminPreScan" # --cminPreFit 1 --cminOldRobustMinimize 
 
@@ -36,7 +36,7 @@ for v in setup["observables"]:
         os.system("text2workspace.py output_%s/ztt_%s.txt"%(args.era,BINLABEL))
 
         WORKSPACE="output_"+args.era+"/ztt_"+BINLABEL+".root" 
-        os.system("combine -M MultiDimFit -t -1 --saveToys   %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all"%(WORKSPACE,ALGO,POI_OPTS,BINLABEL,FIT_OPTS,XRTD_OPTS,CMIN_OPTS))
+        os.system("combine -M MultiDimFit -t -1 --saveToys --fastScan %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all"%(WORKSPACE,ALGO,POI_OPTS,BINLABEL,FIT_OPTS,XRTD_OPTS,CMIN_OPTS))
         #os.system("combine -M GenerateOnly -t -1 --saveToys --setParameterRanges tes=%s -m 90 --setParameters r=1,tes=1 --freezeParameters r --freezeNuisanceGroups=all %s -n .%s "%(RANGE,WORKSPACE,BINLABEL))
 
         
