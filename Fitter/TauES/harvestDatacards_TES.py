@@ -151,7 +151,7 @@ def harvest(setup, year, obs, **kwargs):
     harvester.SetGroup( 'jtf',      [ ".*jTauFake.*"     ])
     harvester.SetGroup( 'ltf',      [ ".*mTauFake.*"     ])
     harvester.SetGroup( 'zpt',      [ ".*shape_dy.*"     ])
-    harvester.SetGroup( 'xsec',     [ ".*Xsec.*"         ])
+    harvester.SetGroup( 'xsec',     [ ".*xsec.*"         ])
     harvester.SetGroup( 'norm',     [ ".*(lumi|Xsec|Norm|norm_qcd).*" ])
     
     # PRINT
