@@ -12,19 +12,5 @@
   }, 
   "nfilesperjob": 1, 
   "filelistdir": "samples/files/$ERA/$SAMPLE.txt", 
-<<<<<<< HEAD
-  "jobdir": "output/$ERA/$CHANNEL/$SAMPLE", 
-  "basedir": "/afs/cern.ch/user/o/oponcet/private/stage_M2_PSA/code/CMSSW_10_6_13/src/TauFW/PicoProducer", 
-  "outdir": "/eos/user/s/smonig/TauPOG/output/$ERA/$CHANNEL/$SAMPLE", 
-  "nanodir": "/eos/user/s/smonig/TauPOG/samples/nano/$ERA/$DAS", 
-  "picodir": "/eos/user/s/smonig/TauPOG/analysis/$ERA/$GROUP", 
-  "tmpskimdir": "", 
-  "batch": "HTCondor", 
-  "queue": "tomorrow", 
-  "maxevtsperjob": 500000, 
-  "maxopenfiles": 500, 
-  "ncores": 4
-=======
   "jobdir": "output/$ERA/$CHANNEL/$SAMPLE"
->>>>>>> 30c6cab03006339a08896b75e27f3da7893e84be
 }
