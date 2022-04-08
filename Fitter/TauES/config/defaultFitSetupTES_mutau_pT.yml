@@ -18,40 +18,33 @@ baselineCuts: "(q_1*q_2<0) && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017
 # At this point, they do not need to be exclusive; 
 # which regions are included in the fit will be explicitely given when defining the obervables
 regions:
-
     signalRegion_pTlow: 
         definition: "mt_1<65 && pt_2>20 && pt_2<35 "
+        title: "signal region"
+    signalRegion_pThigh: 
+        definition: "mt_1<65 && pt_2>35 && pt_2<120 "
         title: "signal region"
     DM0_pTlow: 
         definition: "mt_1<65 && pt_2>20 && pt_2<35 && dm_2==0"
         title: "h^{#pm}p_{Tlow}"
-    DM1_pTlow: 
-        definition: "mt_1<65 && pt_2>20 && pt_2<35 && dm_2==1"
-        title: "h^{#pm}#pi^{0}p_{Tlow}"
-    DM10_pTlow: 
-        definition: "mt_1<65 && pt_2>20 && pt_2<35 && dm_2==10"
-        title: "h^{#pm}h^{#mp}h^{#pm}p_{Tlow}"
-    DM11_pTlow: 
-        definition: "mt_1<65 && pt_2>20 && pt_2<35 && dm_2==11"
-        title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}p_{Tlow}"
-    DM11_pTlow: 
-        definition: "mt_1<65 && pt_2>20 && pt_2<35 && dm_2==11"
-        title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}p_{Tlow}"
-    signalRegion_pThigh: 
-        definition: "mt_1<65 && pt_2>35 && pt_2<120 "
-        title: "signal region"
     DM0_pThigh: 
         definition: "mt_1<65 && pt_2>35 && pt_2<120 && dm_2==0"
         title: "h^{#pm}p_{Thigh}"
+    DM1_pTlow: 
+        definition: "mt_1<65 && pt_2>20 && pt_2<35 && dm_2==1"
+        title: "h^{#pm}#pi^{0}p_{Tlow}"
     DM1_pThigh: 
         definition: "mt_1<65 && pt_2>35 && pt_2<120 && dm_2==1"
         title: "h^{#pm}#pi^{0}p_{Thigh}"
+    DM10_pTlow: 
+        definition: "mt_1<65 && pt_2>20 && pt_2<35 && dm_2==10"
+        title: "h^{#pm}h^{#mp}h^{#pm}p_{Tlow}"
     DM10_pThigh: 
         definition: "mt_1<65 && pt_2>35 && pt_2<120 && dm_2==10"
         title: "h^{#pm}h^{#mp}h^{#pm}p_{Thigh}"
-    DM11_pThigh: 
-        definition: "mt_1<65 && pt_2>35 && pt_2<120 && dm_2==11"
-        title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}p_{Thigh}"
+    DM11_pTlow: 
+        definition: "mt_1<65 && pt_2>20 && pt_2<35 && dm_2==11"
+        title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}p_{Tlow}"
     DM11_pThigh: 
         definition: "mt_1<65 && pt_2>35 && pt_2<120 && dm_2==11"
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}p_{Thigh}"
@@ -66,7 +59,7 @@ observables:
         title: "m_vis"
         extra:
             cut: "50<m_vis && m_vis<106"
-        fitRegions: [DM0_pTlow, DM1_pTlow, DM10_pTlow, DM11_pTlow, DM0_pThigh, DM1_pThigh, DM10_pThigh, DM11_pThigh]
+        fitRegions: [DM0_pTlow, DM0_pThigh, DM1_pTlow, DM1_pThigh, DM10_pTlow, DM10_pThigh, DM11_pTlow, DM11_pThigh]
     m_2:
         binning: [13, 0.3, 1.6]
         title: "m_tau_h"
@@ -77,7 +70,7 @@ observables:
                 "dm_2==10":          "0.83<m_2 && m_2<1.43"
                 "dm_2==11":          "0.93<m_2 && m_2<1.53"
             veto: "dm_2==0"
-        fitRegions: [DM1_pTlow, DM10_pTlow, DM11_pTlow, DM1_pThigh, DM10_pThigh, DM11_pThigh]
+        fitRegions: [DM1_pTlow, DM1_pThigh, DM10_pTlow, DM10_pThigh, DM11_pTlow, DM11_pThigh]
 
 # Assume that this code is meant to fit TES variations; more options could be added when adding other POIs
 TESvariations:

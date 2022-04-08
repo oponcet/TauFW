@@ -1018,6 +1018,7 @@ def main(args):
         allRegions = []
         allRegionTitles = []
         for v in setup["observables"]:
+            print v
             var = setup["observables"][v]
             if not v in allObs:
                 allObs.append(v)
@@ -1026,6 +1027,7 @@ def main(args):
                 else:
                     allObsTitles.append(v)
         for r in setup["regions"]:
+            print r
             isUsedInFit = False
             for v in setup["observables"]:
                 if r in setup["observables"][v]["fitRegions"]:

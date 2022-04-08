@@ -225,7 +225,12 @@ void makeFit()
 
   // fit(tag[0], channel[2], observable[1]);
   // parabola(tag[1], channel[11], observable[1]);
-  parabola_syst(tag[0], channel[3], observable[1]);
+  for (int i = 2; i < 5; i++)
+  {
+    parabola_syst(tag[0], channel[i], observable[1]);
+  }
+  
+  
 
   return;
 }
