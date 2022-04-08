@@ -41,6 +41,8 @@ regions:
         definition: "mt_1<50 && dm_2==11"
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}"
 
+plottingOrder: ["DM10", "DM1", "DM0", "DM11"]
+
 # Observables to be fitted and plotted
 # binning: as defined in TH1 (nbins, xmin, xmax)
 # regions: (defined separately) to be included in the fit for this observable
