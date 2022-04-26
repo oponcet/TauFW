@@ -13,7 +13,7 @@ channel: mutau
 
 # Tag can be used to differentiate between scenarios
 
-tag: "_mtlt65"
+tag: "_mtlt50"
 
 baselineCuts: "(q_1*q_2<0) && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017v2p1VSjet_2>=32 && idDeepTau2017v2p1VSe_2>=2 && idDeepTau2017v2p1VSmu_2>=8 && !lepton_vetoes_notau && metfilter"
 
@@ -24,21 +24,17 @@ baselineCuts: "(q_1*q_2<0) && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017
 #     - additional cross section scale factors applied to some processes need to be given in these regions to be considered --> adjust in scaleFactors section
 
 regions:
-
-    signalRegion: 
-        definition: "mt_1<65"
-        title: "signal region"
     DM0: 
-        definition: "mt_1<65 && dm_2==0"
+        definition: "mt_1<50 && dm_2==0"
         title: "h^{#pm}"
     DM1: 
-        definition: "mt_1<65 && dm_2==1"
+        definition: "mt_1<50 && dm_2==1"
         title: "h^{#pm}#pi^{0}"
     DM10: 
-        definition: "mt_1<65 && dm_2==10"
+        definition: "mt_1<50 && dm_2==10"
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11: 
-        definition: "mt_1<65 && dm_2==11"
+        definition: "mt_1<50 && dm_2==11"
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}"
 
 plottingOrder: ["DM10", "DM1", "DM0", "DM11"]
@@ -54,17 +50,17 @@ observables:
         extra:
             cut: "50<m_vis && m_vis<106"
         fitRegions: [DM0, DM1, DM10, DM11]
-    m_2:
-       binning: [13, 0.3, 1.6]
-       title: "m_{#tau_{h}}"
-       extra:
-           cut: "0.3<m_2 && m_2<1.6"
-           ccut: 
-               "dm_2==1(?!0)(?!1)": "0.35<m_2 && m_2<1.20"
-               "dm_2==10":          "0.83<m_2 && m_2<1.43"
-               "dm_2==11":          "0.93<m_2 && m_2<1.53"
-           veto: "dm_2==0"
-       fitRegions: [DM1, DM10, DM11]
+    # m_2:
+    #    binning: [13, 0.3, 1.6]
+    #    title: "m_{#tau_{h}}"
+    #    extra:
+    #        cut: "0.3<m_2 && m_2<1.6"
+    #        ccut: 
+    #            "dm_2==1(?!0)(?!1)": "0.35<m_2 && m_2<1.20"
+    #            "dm_2==10":          "0.83<m_2 && m_2<1.43"
+    #            "dm_2==11":          "0.93<m_2 && m_2<1.53"
+    #        veto: "dm_2==0"
+    #    fitRegions: [DM1, DM10, DM11]
 
 # Assume that this code is meant to fit TES variations; more options could be added when adding other POIs
 

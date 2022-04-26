@@ -117,6 +117,7 @@ def harvest(setup, year, obs, **kwargs):
     if multiDimFit:
       for bin in bins:
         tesname = "tes_%s"%(bin)
+        print tesname
         tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
         tes.setConstant(True)
         pois.append(tes)

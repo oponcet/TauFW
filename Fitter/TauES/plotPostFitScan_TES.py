@@ -53,7 +53,7 @@ def plotCorrelation(channel,var,region,year,*parameters,**kwargs):
     ensureDirectory(outdir)
     print '>>>   file "%s"'%(filename)
     
-    tes         = measureTES(filename)
+    tes         = measureTES(filename, region=region)
 
     # HISTOGRAM
     parlist = getParameters(filename,parameters)
@@ -227,7 +227,7 @@ def plotPostFitValues(channel,var,region,year,*parameters,**kwargs):
     graphsFD    = [ ]
     tvals       = [ ]
     pvals       = [ -2.2, +2.2 ]
-    tes         = measureTES(filename)
+    tes         = measureTES(filename, region=region)
     for parameter in parameters[:]:
       graph = getTGraphOfParameter(filename,'tes',parameter,xvals=tvals,yvals=pvals)
       if graph:

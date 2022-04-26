@@ -66,6 +66,7 @@ def plotParabola(setup,var,region,year,**kwargs):
         if any(abs(getattr(tree,t)-v)>0.000001 for t,v in MDFslices.iteritems()): continue
         list_tes.append(getattr(tree,tes))
         list_nll.append(2*tree.deltaNLL)
+        print "NLL = %d" %(2*tree.deltaNLL)#
       list_nll = [n for _,n in sorted(zip(list_tes,list_nll), key=lambda p: p[0])]
       list_tes.sort()
     else:
@@ -74,11 +75,14 @@ def plotParabola(setup,var,region,year,**kwargs):
         if tree.quantileExpected<0: continue
         if tree.deltaNLL == 0: continue
         #if tree.tes < 0.97: continue
+        #tes = "tes_%s"%region #added for combine fit with different files
         list_tes.append(tree.tes)
+        #list_tes.append(getattr(tree,tes))
         list_nll.append(2*tree.deltaNLL)
     file.Close()
+    print(list_nll)
     nllmin    = min(list_nll)
-    list_dnll = map(lambda n: n-nllmin, list_nll) # DeltaNLL
+    list_dnll = map(lambda n: n-nllmin, list_nll) # DeltaNLL 
     
     # MINIMUM
     dnllmin         = min(list_dnll) # should be 0.0 by definition
@@ -87,6 +91,10 @@ def plotParabola(setup,var,region,year,**kwargs):
     list_tes_left   = list_tes[:min_index]
     list_dnll_right = list_dnll[min_index:]
     list_tes_right  = list_tes[min_index:]
+    print(list_dnll_left)
+    print(list_dnll_right)
+    print ">>> min   = %d , min_index = %d"%(dnllmin, min_index)
+    print ">>> len list_dnll_left   = %d ,len  list_dnll_right = %d"%(len(list_dnll_left) , len(list_dnll_right))
     if len(list_dnll_left)==0 or len(list_dnll_right)==0 : 
       print "ERROR! Parabola does not have minimum within given range !!!"
       exit(1)
@@ -139,7 +147,7 @@ def plotParabola(setup,var,region,year,**kwargs):
     canvas.SetLeftMargin( 0.12 ); canvas.SetRightMargin(  0.04 )
     canvas.cd()
     
-    xmin, xmax   = 0.945, 1.08
+    xmin, xmax   = 0.970, 1.030
     ymin, ymax   = 0.0,  10.
     fontsize     = 0.044
     lineheight   = 0.05
@@ -288,7 +296,7 @@ def plotParabolaMDF(setup,var,year,**kwargs):
       graph.SetTitle(ztitle)
       #tree.Draw("%s:%s:deltaNLL >> graph"%(poi1,poi2),"","COLZ")
       slices = { t:v for t,v in MDFslices.iteritems() if t!=poi1 and t!=poi2 }
-      #print nnlmin, slices
+      #\print nnlmin, slices
       i = 0
       for event in tree:
         if event.quantileExpected<0: continue
@@ -347,7 +355,7 @@ def plotParabolaMDF(setup,var,year,**kwargs):
         #frame.SetContour(len(levels),array('d',levels))
       
       graph.SetMinimum(0.5)
-      graph.SetMaximum(100)
+      graph.SetMaximum(1)
       graph.Draw('COLZ SAME')
       
       for line,poi,x,y,align in lines:
@@ -494,8 +502,10 @@ def createParabola(filename):
 def findMultiDimSlices(channel,var,**kwargs):
     """Find minimum of multidimensional parabola in MultiDimFit file and return
     dictionary of the corresponding values of POI's."""
+    year     = kwargs.get('year', "")
     tag      = kwargs.get('tag', "" )
-    filename = '%s/higgsCombine.%s_%s-%s%s-13TeV.MultiDimFit.mH90.root'%(indir,channel,var,'MDF',tag)
+    indir    = kwargs.get('indir',       "output_%s"%year )
+    filename = '%s/higgsCombine.%s_%s-%s%s-%s-13TeV.MultiDimFit.mH90.root'%(indir,channel,var,'MDF',tag,year)
     file     = ensureTFile(filename)
     tree     = file.Get('limit')
     pois     = [b.GetName() for b in tree.GetListOfBranches() if 'tes_DM' in b.GetName()]
@@ -514,7 +524,8 @@ def findMultiDimSlices(channel,var,**kwargs):
     
 
 
-def measureTES(filename,unc=False,fit=False,asymmetric=True):
+def measureTES(filename,unc=False,fit=False,asymmetric=True,**kwargs):
+    region = kwargs.get('region', "")
     """Create TGraph of DeltaNLL parabola vs. tes from MultiDimFit file."""
     if fit:
        return measureTES_fit(filename,asymmetric=asymmetric,unc=unc)
@@ -522,13 +533,15 @@ def measureTES(filename,unc=False,fit=False,asymmetric=True):
     tree = file.Get('limit')
     tes, nll = [ ], [ ]
     for event in tree:
+      #tesname = "tes_%s"%region
+      #tes.append(getattr(tree,tesname))
       tes.append(tree.tes)
       nll.append(2*tree.deltaNLL)
     file.Close()
     nllmin = min(nll)
     imin   = nll.index(nllmin)
     tesmin = tes[imin]
-    
+
     if unc:
       nll_left  = nll[:imin]
       tes_left  = tes[:imin]
@@ -1039,8 +1052,8 @@ def main(args):
             # MULTIDIMFIT
             slices = { }
             if multiDimFit:
-                nnlmin, slices = findMultiDimSlices(channel,var,year,tag=tag)
-                plotParabolaMDF(setup,var,nnlmin=nnlmin,MDFslices=slices,indir=indir,tag=tag)
+                nnlmin, slices = findMultiDimSlices(channel,var,year=year,tag=tag)
+                plotParabolaMDF(setup,var,year,nnlmin=nnlmin,MDFslices=slices,indir=indir,tag=tag)
             
             # LOOP over regions
             for i, region in enumerate(allRegions):

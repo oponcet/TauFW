@@ -1,10 +1,6 @@
 {
     "files.associations": {
-        "asimov.C": "cpp",
-        "significances.C": "cpp",
-        "fit.C": "cpp",
-        "makeFit.C": "cpp",
-        "plotNPranking.C": "cpp"
+        "asimov.C": "cpp"
     },
     "python.formatting.provider": "yapf"
 }
