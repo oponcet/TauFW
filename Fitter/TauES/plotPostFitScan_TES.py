@@ -54,7 +54,7 @@ def plotCorrelation(channel,var,region,year,*parameters,**kwargs):
     print '>>>   file "%s"'%(filename)
     
     tes         = measureTES(filename, region=region)
-
+    tes_name = "tes_%s"%region #combine DM
     # HISTOGRAM
     parlist = getParameters(filename,parameters)
     if order:
@@ -67,7 +67,8 @@ def plotCorrelation(channel,var,region,year,*parameters,**kwargs):
       hist.SetBinContent(i+1,N-i,1.0)
       hist.GetXaxis().SetBinLabel(1+i,parlist[i].title)
       hist.GetYaxis().SetBinLabel(N-i,parlist[i].title)
-      if parlist[i].title == "tes":
+      #if parlist[i].title == "tes":
+      if parlist[i].title == tes_name:  
           iPOI = i
     for xi, yi in combinations(range(N),2): # off-diagonal
       r = parlist[xi].corr(parlist[yi],tes,parlist[iPOI])
@@ -228,8 +229,10 @@ def plotPostFitValues(channel,var,region,year,*parameters,**kwargs):
     tvals       = [ ]
     pvals       = [ -2.2, +2.2 ]
     tes         = measureTES(filename, region=region)
+    tes_name = "tes_%s"%region #combine DM
     for parameter in parameters[:]:
-      graph = getTGraphOfParameter(filename,'tes',parameter,xvals=tvals,yvals=pvals)
+      #graph = getTGraphOfParameter(filename,'tes',parameter,xvals=tvals,yvals=pvals)
+      graph = getTGraphOfParameter(filename,tes_name,parameter,xvals=tvals,yvals=pvals) # combine DM
       if graph:
         graphs.append(graph)
       else:
@@ -328,8 +331,9 @@ def plotPostFitValues(channel,var,region,year,*parameters,**kwargs):
     latex.SetTextSize(0.045)
     latex.SetTextAlign(13)
     latex.SetTextFont(42)
-    latex.DrawLatex(tes+0.02*(xmax-xmin),ymax-0.04*(ymax-ymin),"tes = %.3f"%tes)
-    
+    #latex.DrawLatex(tes+0.02*(xmax-xmin),ymax-0.04*(ymax-ymin),"tes = %.3f"%tes)
+    latex.DrawLatex(tes+0.02*(xmax-xmin),ymax-0.04*(ymax-ymin),tes_name+" = %.3f"%tes) #combine DM
+
     if compareFD:
       graphFD.SetLineColor(kBlue)
       graphFD.SetLineWidth(2)

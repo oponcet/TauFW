@@ -16,7 +16,7 @@ with open(args.config, 'r') as file:
 RANGE="0.970,1.030"
 EXTRATAG="_DeepTau"
 ALGO="--algo=grid --alignEdges=1 --saveFitResult " # --saveWorkspace 
-FIT_OPTS="--robustFit=1 --points=10000 --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.001" #--preFitValue=1. 
+FIT_OPTS="--robustFit=1 --points=625 --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.001" #--preFitValue=1. 
 # POI_OPTS="-P tes --setParameterRanges tes=${RANGE} -m 90 --setParameters r=1 --freezeParameters r " 
 POI_OPTS="-P tes_DM0 -P tes_DM1 -P tes_DM10 -P tes_DM11 --setParameterRanges tes_DM0=%s:tes_DM1=%s:tes_DM10=%s:tes_DM11=%s -m 90 --setParameters r=1,tes_DM0=1,tes_DM1=1,tes_DM10=1,tes_DM11=1 --freezeParameters r"%(RANGE,RANGE,RANGE,RANGE)
 XRTD_OPTS="--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND" #--X-rtd FITTER_DYN_STEP
@@ -35,14 +35,14 @@ for v in setup["observables"]:
 
     BINLABEL="mt_"+v+"-MDF"+setup["tag"]+EXTRATAG+"-"+args.era+"-13TeV"
     WORKSPACE="output_"+args.era+"/combinecards.root" 
-    os.system("combine -M MultiDimFit -t -1 --saveToys -v 1 %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all"%(WORKSPACE,ALGO,POI_OPTS,BINLABEL,FIT_OPTS,XRTD_OPTS,CMIN_OPTS))
+    os.system("combine -M MultiDimFit  -v 1 %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all"%(WORKSPACE,ALGO,POI_OPTS,BINLABEL,FIT_OPTS,XRTD_OPTS,CMIN_OPTS))
 
         #Add save toy to save Asimov dataset 
         #-t -1 --saveToys  -toysFile --points=41 --cminInitialHesse=1 --robustHesse=1
         #print("higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.123456.root")
         # os.system("hadd -a higgsCombine.mt_"+v+"-MDF"+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.root higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.123456.root ")
 
-    os.rename("higgsCombine.mt_"+v+"-MDF"+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.123456.root", "higgsCombine.mt_"+v+"-MDF"+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.root")
+    #os.rename("higgsCombine.mt_"+v+"-MDF"+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.123456.root", "higgsCombine.mt_"+v+"-MDF"+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.root")
 
         # #Impact
         # os.system("combineTool.py -M Impacts -n %s -d %s %s  %s %s %s --redefineSignalPOIs tes_%s  -P tes_%s --setParameterRanges tes_%s=%s -m 90 --setParameters r=1,tes_%s=1 --doInitialFit"%(BINLABEL, WORKSPACE, FIT_OPTS, POI_OPTS, XRTD_OPTS, CMIN_OPTS,r,r,r,RANGE,r))

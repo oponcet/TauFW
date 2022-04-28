@@ -66,7 +66,7 @@ def plotParabola(setup,var,region,year,**kwargs):
         if any(abs(getattr(tree,t)-v)>0.000001 for t,v in MDFslices.iteritems()): continue
         list_tes.append(getattr(tree,tes))
         list_nll.append(2*tree.deltaNLL)
-        print "NLL = %d" %(2*tree.deltaNLL)#
+        #print "NLL = %d" %(2*tree.deltaNLL)#
       list_nll = [n for _,n in sorted(zip(list_tes,list_nll), key=lambda p: p[0])]
       list_tes.sort()
     else:
@@ -75,12 +75,11 @@ def plotParabola(setup,var,region,year,**kwargs):
         if tree.quantileExpected<0: continue
         if tree.deltaNLL == 0: continue
         #if tree.tes < 0.97: continue
-        #tes = "tes_%s"%region #added for combine fit with different files
+        #tes = "tes_%s"%region #combine DM
         list_tes.append(tree.tes)
-        #list_tes.append(getattr(tree,tes))
+        #list_tes.append(getattr(tree,tes)) #combine DM
         list_nll.append(2*tree.deltaNLL)
     file.Close()
-    print(list_nll)
     nllmin    = min(list_nll)
     list_dnll = map(lambda n: n-nllmin, list_nll) # DeltaNLL 
     
@@ -91,10 +90,7 @@ def plotParabola(setup,var,region,year,**kwargs):
     list_tes_left   = list_tes[:min_index]
     list_dnll_right = list_dnll[min_index:]
     list_tes_right  = list_tes[min_index:]
-    print(list_dnll_left)
-    print(list_dnll_right)
     print ">>> min   = %d , min_index = %d"%(dnllmin, min_index)
-    print ">>> len list_dnll_left   = %d ,len  list_dnll_right = %d"%(len(list_dnll_left) , len(list_dnll_right))
     if len(list_dnll_left)==0 or len(list_dnll_right)==0 : 
       print "ERROR! Parabola does not have minimum within given range !!!"
       exit(1)
@@ -491,6 +487,8 @@ def createParabola(filename):
     for i, event in enumerate(tree):
       if i==0: continue
       tes.append(tree.tes)
+      #tesname = "tes_%s"%region #combine DM 
+      #tes.append(getattr(tree,tesname)) #combine DM
       nll.append(2*tree.deltaNLL)
     file.Close()
     minnll = min(nll)
@@ -533,8 +531,8 @@ def measureTES(filename,unc=False,fit=False,asymmetric=True,**kwargs):
     tree = file.Get('limit')
     tes, nll = [ ], [ ]
     for event in tree:
-      #tesname = "tes_%s"%region
-      #tes.append(getattr(tree,tesname))
+      #tesname = "tes_%s"%region #combine DM 
+      #tes.append(getattr(tree,tesname)) #combine DM
       tes.append(tree.tes)
       nll.append(2*tree.deltaNLL)
     file.Close()
@@ -588,6 +586,8 @@ def measureTES_fit(filename,asymmetric=True,unc=False):
       if tree.quantileExpected<0: continue
       if tree.deltaNLL==0: continue
       list_tes.append(tree.tes)
+      #tes = "tes_%s"%region #combine DM
+      #list_tes.append(getattr(tree,tes)) #combine DM
       list_nll.append(2*tree.deltaNLL)
     file.Close()
     nllmin    = min(list_nll)

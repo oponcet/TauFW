@@ -61,10 +61,10 @@ def getyear(era):
 
 def setCMSEra(*eras,**kwargs):
   global cmsText, extraText, lumiText
-  cmsText   = "CMS"
-  extra     = kwargs.get('extra',None)
+  cmsText   = ""
+  extra     = ""#kwargs.get('extra',None)
   if extra!=None:
-    extraText = extra
+    extraText = ""
   strings   = [ ]
   for era in eras:
     era     = str(era)
