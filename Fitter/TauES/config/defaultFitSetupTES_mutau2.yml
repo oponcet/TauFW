@@ -92,14 +92,14 @@ systematics:
         title: "+/- 5% JTF"
         variations: ["Up", "Down"]
         sampleAppend: ["_JTFUp","_JTFDown"]
-    shape_tid:
-        effect: "shape"
-        processes: ["ZTT", "TTT"]            
-        name: "shape_tid"
-        title: "TID shape syst"
-        variations: ["Up", "Down"]
-        nomWeight: "idweight_2"
-        altWeights: ["idweightUp_2", "idweightDown_2"]
+    # shape_tid: #Related to tau ID SF 
+    #     effect: "shape"
+    #     processes: ["ZTT", "TTT"]            
+    #     name: "shape_tid"
+    #     title: "TID shape syst"
+    #     variations: ["Up", "Down"]
+    #     nomWeight: "idweight_2"
+    #     altWeights: ["idweightUp_2", "idweightDown_2"]
     shape_mTauFake:
         effect: "shape"
         processes: ["ZL", "TTL"]
@@ -119,40 +119,49 @@ systematics:
     lumi:
         effect: "lnN"
         processes: ["ZTT", "ZL", "ZJ", "TTT", "TTL", "TTJ", "W", "ST", "VV"]
+        name: "lumi"
         scaleFactor: 1.025
     eff_m:
         effect: "lnN"
         processes: ["ZTT", "ZL", "ZJ", "TTT", "TTL", "TTJ", "W", "ST", "VV"]
+        name: "eff_m"
         scaleFactor: 1.02
     xsec_dy:
         effect: "lnN"
         processes: ["ZTT", "ZL", "ZJ"]
+        name: "xsec_dy"
         scaleFactor: 1.02
     xsec_tt:
         effect: "lnN"
         processes: ["TTT", "TTL", "TTJ"]
+        name: "xsec_tt"
         scaleFactor: 1.06
     xsec_st:
         effect: "lnN"
         processes: ["ST"]
+        name: "xsec_st"
         scaleFactor: 1.05
     xsec_vv:
         effect: "lnN"
         processes: ["VV"]
+        name: "xsec_vv"
         scaleFactor: 1.05
     norm_wj:
         effect: "lnN"
         processes: ["W"]
+        name: "norm_wj"
         scaleFactor: 1.08
     norm_qcd:
         effect: "lnN"
         processes: ["QCD"]
+        name: "norm_qcd"
         scaleFactor: 1.10
     rate_jTauFake_$BIN:
         effect: "lnN"
         processes: ["W","QCD","ZJ","TTJ","STJ"]
+        name: "rate_jTauFake_$BIN"
         scaleFactor: 1.15
-
+        
 # Additional scale factors per year for specific processes (correction of xsec, reco SFs, etc.)
 # Need to be provided, for now, in same regions as regions defined above
 scaleFactors:

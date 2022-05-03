@@ -147,6 +147,7 @@ def getParameters(filename,*parameters,**kwargs):
     parlist = [ ]
     for parameter in parameters:
       branch = parameter
+      print branch
       # TODO: regex
       if not tree.GetBranch(branch):
         warning('getListsForParameters: Did not find "%s" branch!'%(branch))
@@ -531,12 +532,12 @@ def main(args):
 
     # Leave hard-coded this part as this is purely a plotting choice
     nuisances = [ #"eff_t_$CAT",
-                  "shape_tid", "xsec_dy", "norm_wj",
+                  "trackedParam_id_SF_$CAT", "xsec_dy", "norm_wj",
                   "shape_jTauFake", "rate_jTauFake", "xsec_tt", ]
     compare   = {
       "norm":
         [ "xsec_dy", "xsec_tt", "xsec_st",
-          "norm_wj", "norm_qcd", "shape_tid" #"eff_t_$CAT",
+          "norm_wj", "norm_qcd", "trackedParam_id_SF_$CAT" #"eff_t_$CAT",
         ],
       "shapes":
         [ "xsec_dy", "rate_jTauFake_$CAT", "shape_mTauFakeSF", 
@@ -547,7 +548,7 @@ def main(args):
     fulllist  = [
       "xsec_dy", "xsec_tt", "xsec_st", "norm_wj", "norm_qcd",
       "shape_dy", "shape_mTauFakeSF", "shape_mTauFake_$CAT",
-      "shape_jTauFake_$CAT", "rate_jTauFake_$CAT",
+      "shape_jTauFake_$CAT", "rate_jTauFake_$CAT","trackedParam_id_SF_$CAT"
     ]
     procsBBB  = [ 'QCD', 'W', 'TTT', 'ZTT' ] # 'JTF' ]
     indir     = "output_%s"%year
@@ -566,7 +567,7 @@ def main(args):
             if "title" in region: 
                 region["title"]
             title = "%s, %s"%(varTitle,regionTitle)
-                        
+            tes_name = "tes_%s"%r            
 
             # COMPARE nuisances
             for name, parameters in compare.iteritems():
@@ -579,7 +580,7 @@ def main(args):
                     plotPostFitValues(channel,var,r,year,*bbblist,tag=tag,compareFD=False,title=title)
             
             # CORRELATION
-            correlate = ['tes'] + fulllist + getBBBList(channel,var,r,year,'ZTT',tag=tag)
+            correlate = [tes_name] + fulllist + getBBBList(channel,var,r,year,'ZTT',tag=tag)
             plotCorrelation(channel,var,r,year,correlate,tag=tag,title=title)
           
 

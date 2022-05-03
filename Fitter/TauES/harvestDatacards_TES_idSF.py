@@ -59,7 +59,7 @@ def harvest(setup, year, obs, **kwargs):
     harvester.AddProcesses(['*'], [analysis], [era], [channel], backgrounds, cats, False)
     # CAVEAT: Assume we always want to fit TES as POI; if running for mumu channel, everything will be bkg
     harvester.AddProcesses(tesshifts, [analysis], [era], [channel], signals, cats, True)
-    
+
     # FILTER ## CAVEAT!!! potentially needed to not add zero backgrounds
     #filterDM10      = [ 'STL', 'TTL', 'ZL' ]
     #if filterDM10:
@@ -71,12 +71,14 @@ def harvest(setup, year, obs, **kwargs):
     if "systematics" in setup:
       for sys in setup["systematics"]:
         sysDef = setup["systematics"][sys]
-        scaleFactor = 1.0 
-        if "scaleFactor" in sysDef: 
+        scaleFactor = 1.0  
+        if "scaleFactor" in sysDef:
           scaleFactor = sysDef["scaleFactor"]
         harvester.cp().process(sysDef["processes"]).AddSyst(harvester, sysDef["name"] if "name" in sysDef else sys, sysDef["effect"], SystMap()(scaleFactor))
- 
-   
+        harvester.cp().signals().AddSyst(harvester, 'id_SF_$BIN','rateParam', SystMap()(1.00))
+        print sysDef
+
+
     # EXTRACT SHAPES
     print green(">>> extracting shapes...")
     filename = "%s/%s_%s_tes_%s.inputs-%s%s.root"%(indir,analysis,channel,obs,era,tag)
@@ -85,8 +87,10 @@ def harvest(setup, year, obs, **kwargs):
     ## Could be revised if wanting to leave the possibility to do other variations or fit normalisation (e.g. for combined TES & ID SF fit)
     harvester.cp().channel([channel]).backgrounds().ExtractShapes(filename, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
     harvester.cp().channel([channel]).signals().ExtractShapes(filename, "$BIN/$PROCESS_TES$MASS", "$BIN/$PROCESS_TES$MASS_$SYSTEMATIC")
-    #harvester.cp().channel([channel]).process(['proc1','proc2']).ExtractShapes( filename, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
-    
+    #harvester.cp().channel([channel]).process(sysDef["processes"]).ExtractShapes( filename, "$BIN/$PROCESS_SF", "$BIN/$PROCESS_$SYSTEMATIC_SF") ###change
+   
+
+
     # AUTOREBIN
     #print green(">>> automatically rebin (30%)...")
     #rebin = AutoRebin().SetBinThreshold(0.).SetBinUncertFraction(0.30).SetRebinMode(1).SetPerformRebin(True).SetVerbosity(1)
@@ -107,23 +111,26 @@ def harvest(setup, year, obs, **kwargs):
           procsBBB += backgrounds
       bbb = BinByBinFactory()
       bbb.SetAddThreshold(0.0)
-      bbb.SetFixNorm(False)
+      bbb.SetFixNorm(False) 
       bbb.SetPattern("$PROCESS_bin_$#_$CHANNEL_$BIN")
       bbb.AddBinByBin(harvester.cp().process(procsBBB), harvester)
     
     # ROOVAR
     pois = []
     workspace = RooWorkspace(analysis,analysis)
-    if multiDimFit:
-      for bin in bins:
-        tesname = "tes_%s"%(bin)
-        tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
-        tes.setConstant(True)
-        pois.append(tes)
-    else:
-      tes = RooRealVar('tes','tes', min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
+    # if multiDimFit:
+    for bin in bins:
+      tesname = "tes_%s"%(bin)
+      print tesname
+      tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
       tes.setConstant(True)
-      pois = [tes]*len(bins)
+      pois.append(tes)
+    # else:
+    #   tes = RooRealVar('tes','tes', min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
+    #   tes.setConstant(True)
+    #   pois = [tes]*len(bins)
+    # id_SF = RooRealVar('id_SF','id_SF', 0.8, 1.2) ###change
+    # pois.append(id_SF) ###
     
     # MORPHING
     print green(">>> morphing...")
@@ -133,8 +140,8 @@ def harvest(setup, year, obs, **kwargs):
     for bin, poi in zip(bins,pois):
       print '>>>   bin "%s"...'%(bin)
       for proc in setup["TESvariations"]["processes"]:
-        #print ">>>   bin %s, proc %s"%(bin,proc)
-        BuildRooMorphing(workspace, harvester, bin, proc, poi, 'norm', True, verboseMorph, False, debugfile)
+        print ">>>   bin %s, proc %s"%(bin,proc)
+        BuildRooMorphing(workspace, harvester, bin, proc, poi, 'norm', True, verboseMorph, False, debugfile) ###change
     debugfile.Close()
     
     # EXTRACT PDFs
@@ -143,15 +150,17 @@ def harvest(setup, year, obs, **kwargs):
     harvester.cp().process(setup["TESvariations"]["processes"]).ExtractPdfs(harvester, analysis, "$BIN_$PROCESS_morph", "")
     
     # NUISANCE PARAMETER GROUPS
-    ## To do: export to config file
+    # To do: export to config file
     print green(">>> setting nuisance parameter groups...")
+    harvester.SetGroup('all', [ ".*"           ])
+    harvester.SetGroup('sys', [ "^((?!bin).)*$"]) # everything except bin-by-bin
     harvester.SetGroup( 'bin',      [ ".*_bin_.*"        ])
     harvester.SetGroup( 'lumi',     [ ".*lumi"           ])
     harvester.SetGroup( 'eff',      [ ".*eff_.*"         ])
     harvester.SetGroup( 'jtf',      [ ".*jTauFake.*"     ])
     harvester.SetGroup( 'ltf',      [ ".*mTauFake.*"     ])
     harvester.SetGroup( 'zpt',      [ ".*shape_dy.*"     ])
-    harvester.SetGroup( 'xsec',     [ ".*Xsec.*"         ])
+    harvester.SetGroup( 'xsec',     [ ".*xsec.*"         ])
     harvester.SetGroup( 'norm',     [ ".*(lumi|Xsec|Norm|norm_qcd).*" ])
     
     # PRINT
@@ -185,7 +194,7 @@ def harvest(setup, year, obs, **kwargs):
       else:
         print '>>> Warning! "%s" does not exist!'%(oldfilename)
     
-def scaleProcess(process,scale):
+def scaleProcess(process,scale): 
   """Help function to scale a given process."""
   process.set_rate(process.rate()*scale)
   
@@ -253,3 +262,4 @@ if __name__ == '__main__':
   main(args)
   print ">>>\n>>> done harvesting\n"
     
+

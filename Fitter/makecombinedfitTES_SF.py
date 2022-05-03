@@ -18,11 +18,11 @@ EXTRATAG="_DeepTau"
 ALGO="--algo=grid --alignEdges=1 --saveFitResult " # --saveWorkspace 
 FIT_OPTS="--robustFit=1 --points=31  --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.001" #--preFitValue=1. 
 # POI_OPTS="-P tes --setParameterRanges tes=${RANGE} -m 90 --setParameters r=1 --freezeParameters r  " 
-POI_OPTS="-P tes --setParameterRanges tes=%s -m 90 --setParameters r=1,tes=1 --freezeParameters r " %(RANGE)
+#POI_OPTS="-P tes --setParameterRanges tes=%s -m 90 --setParameters r=1,tes=1 --freezeParameters r " %(RANGE)
 XRTD_OPTS="--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND" #--X-rtd FITTER_DYN_STEP
 CMIN_OPTS="--cminFallbackAlgo Minuit2,Migrad,0:0.5 --cminFallbackAlgo Minuit2,Migrad,0:1.0 --cminPreScan" # --cminPreFit 1 --cminOldRobustMinimize 
 
-os.system("./TauES/harvestDatacards_TES.py -y %s -c %s -e %s -v "%(args.era,args.config,EXTRATAG))
+os.system("./TauES/harvestDatacards_TES_idSF -y %s -c %s -e %s "%(args.era,args.config,EXTRATAG))
 
 for v in setup["observables"]:
     print v
@@ -32,11 +32,12 @@ for v in setup["observables"]:
         print r
         region = setup["regions"][r]
 
+        POI_OPTS="-P tes_%s --setParameterRanges tes_%s=%s -m 90 --setParameters r=1,tes_%s=1 --freezeParameters r --floatParameters id_SF_%s " %(r,r,RANGE,r,r)
         BINLABEL="mt_"+v+"-"+r+setup["tag"]+EXTRATAG+"-"+args.era+"-13TeV"
         os.system("text2workspace.py output_%s/ztt_%s.txt"%(args.era,BINLABEL))
 
         WORKSPACE="output_"+args.era+"/ztt_"+BINLABEL+".root" 
-        os.system("combine -M MultiDimFit -t -1 %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all"%(WORKSPACE,ALGO,POI_OPTS,BINLABEL,FIT_OPTS,XRTD_OPTS,CMIN_OPTS))
+        os.system("combine -M MultiDimFit -t -1 %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all --trackParameters id_SF_%s"%(WORKSPACE,ALGO,POI_OPTS,BINLABEL,FIT_OPTS,XRTD_OPTS,CMIN_OPTS,r))
         #os.system("combine -M GenerateOnly -t -1 --saveToys --setParameterRanges tes=%s -m 90 --setParameters r=1,tes=1 --freezeParameters r --freezeNuisanceGroups=all %s -n .%s "%(RANGE,WORKSPACE,BINLABEL))
 
         
