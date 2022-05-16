@@ -75,8 +75,8 @@ def harvest(setup, year, obs, **kwargs):
         if "scaleFactor" in sysDef:
           scaleFactor = sysDef["scaleFactor"]
         harvester.cp().process(sysDef["processes"]).AddSyst(harvester, sysDef["name"] if "name" in sysDef else sys, sysDef["effect"], SystMap()(scaleFactor))
-        harvester.cp().signals().AddSyst(harvester, 'id_SF_$BIN','rateParam', SystMap()(1.00))
-        print sysDef
+        harvester.cp().signals().AddSyst(harvester, 'tid_SF_$BIN','rateParam', SystMap()(1.00))
+        #print sysDef
 
 
     # EXTRACT SHAPES
@@ -111,7 +111,7 @@ def harvest(setup, year, obs, **kwargs):
           procsBBB += backgrounds
       bbb = BinByBinFactory()
       bbb.SetAddThreshold(0.0)
-      bbb.SetFixNorm(False) 
+      bbb.SetFixNorm(True) 
       bbb.SetPattern("$PROCESS_bin_$#_$CHANNEL_$BIN")
       bbb.AddBinByBin(harvester.cp().process(procsBBB), harvester)
     
@@ -123,7 +123,7 @@ def harvest(setup, year, obs, **kwargs):
       tesname = "tes_%s"%(bin)
       print tesname
       tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
-      tes.setConstant(True)
+      tes.setConstant(False)
       pois.append(tes)
     # else:
     #   tes = RooRealVar('tes','tes', min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))

@@ -3,7 +3,12 @@
         "asimov.C": "cpp",
         "makeFit.C": "cpp",
         "significances.C": "cpp",
-        "makeNPranking.C": "cpp"
+        "makeNPranking.C": "cpp",
+        "plot1D_POI.C": "cpp",
+        "plot1D_tid_SF.C": "cpp",
+        "plot1D_tid_SF copy.C": "cpp",
+        "plot2D_tid_SF.C": "cpp",
+        "simplePlot.C": "cpp"
     },
     "python.formatting.provider": "yapf"
 }

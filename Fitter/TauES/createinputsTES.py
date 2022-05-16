@@ -10,6 +10,7 @@ from TauFW.Plotter.plot.utils import LOG as PLOG
 from TauFW.Fitter.plot.datacard import createinputs, plotinputs
 import yaml
 
+
 def main(args):
   eras      = args.eras
   parallel  = args.parallel
@@ -58,12 +59,13 @@ def main(args):
         if not era in SFset["values"]: continue
         print "Reweighting with SF -- %s -- for the following processes: %s"%(SF, SFset["processes"])
         for proc in SFset["processes"]:
-          weight = ""
+          weight = "( q_1*q_2<0 ? ( "
           for cond in SFset["values"][era]:
             weight += cond+" ? "+str(SFset["values"][era][cond])+" : ("
-          weight += "1)"
+          weight += "1.0)"
           for i in range(len(SFset["values"][era])-1):
             weight += " )"
+          weight +=  ") : 1.0 )"
           print "Applying weight: %s"%weight
           sampleset.get(proc, unique=True).addextraweight(weight)
 
@@ -109,7 +111,7 @@ def main(args):
         print "Variation: TES = %f"%var
 
         newsampleset = sampleset.shift(setup["TESvariations"]["processes"], ("_TES%.3f"%var).replace(".","p"), "_TES%.3f"%var, " %.1d"%((1.-var)*100.)+"% TES", split=True,filter=False,share=True)
-        createinputs(fname,newsampleset, observables, bins, filter=setup["TESvariations"]["processes"], dots=True)
+        createinputs(fname,newsampleset, observables, bins, filter=setup["TESvariations"]["processes"], dots=True, recreate=True)
         newsampleset.close()
 
     if "systematics" in setup:

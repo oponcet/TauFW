@@ -94,7 +94,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
       stack.draw(fraction=fraction)
       stack.drawlegend() #position)
       stack.drawtext(text)
-      stack.saveas(fname,ext=exts,tag=tag)
+      stack.saveas(fname,ext='root',tag=tag)
       stack.close()
   
 

@@ -270,7 +270,7 @@ def drawUpDownVariation(setup, filename,dirname,samples,shifts,**kwargs):
 def formatFilename(filename):
     """Help function to format filename."""
     filename = re.sub(r"(?:_[em]t)?(?:_DM\d+)?_13TeV",'',filename)
-    filename = filename.replace("CMS_",'').replace("ztt_",'').replace("_mt_13TeV",'').replace("_13TeV",'')
+    filename = filename.replace("CMS_",'').replace("ztt_",'').replace("_mt_13TeV",'').replace("_13TeV",'')   
     return filename
 
 def formatVariable(variable,shift=""):

@@ -111,19 +111,22 @@ def harvest(setup, year, obs, **kwargs):
       bbb.SetPattern("$PROCESS_bin_$#_$CHANNEL_$BIN")
       bbb.AddBinByBin(harvester.cp().process(procsBBB), harvester)
     
+    # Add line in datacard
+    #harvester.AddDatacardLineAtEnd("* autoMCStats 0")
+
     # ROOVAR
     pois = []
     workspace = RooWorkspace(analysis,analysis)
-    if multiDimFit:
-      for bin in bins:
-        tesname = "tes_%s"%(bin)
-        tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
-        tes.setConstant(True)
-        pois.append(tes)
-    else:
-      tes = RooRealVar('tes','tes', min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
+    # if multiDimFit:
+    for bin in bins:
+      tesname = "tes_%s"%(bin)
+      tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
       tes.setConstant(True)
-      pois = [tes]*len(bins)
+      pois.append(tes)
+    # else:
+    #   tes = RooRealVar('tes','tes', min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
+    #   tes.setConstant(True)
+    #   pois = [tes]*len(bins)
     
     # MORPHING
     print green(">>> morphing...")
