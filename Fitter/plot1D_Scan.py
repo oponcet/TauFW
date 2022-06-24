@@ -38,9 +38,11 @@ def BuildScan(scan, param, files, color, yvals, ycut):
         graph.Print()
         raise RuntimeError('Attempting to build %s scan from TGraph with zero or one point (see above)' % files)
     bestfit = None
-    for i in xrange(graph.GetN()):
-        if graph.GetY()[i] > -0.000000001 and graph.GetY()[i] < 0.000000001 :
-            bestfit = graph.GetX()[i]
+    #for i in xrange(graph.GetN()):
+        #print  graph.GetY()[i]
+        #if graph.GetY()[i] > -0.000000001 and graph.GetY()[i] < 0.000000001 :
+            #bestfit = graph.GetX()[i]
+    bestfit = min(graph.GetY(),key=abs)
     print bestfit
     graph.SetMarkerColor(color)
     spline = ROOT.TSpline3("spline3", graph)
@@ -187,10 +189,16 @@ pads[0].GetFrame().Draw()
 pads[0].RedrawAxis()
 
 crossings = main_scan['crossings']
-val_nom = main_scan['val']
+#val_nom = main_scan['val']
+val_nom = [0,0,0]
 val_2sig = main_scan['val_2sig']
 
+
+
+
 textfit = '%s = %.3f{}^{#plus %.3f}_{#minus %.3f}' % (fixed_name, val_nom[0], val_nom[1], abs(val_nom[2]))
+
+
 
 
 pt = ROOT.TPaveText(0.59, 0.82 - len(other_scans)*0.08, 0.95, 0.91, 'NDCNB')
@@ -232,7 +240,7 @@ if args.breakdown is not None:
         else:
             hi = v_hi[i]
             lo = v_lo[i]
-        textfit += '{}^{#plus %.3f}_{#minus %.3f}(%s)' % (hi, abs(lo), br)
+        textfit += '{}^{#plus %.4f}_{#minus %.4f}(%s)' % (hi, abs(lo), br)
     pt.AddText(textfit)
 
 

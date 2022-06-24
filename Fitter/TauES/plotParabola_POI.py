@@ -147,7 +147,7 @@ def plotParabola(setup,var,region,year,**kwargs):
     canvas.SetLeftMargin( 0.12 ); canvas.SetRightMargin(  0.04 )
     canvas.cd()
     
-    xmin, xmax   = 0.7, 1.2
+    xmin, xmax   = 0.95, 1.05
     ymin, ymax   = 0.0,  10.
     fontsize     = 0.044
     lineheight   = 0.05
@@ -1044,7 +1044,7 @@ def main(args):
                     allObsTitles.append(v)
         for r in setup["regions"]:
             print r
-            isUsedInFit = False
+            isUsedInFit = True #change to true
             for v in setup["observables"]:
                 if r in setup["observables"][v]["fitRegions"]:
                     isUsedInFit = True
@@ -1061,6 +1061,7 @@ def main(args):
                 nnlmin, slices = findMultiDimSlices(channel,var,year=year,tag=tag)
                 plotParabolaMDF(setup,var,year,nnlmin=nnlmin,MDFslices=slices,indir=indir,tag=tag,poi=poi)
             
+            print allRegions
             # LOOP over regions
             for i, region in enumerate(allRegions):
                 if not region in variable["fitRegions"]:
@@ -1089,6 +1090,7 @@ def main(args):
                 filename = "%s/measurement_poi_%s%s"%(outdir,channel,tag)
                 writeMeasurement(filename,allRegions,points)
             if args.fit:
+                filename = "%s/measurement_poi_%s%s"%(outdir,channel,tag)
                 writeMeasurement(filename+fittag,allRegions,points_fit)
     
     # SUMMARY plot
@@ -1100,7 +1102,7 @@ def main(args):
             measurements = readMeasurement(canvas)
 
             #plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=min(setup["TESvariations"]["values"]),xmax=max(setup["TESvariations"]["values"]),L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'])
-            plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=0.7,xmax=1.2,L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'])
+            plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=0.95,xmax=1.05,L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'])
 
        
 
