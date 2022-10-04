@@ -8,7 +8,8 @@
         "plot1D_tid_SF.C": "cpp",
         "plot1D_tid_SF copy.C": "cpp",
         "plot2D_tid_SF.C": "cpp",
-        "simplePlot.C": "cpp"
+        "simplePlot.C": "cpp",
+        "makePlot.C": "cpp"
     },
     "python.formatting.provider": "yapf"
 }

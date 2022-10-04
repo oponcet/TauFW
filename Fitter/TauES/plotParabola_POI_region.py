@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 # Author: Izaak Neutelings (January 2018)
-# Modification May 2022
+# Modification: Oceane Poncet (June 2022)
+# Add Plotting regions in config file to specify it
+# Add POI parameter (ex: tes, tid_SF) 
 
 import os, sys, re, glob, time
 import numpy, copy

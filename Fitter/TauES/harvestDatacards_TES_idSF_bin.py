@@ -1,8 +1,5 @@
 #! /usr/bin/env python
 # Author: Izaak Neutelings (January 2018)
-# Modification by Saskia Falke and Oceane Poncet (June 2022)
-# Add tid SF as nuisance parameter that affect the norm = rateParameter
-# Use sum of the of the backrgound processes for the bin-by-bin nuisance parameters
 
 import ROOT; ROOT.PyConfig.IgnoreCommandLineOptions = True
 import os, sys, re
@@ -74,12 +71,9 @@ def harvest(setup, year, obs, **kwargs):
             if "scaleFactor" in sysDef:
               scaleFactor = sysDef["scaleFactor"]
             harvester.cp().process(sysDef["processes"]).AddSyst(harvester, sysDef["name"] if "name" in sysDef else sys, sysDef["effect"], SystMap()(scaleFactor))
-            #harvester.cp().signals().AddSyst(harvester, 'tid_SF_$BIN','rateParam', SystMap()(1.00))
+            harvester.cp().signals().AddSyst(harvester, 'tid_SF_$BIN','rateParam', SystMap()(1.00))
             #print sysDef
-         
-        listbin = region.split("_")
-        tid_name = "tid_SF_%s"%(listbin[1])
-        harvester.cp().signals().AddSyst(harvester, tid_name,'rateParam', SystMap()(1.00))
+
 
         # EXTRACT SHAPES
         print green(">>> extracting shapes...")
@@ -96,8 +90,7 @@ def harvest(setup, year, obs, **kwargs):
         # ROOVAR
         workspace = RooWorkspace(analysis,analysis)
         print analysis
-        #tesname = "tes_%s"%(region)
-        tesname = "tes_%s"%(listbin[0])
+        tesname = "tes_%s"%(region)
         print tesname
         tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
         tes.setConstant(True)
