@@ -18,14 +18,23 @@ class Variable(object):
    - allow for contextual binning, i.e. depending on channel/selection/...
    - easy string conversions: filename, LaTeX, ...
    - analysis-specific operations: applying variations, ...
+   
+  Initialize as
+    var = Variable('x',100,0,200)
+    var = Variable('x','x title',100,0,200)
+    var = Variable('x',[0,10,50,100,200])
+    ...
   """
   
   def __init__(self, name, *args, **kwargs):
-    strings           = [a for a in args if isinstance(a,str) ]
+    strings, bins     = [ ], [ ]
+    for arg in args:
+      if isinstance(arg,str): strings.append(arg)
+      else: bins.append(arg)
     self.name         = name # variable name in tree, to be used in draw command
     self._name        = name # backup for addoverflow
     self.title        = strings[0] if strings else self.name
-    filename          = makefilename(self.name.replace('/','_'))  # file-safe name
+    filename          = strings[1] if len(strings)>=2 else makefilename(self.name.replace('/','_')) # file-safe name
     self.title        = kwargs.get('title',       self.title    ) # for plot axes
     self.filename     = kwargs.get('fname',       filename      ) # file-friendly name for files & histograms
     self.filename     = kwargs.get('filename',    self.filename ) # alias
@@ -40,7 +49,7 @@ class Variable(object):
     self.cut          = kwargs.get('cut',         ""            ) # extra cut when filling histograms
     self.weight       = kwargs.get('weight',      ""            ) # extra weight when filling histograms (MC only)
     self.dataweight   = kwargs.get('dataweight',  ""            ) # extra weight when filling histograms for data
-    self.setbins(*args)
+    self.setbins(*bins)
     self.dividebins   = kwargs.get('dividebins', self.hasvariablebins() ) # divide each histogram bins by it bin size (done in Plot.draw)
     self.data         = kwargs.get('data',        True          ) # also draw data
     self.flag         = kwargs.get('flag',        ""            ) # flag, e.g. 'up', 'down', ...
@@ -123,32 +132,42 @@ class Variable(object):
   def clone(self,*args,**kwargs):
     """Shallow copy."""
     verbosity = LOG.getverbosity(self,kwargs)
-    if not args:
-      args = self.getbins()
-      cut  = kwargs.get('cut',None)
+    strargs = tuple([a for a in args if isinstance(a,str)]) # string arguments: name, title
+    binargs = tuple([a for a in args if not isinstance(a,str)])
+    if verbosity>=2:
+      print ">>> Variable.clone: Old strargs=%r, binargs=%r, kwargs=%r"%(strargs,binargs,kwargs)
+    if not strargs:
+      strargs = (kwargs.pop('name',self.name),) # default name
+    if not binargs: # get binning
+      binargs = self.getbins()
+      cut = kwargs.get('cut',None)
       if cut and self.ctxbins: # change context based on extra cut
         bins = self.ctxbins.getcontext(cut) # get bins in this context
-        if args!=bins and verbosity>=2:
-          print ">>> Variable.clone: Changing binning %r -> %r because of context %r"%(args,bins,cut)
-        args = bins
-      if isinstance(args,list): # assume list is bin edges
-        args = (args,)
+        if binargs!=bins and verbosity>=2:
+          print ">>> Variable.clone: Changing binning %r -> %r because of context %r"%(binargs,bins,cut)
+        binargs = bins
+      if isinstance(binargs,list): # assume list is bin edges
+        binargs = (binargs,) # force list in tuple
     newdict = self.__dict__.copy()
     if 'fname' in kwargs:
       kwargs['filename'] = kwargs['fname']
     if 'filename' in kwargs:
       kwargs['filename'] = kwargs['filename'].replace('$FILE',self.filename)
+    if 'tag' in kwargs:
+      kwargs['filename'] = kwargs.get('filename',self.filename)+kwargs['tag']
     if kwargs.get('combine',True) and 'weight' in kwargs and self.weight:
       kwargs['weight'] = combineWeights(kwargs['weight'],self.weight)
-    for key in kwargs.keys()+['nbins','min','max','bins']: # to be reset with args
-      if key in newdict:
-        newdict.pop(key)
+    for key in kwargs.keys()+['name','title','nbins','min','max','bins']: # prevent overwrite: set via newargs
+      newdict.pop(key,None)
     if 'cbins' in kwargs:
       newdict.pop('ctxbins')
     elif self.ctxbins:
       newdict['ctxbins'] = self.ctxbins.clone() # create new dictionary
-      newdict['ctxbins'].default = args # change default context
-    newvar = Variable(self.name,*args,**kwargs)
+      newdict['ctxbins'].default = binargs # change default context
+    newargs = strargs+binargs
+    if verbosity>=2:
+      print ">>> Variable.clone: New args=%r, kwargs=%r"%(newargs,kwargs)
+    newvar = Variable(*newargs,**kwargs)
     newvar.__dict__.update(newdict)
     if verbosity>=2:
       print ">>> Variable.clone: Cloned %r -> %r"%(self,newvar)
@@ -385,15 +404,32 @@ class Variable(object):
       newvar.filename += vshift # overwrite file name
     return newvar
   
-  def shiftjme(self,jshift,**kwargs):
+  def shiftjme(self,jshift,title=None,**kwargs):
     """Create new variable with a shift tag added to its name."""
+    verbosity = LOG.getverbosity(self,kwargs)
     if len(jshift)>0 and jshift[0]!='_':
       jshift = '_'+jshift
     newname  = shiftjme(self.name,jshift,**kwargs)
     newvar   = deepcopy(self)
+    LOG.verb("Variable.shiftjme: name = %r -> %r"%(self.name,newname),verbosity,2)
     newvar.name = newname # overwrite name
+    if title:
+      newvar.title = title
+    elif self.title[-1] in [']',')']: # insert shift tag into title before units
+      newvar.title = re.sub(r"^(.*\s*)([[(][^()\[\]]+[)\]])$",r"\1%s \2"%(jshift.strip('_')),self.title)
+    else: # add shift tag to title
+      newvar.title += ' '+jshift.strip('_')
+    LOG.verb("Variable.shiftjme: title = %r -> %r"%(self.title,newvar.title),verbosity,2)
     if not kwargs.get('keepfile',False) and self.name!=newname:
       newvar.filename += jshift # overwrite file name
+      LOG.verb("Variable.shiftjme: filename = %r -> %r"%(self.filename,newvar.filename),verbosity,2)
+    if newvar.cut:
+      newvar.cut = shiftjme(newvar.cut,jshift,**kwargs)
+      LOG.verb("Variable.shiftjme: extra cut = %r -> %r"%(self.cut,newvar.cut),verbosity,2)
+    if newvar.ctxcut:
+      for key, cut in newvar.ctxcut.context.iteritems():
+        newvar.ctxcut.context[key] = shiftjme(cut,jshift,**kwargs)
+      newvar.ctxcut.default = shiftjme(newvar.ctxcut.default,jshift,**kwargs)
     return newvar
   
   def shiftname(self,vshift,**kwargs):

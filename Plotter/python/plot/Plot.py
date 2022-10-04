@@ -69,7 +69,7 @@ class Plot(object):
       if not hist or not isinstance(hist,TH1):
         LOG.throw(IOError,"Plot: Did not recognize histogram in input: %s"%(args,))
     if kwargs.get('clone',False):
-      hists    = [h.Clone(h.GetName()+"_clone_Plot") for h in hists]
+      hists    = [h.Clone(h.GetName()+"_clone_Plot%d"%i) for i, h in enumerate(hists)]
     self.hists = hists
     self.frame = kwargs.get('frame', None )
     frame      = self.frame or self.hists[0]
@@ -175,7 +175,8 @@ class Plot(object):
     ycenter      = kwargs.get('ycenter',      False           ) # center y title
     logx         = kwargs.get('logx',         self.logx       )
     logy         = kwargs.get('logy',         self.logy       )
-    ymargin      = kwargs.get('ymargin',      self.ymargin    ) # margin between hist maximum and plot's top
+    ymargin      = kwargs.get('ymarg',        self.ymargin    ) # alias
+    ymargin      = kwargs.get('ymargin',      ymargin         ) # margin between hist maximum and plot's top
     logyrange    = kwargs.get('logyrange',    self.logyrange  ) # log(y) range from hist maximum to ymin
     grid         = kwargs.get('grid',         True            )
     tsize        = kwargs.get('tsize',        _tsize          ) # text size for axis title
@@ -479,7 +480,8 @@ class Plot(object):
     labeloption   = kwargs.get('labeloption',  None             ) # 'h'=horizontal, 'v'=vertical
     logx          = kwargs.get('logx',         False            )
     logy          = kwargs.get('logy',         False            )
-    ymargin       = kwargs.get('ymargin',      None             ) or (1.3 if logy else 1.2) # margin between hist maximum and plot's top
+    ymargin       = kwargs.get('ymarg',        None             ) # alias
+    ymargin       = kwargs.get('ymargin',      ymargin          ) or (1.3 if logy else 1.2) # margin between hist maximum and plot's top
     logyrange     = kwargs.get('logyrange',    None             ) or 3 # log(y) range from hist maximum to ymin
     negativey     = kwargs.get('negativey',    True             ) # allow negative y values
     xtitle        = kwargs.get('xtitle',       frame.GetTitle() )
@@ -791,11 +793,18 @@ class Plot(object):
     position = position.replace('left','L').replace('center','C').replace('right','R').replace( #.lower()
                                 'top','T').replace('middle','M').replace('bottom','B')
     if not any(c in position for c in 'TMBy'): # set default vertical
-      position += 'T'
+      if 'L' in position:
+        y1_user = 0.89 # move down default left legend because of corner text
+      else:
+        position += 'T'
     if not any(c in position for c in 'LCRx'): # set default horizontal
       position += 'RR' if ncols>1 else 'R' # if title else 'L'
     
-    if 'C'     in position: # horizontal center
+    # HORIZONTAL X COORDINATES
+    if x1_user!=None:
+      x1 = x1_user
+      x2 = x1 + width if x2_user==None else x2_user
+    elif 'C'   in position: # horizontal center
       if   'R' in position: center = 0.57 # right of center
       elif 'L' in position: center = 0.43 # left of center
       else:                 center = 0.50 # center
@@ -807,7 +816,12 @@ class Plot(object):
     elif 'x='  in position: # horizontal coordinate set by user
       x1 = float(re.findall(r"x=(\d\.\d+)",position)[0])
       x2 = x1 + width
-    if 'M'     in position: # vertical middle
+    
+    # VERTICAL Y COORDINATES
+    if y1_user!=None:
+      y1 = y1_user
+      y2 = y1 - height if y2_user==None else y2_user
+    elif 'M'   in position: # vertical middle
       if   'T' in position: middle = 0.57 # above middle
       elif 'B' in position: middle = 0.43 # below middle
       else:                 middle = 0.50 # exact middle
@@ -819,16 +833,12 @@ class Plot(object):
     elif 'y='  in position: # vertical coordinate set by user
       y2 = float(re.findall(r"y=(\d\.\d+)",position)[0]);
       y1 = y2 - height
-    if x1_user!=None:
-      x1 = x1_user
-      x2 = x1 + width if x2_user==None else x2_user
-    if y1_user!=None:
-      y1 = y1_user
-      y2 = y1 - height if y2_user==None else y2_user
+    
+    # CONVERT TO NORMALIZED CANVAS COORDINATES
     L, R = gPad.GetLeftMargin(), gPad.GetRightMargin()
     T, B = gPad.GetTopMargin(),  gPad.GetBottomMargin()
-    X1, X2 = L+(1-L-R)*x1, L+(1-L-R)*x2 # convert frame to canvas coordinates
-    Y1, Y2 = B+(1-T-B)*y1, B+(1-T-B)*y2 # convert frame to canvas coordinates
+    X1, X2 = L+(1-L-R)*x1, L+(1-L-R)*x2
+    Y1, Y2 = B+(1-T-B)*y1, B+(1-T-B)*y2
     legend = TLegend(X1,Y1,X2,Y2)
     LOG.verb("Plot.drawlegend: position=%r, height=%.3f, width=%.3f, (x1,y1,x2,y2)=(%.2f,%.2f,%.2f,%.2f), (X1,Y1,X2,Y2)=(%.2f,%.2f,%.2f,%.2f)"%(
                                position,height,width,x1,y1,x2,y2,X1,Y1,X2,Y2),verbosity,1)
@@ -860,6 +870,15 @@ class Plot(object):
     # ENTRIES
     if hists:
       for hist_, entry_, style_ in columnize(zip(hists,entries,styles),ncols):
+        if '$INT' in entry_: # add histogram integral in entry
+          intstr = "%+.1f"%hist_.Integral()
+          LOG.verb("Plot.drawlegend: Replace '$INT' with %r in %r"%(intstr,entry_),verbosity,3)
+          entry_ = entry_.replace('$INT',"%+.1f"%num)
+        if '$FRAC' in entry_ and hists[0].Integral()>0: # add relative difference in entry
+          num, den = hist_.Integral(), hists[0].Integral()
+          frac = "%+.1f%%"%(100.*(num/den-1.))
+          LOG.verb("Plot.drawlegend: Replace '$FRAC' with %r (num=%s, den=%s) in %r"%(frac,num,den,entry_),verbosity,3)
+          entry_ = entry_.replace('$FRAC',frac)
         for entry in entry_.split('\n'): # break lines
           LOG.verb("Plot.drawlegend: Add entry (%r,%r,%r)"%(hist_,entry,style_),verbosity,2)
           legend.AddEntry(hist_,entry,style_)
@@ -974,7 +993,7 @@ class Plot(object):
         line = maketitle(line)
       yline = y-i*theight*1.2*tsize
       latex.DrawLatex(x,yline,line)
-      LOG.verb("Plot.drawcornertext: i=%d, x=%.2f, y=%.2f, text=%r"%(i,x,yline,line),verbosity,2)
+      LOG.verb("Plot.drawtext: i=%d, x=%.2f, y=%.2f, text=%r"%(i,x,yline,line),verbosity,2)
     self.texts.append(latex)
     
     return latex
@@ -985,6 +1004,8 @@ class Plot(object):
     else draw later in Plot.draw on bottom."""
     if x1=='min': x1 = self.xmin
     if x2=='max': x2 = self.xmax
+    if y1=='min': y1 = self.ymin # if available after Plot.draw
+    if y2=='max': y2 = self.ymax # if available after Plot.draw
     pad  = kwargs.get('pad', 1 ) # 1: main, 2: ratio
     line = TGraph(2) #TLine(xmin,1,xmax,1)
     line.SetPoint(0,x1,y1)
