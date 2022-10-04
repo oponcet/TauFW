@@ -1,0 +1,117 @@
+imax    1 number of bins
+jmax    9 number of processes minus 1
+kmax    * number of nuisance parameters
+--------------------------------------------------------------------------------
+shapes * DM11 ztt_mt_m_vis_mtlt65_DeepTau.input-UL2018-13TeV.root DM11/$PROCESS DM11/$PROCESS_$SYSTEMATIC
+shapes ZTT DM11 ztt_mt_m_vis_mtlt65_DeepTau.input-UL2018-13TeV.root ztt:DM11_$PROCESS_morph 
+--------------------------------------------------------------------------------
+bin          DM11            
+observation  19485.0         
+--------------------------------------------------------------------------------
+bin                         DM11            DM11            DM11            DM11            DM11            DM11            DM11            DM11            DM11            DM11            
+process                     ZL              ZJ              W               VV              ST              TTT             TTL             TTJ             QCD             ZTT             
+process                     1               2               3               4               5               6               7               8               9               0               
+rate                        6.2501          272.36          3676.86         108.679         193.105         678.574         3.21914         301.731         1808.8          1               
+--------------------------------------------------------------------------------
+shape_dy            param 0 1
+QCD_bin_1_mt_DM11   shape   -               -               -               -               -               -               -               -               1               -               
+QCD_bin_2_mt_DM11   shape   -               -               -               -               -               -               -               -               1               -               
+QCD_bin_3_mt_DM11   shape   -               -               -               -               -               -               -               -               1               -               
+QCD_bin_4_mt_DM11   shape   -               -               -               -               -               -               -               -               1               -               
+QCD_bin_5_mt_DM11   shape   -               -               -               -               -               -               -               -               1               -               
+QCD_bin_6_mt_DM11   shape   -               -               -               -               -               -               -               -               1               -               
+QCD_bin_7_mt_DM11   shape   -               -               -               -               -               -               -               -               1               -               
+QCD_bin_8_mt_DM11   shape   -               -               -               -               -               -               -               -               1               -               
+ST_bin_1_mt_DM11    shape   -               -               -               -               1               -               -               -               -               -               
+ST_bin_2_mt_DM11    shape   -               -               -               -               1               -               -               -               -               -               
+ST_bin_3_mt_DM11    shape   -               -               -               -               1               -               -               -               -               -               
+ST_bin_4_mt_DM11    shape   -               -               -               -               1               -               -               -               -               -               
+ST_bin_5_mt_DM11    shape   -               -               -               -               1               -               -               -               -               -               
+ST_bin_6_mt_DM11    shape   -               -               -               -               1               -               -               -               -               -               
+ST_bin_7_mt_DM11    shape   -               -               -               -               1               -               -               -               -               -               
+ST_bin_8_mt_DM11    shape   -               -               -               -               1               -               -               -               -               -               
+TTJ_bin_1_mt_DM11   shape   -               -               -               -               -               -               -               1               -               -               
+TTJ_bin_2_mt_DM11   shape   -               -               -               -               -               -               -               1               -               -               
+TTJ_bin_3_mt_DM11   shape   -               -               -               -               -               -               -               1               -               -               
+TTJ_bin_4_mt_DM11   shape   -               -               -               -               -               -               -               1               -               -               
+TTJ_bin_5_mt_DM11   shape   -               -               -               -               -               -               -               1               -               -               
+TTJ_bin_6_mt_DM11   shape   -               -               -               -               -               -               -               1               -               -               
+TTJ_bin_7_mt_DM11   shape   -               -               -               -               -               -               -               1               -               -               
+TTJ_bin_8_mt_DM11   shape   -               -               -               -               -               -               -               1               -               -               
+TTL_bin_1_mt_DM11   shape   -               -               -               -               -               -               1               -               -               -               
+TTL_bin_2_mt_DM11   shape   -               -               -               -               -               -               1               -               -               -               
+TTL_bin_3_mt_DM11   shape   -               -               -               -               -               -               1               -               -               -               
+TTL_bin_4_mt_DM11   shape   -               -               -               -               -               -               1               -               -               -               
+TTL_bin_5_mt_DM11   shape   -               -               -               -               -               -               1               -               -               -               
+TTL_bin_6_mt_DM11   shape   -               -               -               -               -               -               1               -               -               -               
+TTL_bin_7_mt_DM11   shape   -               -               -               -               -               -               1               -               -               -               
+TTL_bin_8_mt_DM11   shape   -               -               -               -               -               -               1               -               -               -               
+TTT_bin_1_mt_DM11   shape   -               -               -               -               -               1               -               -               -               -               
+TTT_bin_2_mt_DM11   shape   -               -               -               -               -               1               -               -               -               -               
+TTT_bin_3_mt_DM11   shape   -               -               -               -               -               1               -               -               -               -               
+TTT_bin_4_mt_DM11   shape   -               -               -               -               -               1               -               -               -               -               
+TTT_bin_5_mt_DM11   shape   -               -               -               -               -               1               -               -               -               -               
+TTT_bin_6_mt_DM11   shape   -               -               -               -               -               1               -               -               -               -               
+TTT_bin_7_mt_DM11   shape   -               -               -               -               -               1               -               -               -               -               
+TTT_bin_8_mt_DM11   shape   -               -               -               -               -               1               -               -               -               -               
+VV_bin_1_mt_DM11    shape   -               -               -               1               -               -               -               -               -               -               
+VV_bin_2_mt_DM11    shape   -               -               -               1               -               -               -               -               -               -               
+VV_bin_3_mt_DM11    shape   -               -               -               1               -               -               -               -               -               -               
+VV_bin_4_mt_DM11    shape   -               -               -               1               -               -               -               -               -               -               
+VV_bin_5_mt_DM11    shape   -               -               -               1               -               -               -               -               -               -               
+VV_bin_6_mt_DM11    shape   -               -               -               1               -               -               -               -               -               -               
+VV_bin_7_mt_DM11    shape   -               -               -               1               -               -               -               -               -               -               
+VV_bin_8_mt_DM11    shape   -               -               -               1               -               -               -               -               -               -               
+W_bin_1_mt_DM11     shape   -               -               1               -               -               -               -               -               -               -               
+W_bin_2_mt_DM11     shape   -               -               1               -               -               -               -               -               -               -               
+W_bin_3_mt_DM11     shape   -               -               1               -               -               -               -               -               -               -               
+W_bin_4_mt_DM11     shape   -               -               1               -               -               -               -               -               -               -               
+W_bin_5_mt_DM11     shape   -               -               1               -               -               -               -               -               -               -               
+W_bin_6_mt_DM11     shape   -               -               1               -               -               -               -               -               -               -               
+W_bin_7_mt_DM11     shape   -               -               1               -               -               -               -               -               -               -               
+W_bin_8_mt_DM11     shape   -               -               1               -               -               -               -               -               -               -               
+ZJ_bin_1_mt_DM11    shape   -               1               -               -               -               -               -               -               -               -               
+ZJ_bin_2_mt_DM11    shape   -               1               -               -               -               -               -               -               -               -               
+ZJ_bin_3_mt_DM11    shape   -               1               -               -               -               -               -               -               -               -               
+ZJ_bin_4_mt_DM11    shape   -               1               -               -               -               -               -               -               -               -               
+ZJ_bin_5_mt_DM11    shape   -               1               -               -               -               -               -               -               -               -               
+ZJ_bin_6_mt_DM11    shape   -               1               -               -               -               -               -               -               -               -               
+ZJ_bin_7_mt_DM11    shape   -               1               -               -               -               -               -               -               -               -               
+ZJ_bin_8_mt_DM11    shape   -               1               -               -               -               -               -               -               -               -               
+ZL_bin_3_mt_DM11    shape   1               -               -               -               -               -               -               -               -               -               
+ZL_bin_4_mt_DM11    shape   1               -               -               -               -               -               -               -               -               -               
+ZL_bin_6_mt_DM11    shape   1               -               -               -               -               -               -               -               -               -               
+ZL_bin_7_mt_DM11    shape   1               -               -               -               -               -               -               -               -               -               
+ZL_bin_8_mt_DM11    shape   1               -               -               -               -               -               -               -               -               -               
+eff_m               lnN     1.02            1.02            1.02            1.02            1.02            1.02            1.02            1.02            -               1.02            
+lumi                lnN     1.025           1.025           1.025           1.025           1.025           1.025           1.025           1.025           -               1.025           
+norm_qcd            lnN     -               -               -               -               -               -               -               -               1.1             -               
+norm_wj             lnN     -               -               1.08            -               -               -               -               -               -               -               
+rate_jTauFake_DM11  lnN     -               1.15            1.15            -               -               -               -               1.15            1.15            -               
+shape_dy            shape   1               1               -               -               -               -               -               -               -               -               
+shape_jTauFake_DM11 shape   -               1               1               -               -               -               -               1               -               -               
+shape_mTauFakeSF    shape   1               -               -               -               -               -               1               -               -               -               
+shape_mTauFake_DM11 shape   1               -               -               -               -               -               1               -               -               -               
+xsec_dy             lnN     1.02            1.02            -               -               -               -               -               -               -               1.02            
+xsec_st             lnN     -               -               -               -               1.05            -               -               -               -               -               
+xsec_tt             lnN     -               -               -               -               -               1.06            1.06            1.06            -               -               
+xsec_vv             lnN     -               -               -               1.05            -               -               -               -               -               -               
+tid_SF_DM11         rateParam  *          ZTT        1
+ZTT_bin_1_mt_DM11   param 0 1
+ZTT_bin_2_mt_DM11   param 0 1
+ZTT_bin_3_mt_DM11   param 0 1
+ZTT_bin_4_mt_DM11   param 0 1
+ZTT_bin_5_mt_DM11   param 0 1
+ZTT_bin_6_mt_DM11   param 0 1
+ZTT_bin_7_mt_DM11   param 0 1
+ZTT_bin_8_mt_DM11   param 0 1
+all group = QCD_bin_1_mt_DM11 QCD_bin_2_mt_DM11 QCD_bin_3_mt_DM11 QCD_bin_4_mt_DM11 QCD_bin_5_mt_DM11 QCD_bin_6_mt_DM11 QCD_bin_7_mt_DM11 QCD_bin_8_mt_DM11 ST_bin_1_mt_DM11 ST_bin_2_mt_DM11 ST_bin_3_mt_DM11 ST_bin_4_mt_DM11 ST_bin_5_mt_DM11 ST_bin_6_mt_DM11 ST_bin_7_mt_DM11 ST_bin_8_mt_DM11 TTJ_bin_1_mt_DM11 TTJ_bin_2_mt_DM11 TTJ_bin_3_mt_DM11 TTJ_bin_4_mt_DM11 TTJ_bin_5_mt_DM11 TTJ_bin_6_mt_DM11 TTJ_bin_7_mt_DM11 TTJ_bin_8_mt_DM11 TTL_bin_1_mt_DM11 TTL_bin_2_mt_DM11 TTL_bin_3_mt_DM11 TTL_bin_4_mt_DM11 TTL_bin_5_mt_DM11 TTL_bin_6_mt_DM11 TTL_bin_7_mt_DM11 TTL_bin_8_mt_DM11 TTT_bin_1_mt_DM11 TTT_bin_2_mt_DM11 TTT_bin_3_mt_DM11 TTT_bin_4_mt_DM11 TTT_bin_5_mt_DM11 TTT_bin_6_mt_DM11 TTT_bin_7_mt_DM11 TTT_bin_8_mt_DM11 VV_bin_1_mt_DM11 VV_bin_2_mt_DM11 VV_bin_3_mt_DM11 VV_bin_4_mt_DM11 VV_bin_5_mt_DM11 VV_bin_6_mt_DM11 VV_bin_7_mt_DM11 VV_bin_8_mt_DM11 W_bin_1_mt_DM11 W_bin_2_mt_DM11 W_bin_3_mt_DM11 W_bin_4_mt_DM11 W_bin_5_mt_DM11 W_bin_6_mt_DM11 W_bin_7_mt_DM11 W_bin_8_mt_DM11 ZJ_bin_1_mt_DM11 ZJ_bin_2_mt_DM11 ZJ_bin_3_mt_DM11 ZJ_bin_4_mt_DM11 ZJ_bin_5_mt_DM11 ZJ_bin_6_mt_DM11 ZJ_bin_7_mt_DM11 ZJ_bin_8_mt_DM11 ZL_bin_3_mt_DM11 ZL_bin_4_mt_DM11 ZL_bin_6_mt_DM11 ZL_bin_7_mt_DM11 ZL_bin_8_mt_DM11 ZTT_bin_1_mt_DM11 ZTT_bin_2_mt_DM11 ZTT_bin_3_mt_DM11 ZTT_bin_4_mt_DM11 ZTT_bin_5_mt_DM11 ZTT_bin_6_mt_DM11 ZTT_bin_7_mt_DM11 ZTT_bin_8_mt_DM11 eff_m lumi norm_qcd norm_wj rate_jTauFake_DM11 shape_dy shape_jTauFake_DM11 shape_mTauFakeSF shape_mTauFake_DM11 xsec_dy xsec_st xsec_tt xsec_vv
+bin group = QCD_bin_1_mt_DM11 QCD_bin_2_mt_DM11 QCD_bin_3_mt_DM11 QCD_bin_4_mt_DM11 QCD_bin_5_mt_DM11 QCD_bin_6_mt_DM11 QCD_bin_7_mt_DM11 QCD_bin_8_mt_DM11 ST_bin_1_mt_DM11 ST_bin_2_mt_DM11 ST_bin_3_mt_DM11 ST_bin_4_mt_DM11 ST_bin_5_mt_DM11 ST_bin_6_mt_DM11 ST_bin_7_mt_DM11 ST_bin_8_mt_DM11 TTJ_bin_1_mt_DM11 TTJ_bin_2_mt_DM11 TTJ_bin_3_mt_DM11 TTJ_bin_4_mt_DM11 TTJ_bin_5_mt_DM11 TTJ_bin_6_mt_DM11 TTJ_bin_7_mt_DM11 TTJ_bin_8_mt_DM11 TTL_bin_1_mt_DM11 TTL_bin_2_mt_DM11 TTL_bin_3_mt_DM11 TTL_bin_4_mt_DM11 TTL_bin_5_mt_DM11 TTL_bin_6_mt_DM11 TTL_bin_7_mt_DM11 TTL_bin_8_mt_DM11 TTT_bin_1_mt_DM11 TTT_bin_2_mt_DM11 TTT_bin_3_mt_DM11 TTT_bin_4_mt_DM11 TTT_bin_5_mt_DM11 TTT_bin_6_mt_DM11 TTT_bin_7_mt_DM11 TTT_bin_8_mt_DM11 VV_bin_1_mt_DM11 VV_bin_2_mt_DM11 VV_bin_3_mt_DM11 VV_bin_4_mt_DM11 VV_bin_5_mt_DM11 VV_bin_6_mt_DM11 VV_bin_7_mt_DM11 VV_bin_8_mt_DM11 W_bin_1_mt_DM11 W_bin_2_mt_DM11 W_bin_3_mt_DM11 W_bin_4_mt_DM11 W_bin_5_mt_DM11 W_bin_6_mt_DM11 W_bin_7_mt_DM11 W_bin_8_mt_DM11 ZJ_bin_1_mt_DM11 ZJ_bin_2_mt_DM11 ZJ_bin_3_mt_DM11 ZJ_bin_4_mt_DM11 ZJ_bin_5_mt_DM11 ZJ_bin_6_mt_DM11 ZJ_bin_7_mt_DM11 ZJ_bin_8_mt_DM11 ZL_bin_3_mt_DM11 ZL_bin_4_mt_DM11 ZL_bin_6_mt_DM11 ZL_bin_7_mt_DM11 ZL_bin_8_mt_DM11 ZTT_bin_1_mt_DM11 ZTT_bin_2_mt_DM11 ZTT_bin_3_mt_DM11 ZTT_bin_4_mt_DM11 ZTT_bin_5_mt_DM11 ZTT_bin_6_mt_DM11 ZTT_bin_7_mt_DM11 ZTT_bin_8_mt_DM11
+eff group = eff_m
+jtf group = rate_jTauFake_DM11 shape_jTauFake_DM11
+ltf group = shape_mTauFakeSF shape_mTauFake_DM11
+lumi group = lumi
+norm group = lumi norm_qcd
+sys group = eff_m lumi norm_qcd norm_wj rate_jTauFake_DM11 shape_dy shape_jTauFake_DM11 shape_mTauFakeSF shape_mTauFake_DM11 xsec_dy xsec_st xsec_tt xsec_vv
+xsec group = xsec_dy xsec_st xsec_tt xsec_vv
+zpt group = shape_dy

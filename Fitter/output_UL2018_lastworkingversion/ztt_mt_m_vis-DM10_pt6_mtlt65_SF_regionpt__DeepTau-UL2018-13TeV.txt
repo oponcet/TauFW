@@ -1,0 +1,39 @@
+imax    1 number of bins
+jmax    9 number of processes minus 1
+kmax    * number of nuisance parameters
+--------------------------------------------------------------------------------
+shapes data_obs DM10_pt6 ztt_mt_m_vis-DM10_pt6_mtlt65_SF_regionpt__DeepTau.input-UL2018-13TeV.root ztt:DM10_pt6_data_obs 
+shapes * DM10_pt6 ztt_mt_m_vis-DM10_pt6_mtlt65_SF_regionpt__DeepTau.input-UL2018-13TeV.root ztt:DM10_pt6_$PROCESS_morph 
+--------------------------------------------------------------------------------
+bin          DM10_pt6        
+observation  4497.0          
+--------------------------------------------------------------------------------
+bin                             DM10_pt6        DM10_pt6        DM10_pt6        DM10_pt6        DM10_pt6        DM10_pt6        DM10_pt6        DM10_pt6        DM10_pt6        DM10_pt6        
+process                         ZL              ZJ              W               VV              ST              TTT             TTL             TTJ             QCD             ZTT             
+process                         1               2               3               4               5               6               7               8               9               0               
+rate                            1               1               1               1               1               1               1               1               1               1               
+--------------------------------------------------------------------------------
+eff_m                   lnN     1.02            1.02            1.02            1.02            1.02            1.02            1.02            1.02            -               1.02            
+lumi                    lnN     1.025           1.025           1.025           1.025           1.025           1.025           1.025           1.025           -               1.025           
+norm_qcd                lnN     -               -               -               -               -               -               -               -               1.1             -               
+norm_wj                 lnN     -               -               1.08            -               -               -               -               -               -               -               
+rate_jTauFake_DM10_pt6  lnN     -               1.15            1.15            -               -               -               -               1.15            1.15            -               
+xsec_dy                 lnN     1.02            1.02            -               -               -               -               -               -               -               1.02            
+xsec_st                 lnN     -               -               -               -               1.05            -               -               -               -               -               
+xsec_tt                 lnN     -               -               -               -               -               1.06            1.06            1.06            -               -               
+xsec_vv                 lnN     -               -               -               1.05            -               -               -               -               -               -               
+tid_SF_pt6              rateParam  *          ZTT        1
+shape_dy                param 0 1
+shape_jTauFake_DM10_pt6 param 0 1
+shape_mTauFakeSF        param 0 1
+shape_mTauFake_DM10_pt6 param 0 1
+DM10_pt6 autoMCStats 0 1 1
+all group = eff_m lumi norm_qcd norm_wj rate_jTauFake_DM10_pt6 shape_dy shape_jTauFake_DM10_pt6 shape_mTauFakeSF shape_mTauFake_DM10_pt6 xsec_dy xsec_st xsec_tt xsec_vv
+eff group = eff_m
+jtf group = rate_jTauFake_DM10_pt6 shape_jTauFake_DM10_pt6
+ltf group = shape_mTauFakeSF shape_mTauFake_DM10_pt6
+lumi group = lumi
+norm group = lumi norm_qcd
+sys group = eff_m lumi norm_qcd norm_wj rate_jTauFake_DM10_pt6 shape_dy shape_jTauFake_DM10_pt6 shape_mTauFakeSF shape_mTauFake_DM10_pt6 xsec_dy xsec_st xsec_tt xsec_vv
+xsec group = xsec_dy xsec_st xsec_tt xsec_vv
+zpt group = shape_dy
