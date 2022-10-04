@@ -139,8 +139,8 @@ if args.option == '6': #generate the datacards and do the fit
 # TES scan in simultanoeus region and combien fit of TES and TID SF : TES in DM
 if args.option != '5' :
     # Generating datacards
-    #os.system("./TauES/harvestDatacards_TES_idSF.py -y %s -c %s -e %s "%(args.era,args.config,EXTRATAG)) # Generating the datacards
-    os.system("./TauES/harvestDatacards_TES_idSF_bin.py -y %s -c %s -e %s "%(args.era,args.config,EXTRATAG)) # Generating the datacards
+    os.system("./TauES/harvestDatacards_TES_idSF.py -y %s -c %s -e %s "%(args.era,args.config,EXTRATAG)) # Generating the datacards
+    #os.system("./TauES/harvestDatacards_TES_idSF_bin.py -y %s -c %s -e %s "%(args.era,args.config,EXTRATAG)) # Generating the datacards
     for v in setup["observables"]:
         print("Observable : "+v)
         variable = setup["observables"][v]
@@ -157,8 +157,8 @@ if args.option != '5' :
                 POI = "tes_%s" % (r)
                 print(">>>>>>> tes_"+r+" fit")
                 POI_OPTS = "-P %s  --setParameterRanges %s=%s:tid_SF_%s=0.9,1.1 -m 90 --setParameters r=1,%s=1 --freezeParameters r " % (POI, POI, RANGE, r, POI)  # tes_DM
-                os.system("text2workspace.py output_%s/ztt_%s.txt" %(args.era, BINLABEL))
-                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all --trackParameters tid_SF_%s" %(WORKSPACE, ALGO, POI_OPTS, BINLABEL, FIT_OPTS, XRTD_OPTS, CMIN_OPTS, r))
+                #os.system("text2workspace.py output_%s/ztt_%s.txt" %(args.era, BINLABEL))
+                #os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all --trackParameters tid_SF_%s" %(WORKSPACE, ALGO, POI_OPTS, BINLABEL, FIT_OPTS, XRTD_OPTS, CMIN_OPTS, r))
 
             if args.option == '2':  # fit of tid_SF_DM
                 POI = "tid_SF_%s" % (r)
@@ -214,15 +214,15 @@ if args.option != '5' :
 
 
 
-os.system("mv higgsCombine*root output_%s" % args.era)
+##os.system("mv higgsCombine*root output_%s" % args.era)
 
 
 if args.option == '2' :
     os.system("./TauES/plotParabola_POI.py -p tid_SF -y %s -e %s -r %s,%s -s -a -c %s"% (args.era, EXTRATAG, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), args.config))
 
 
-if args.option == '1' or args.option == '4' :
-    os.system("./TauES/plotParabola_TES.py -y %s -e %s -r %s,%s -s -a -c %s" % (args.era, EXTRATAG,min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), args.config))
+#if args.option == '1' or args.option == '4' :
+#    os.system("./TauES/plotParabola_TES.py -y %s -e %s -r %s,%s -s -a -c %s" % (args.era, EXTRATAG,min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), args.config))
 #    os.system("./TauES/plotPostFitScan_TES.py -y %s -e %s -r %s,%s -c %s" %(args.era,EXTRATAG,min(setup["TESvariations"]["values"]),max(setup["TESvariations"]["values"]),args.config))
 
 if args.option == '6' :
