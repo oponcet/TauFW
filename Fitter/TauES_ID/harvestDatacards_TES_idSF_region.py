@@ -8,8 +8,6 @@ import CombineHarvester.CombineTools.ch as ch
 from CombineHarvester.CombineTools.ch import CombineHarvester, MassesFromRange, SystMap, BinByBinFactory, CardWriter, SetStandardBinNames, AutoRebin
 import CombineHarvester.CombinePdfs.morphing as morphing
 from CombineHarvester.CombinePdfs.morphing import BuildRooMorphing
-from CombineHarvester.CombinePdfs.morphing import BuildCMSHistFuncFactory
-
 import ROOT
 from ROOT import RooWorkspace, TFile, RooRealVar
 
@@ -57,12 +55,11 @@ def harvest(setup, year, obs, **kwargs):
     tesshifts = [ "%.3f"%tes for tes in setup["TESvariations"]["values"] ]
 
     harvester = CombineHarvester()
-    harvester.SetFlag('workspaces-use-clone',True) #fixes a RooFit bug that stops RooDataHist being copied correctly
-    harvester.AddObservations(['1'], [analysis], [era], [channel], cats)
-    harvester.AddProcesses(['1'], [analysis], [era], [channel], backgrounds, cats, False)
+    harvester.AddObservations(['*'], [analysis], [era], [channel], cats)
+    harvester.AddProcesses(['*'], [analysis], [era], [channel], backgrounds, cats, False)
     # CAVEAT: Assume we always want to fit TES as POI; if running for mumu channel, everything will be bkg
     harvester.AddProcesses(tesshifts, [analysis], [era], [channel], signals, cats, True)
-    
+
     # FILTER ## CAVEAT!!! potentially needed to not add zero backgrounds
     #filterDM10      = [ 'STL', 'TTL', 'ZL' ]
     #if filterDM10:
@@ -70,16 +67,18 @@ def harvest(setup, year, obs, **kwargs):
     
     # NUISSANCE PARAMETERS
     print green("\n>>> defining nuissance parameters ...")
-     
+    
     if "systematics" in setup:
       for sys in setup["systematics"]:
         sysDef = setup["systematics"][sys]
-        scaleFactor = 1.0 
-        if "scaleFactor" in sysDef: 
+        scaleFactor = 1.0  
+        if "scaleFactor" in sysDef:
           scaleFactor = sysDef["scaleFactor"]
         harvester.cp().process(sysDef["processes"]).AddSyst(harvester, sysDef["name"] if "name" in sysDef else sys, sysDef["effect"], SystMap()(scaleFactor))
- 
-   
+        harvester.cp().signals().AddSyst(harvester, 'tid_SF_$BIN','rateParam', SystMap()(1.00))
+        #print sysDef
+
+
     # EXTRACT SHAPES
     print green(">>> extracting shapes...")
     filename = "%s/%s_%s_tes_%s.inputs-%s%s.root"%(indir,analysis,channel,obs,era,tag)
@@ -88,59 +87,87 @@ def harvest(setup, year, obs, **kwargs):
     ## Could be revised if wanting to leave the possibility to do other variations or fit normalisation (e.g. for combined TES & ID SF fit)
     harvester.cp().channel([channel]).backgrounds().ExtractShapes(filename, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
     harvester.cp().channel([channel]).signals().ExtractShapes(filename, "$BIN/$PROCESS_TES$MASS", "$BIN/$PROCESS_TES$MASS_$SYSTEMATIC")
-    #harvester.cp().channel([channel]).process(['proc1','proc2']).ExtractShapes( filename, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
+    #harvester.cp().channel([channel]).process(sysDef["processes"]).ExtractShapes( filename, "$BIN/$PROCESS_SF", "$BIN/$PROCESS_$SYSTEMATIC_SF") ###change
+   
+
+
+    # AUTOREBIN
+    #print green(">>> automatically rebin (30%)...")
+    #rebin = AutoRebin().SetBinThreshold(0.).SetBinUncertFraction(0.30).SetRebinMode(1).SetPerformRebin(True).SetVerbosity(1)
+    #rebin.Rebin(harvester,harvester)
     
     # BINS
     print green(">>> generating unique bin names...")
     bins = harvester.bin_set() # categories
     #SetStandardBinNames(harvester,"%s_$BINID_$ERA"%(obs))
+
+    # for bin in bins:
+    #   listbin = bin.split("_")
+    #   tid_name = "tid_SF_%s"%(listbin[1])
+    #   harvester.cp().signals().AddSyst(harvester, tid_name,'rateParam', SystMap()(1.00))
     
-    ## Bin-by-bin uncertainties
-    #if "fitSpecs" in setup and "doBBB" in setup["fitSpecs"] and setup["fitSpecs"]["doBBB"] != "":
-    #  print green(">>> generating bbb uncertainties...")
-    #  procsBBB = []
-    #  if ( "signalBBB" in setup["fitSpecs"] and setup["fitSpecs"]["signalBBB"]):
-    #      procsBBB += signals
-    #  if ( "backgroundBBB" in setup["fitSpecs"] and setup["fitSpecs"]["backgroundBBB"]):
-    #      procsBBB += backgrounds
-    #  bbb = BinByBinFactory()
-    #  bbb.SetAddThreshold(0.0)
-    #  bbb.SetFixNorm(False)
-    #  bbb.SetPattern("$PROCESS_bin_$#_$CHANNEL_$BIN")
-    #  bbb.AddBinByBin(harvester.cp().process(procsBBB), harvester)
+    harvester.PrintSysts()
+
+
+
+
+
+    # Bin-by-bin uncertainties
+    if "fitSpecs" in setup and "doBBB" in setup["fitSpecs"] and setup["fitSpecs"]["doBBB"] != "":
+      print green(">>> generating bbb uncertainties...")
+      procsBBB = []
+      if ( "signalBBB" in setup["fitSpecs"] and setup["fitSpecs"]["signalBBB"]):
+          procsBBB += signals
+      if ( "backgroundBBB" in setup["fitSpecs"] and setup["fitSpecs"]["backgroundBBB"]):
+          procsBBB += backgrounds
+      bbb = BinByBinFactory()
+      bbb.SetAddThreshold(0.0)
+      bbb.SetFixNorm(True) 
+      bbb.SetPattern("$PROCESS_bin_$#_$CHANNEL_$BIN")
+      bbb.AddBinByBin(harvester.cp().process(procsBBB), harvester)
     
     # ROOVAR
-    #pois = []
-    #if multiDimFit:
-    #  for bin in bins:
-    #    tesname = "tes_%s"%(bin)
-    #    tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"])#)
-    #     tes.setConstant(True)
-    #     pois.append(tes)
+    pois = []
+    workspace = RooWorkspace(analysis,analysis)
+    # if multiDimFit:
+    for bin in bins:
+      listbin = bin.split("_")
+      #tesname = "tes_%s"%(listbin[0])
+      tesname = "tes_%s"%(bin)
+
+      print tesname
+      tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
+      tes.setConstant(True)
+      pois.append(tes)
     # else:
     #   tes = RooRealVar('tes','tes', min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
     #   tes.setConstant(True)
     #   pois = [tes]*len(bins)
-
-    workspace = RooWorkspace(analysis,analysis)
-    tes = RooRealVar('tes','tes', min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
-    tes.setConstant(True)
+    # id_SF = RooRealVar('id_SF','id_SF', 0.8, 1.2) ###change
+    # pois.append(id_SF) ###
     
     # MORPHING
     print green(">>> morphing...")
-    BuildCMSHistFuncFactory(workspace, harvester, tes)
+    debugdir  = ensureDirectory("debug")
+    debugfile = TFile("%s/morph_debug_%s_%s_%s%s.root"%(debugdir,year,channel,obs,outtag), 'RECREATE')
+    verboseMorph = verbosity>0
+    for bin, poi in zip(bins,pois):
+      print '>>>   bin "%s"...'%(bin)
+      for proc in setup["TESvariations"]["processes"]:
+        print ">>>   bin %s, proc %s"%(bin,proc)
+        BuildRooMorphing(workspace, harvester, bin, proc, poi, 'norm', True, verboseMorph, False, debugfile) ###change
+    debugfile.Close()
     
-    workspace.Print()
     # EXTRACT PDFs
     print green(">>> add workspace and extract pdf...")
     harvester.AddWorkspace(workspace, False)
-    harvester.ExtractData("ztt", "$BIN_data_obs")  # Extract the RooDataHist
-    harvester.ExtractPdfs(harvester, "ztt", "$BIN_$PROCESS_morph", "")  # Extract all processes (signal and bkg are named the same way)
-    harvester.SetAutoMCStats(harvester, 0, 1, 1) # Set the autoMCStats line (with -1 = no actual uncertainties)
-
+    harvester.cp().process(setup["TESvariations"]["processes"]).ExtractPdfs(harvester, analysis, "$BIN_$PROCESS_morph", "")
+    
     # NUISANCE PARAMETER GROUPS
-    ## To do: export to config file
+    # To do: export to config file
     print green(">>> setting nuisance parameter groups...")
+    harvester.SetGroup('all', [ ".*"           ])
+    harvester.SetGroup('sys', [ "^((?!bin).)*$"]) # everything except bin-by-bin
     harvester.SetGroup( 'bin',      [ ".*_bin_.*"        ])
     harvester.SetGroup( 'lumi',     [ ".*lumi"           ])
     harvester.SetGroup( 'eff',      [ ".*eff_.*"         ])
@@ -168,7 +195,7 @@ def harvest(setup, year, obs, **kwargs):
     datacardroot = "$TAG/$ANALYSIS_$CHANNEL_%s%s.input-$ERA.root"%(obs,outtag)
     writer = CardWriter(datacardtxt,datacardroot)
     writer.SetVerbosity(verbosity)
-    writer.SetWildcardMasses([])
+    writer.SetWildcardMasses([ ])
     writer.WriteCards(outdir, harvester)
     
     # REPLACE bin ID by bin name
@@ -181,7 +208,7 @@ def harvest(setup, year, obs, **kwargs):
       else:
         print '>>> Warning! "%s" does not exist!'%(oldfilename)
     
-def scaleProcess(process,scale):
+def scaleProcess(process,scale): 
   """Help function to scale a given process."""
   process.set_rate(process.rate()*scale)
   

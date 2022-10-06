@@ -111,7 +111,7 @@ def main(args):
         print "Variation: TES = %f"%var
 
         newsampleset = sampleset.shift(setup["TESvariations"]["processes"], ("_TES%.3f"%var).replace(".","p"), "_TES%.3f"%var, " %.1d"%((1.-var)*100.)+"% TES", split=True,filter=False,share=True)
-        createinputs(fname,newsampleset, observables, bins, filter=setup["TESvariations"]["processes"], dots=True, recreate=True)
+        createinputs(fname,newsampleset, observables, bins, filter=setup["TESvariations"]["processes"], dots=True, recreate=False)
         newsampleset.close()
 
     if "systematics" in setup:

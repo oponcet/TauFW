@@ -13,7 +13,6 @@
 #include "TAxis.h"
 #include "RooStats/ModelConfig.h"
 #include <fstream>
-#include "CMSStyle.h"
 
 double z_min(TGraph2D *g) //find the minimun of the likelihood scan 
 {

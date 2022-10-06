@@ -124,7 +124,7 @@ def drawVariations(setup, filename,dirname,samples,variations,**kwargs):
   xmax     = kwargs.get('xmax',     None     )
   rmin     = kwargs.get('rmin',     None     )
   rmax     = kwargs.get('rmax',     None     )
-  outdir   = kwargs.get('outdir',   "shapes" )
+  outdir   = kwargs.get('outdir',   "../plots/shapes" )
   position = kwargs.get('position', 'right'  )
   text     = kwargs.get('text',     ""       )
   if not islist(samples): samples = [samples]
@@ -333,7 +333,7 @@ def main(args):
     lumi        = 36.5 if year=='2016' else 41.4 if (year=='2017' or year=='UL2017') else 59.5 if (year=='2018' or year=='UL2018') else 19.5 if year=='UL2016_preVFP' else 16.8
     era         = '%s-13TeV'%year
     indir       = "input"
-    outdir      = "shapes_%s"%year
+    outdir      = "../plots/shapes_%s"%year
     stackoutdir = "control_%s"%year
     analysis    = 'ztt'
 

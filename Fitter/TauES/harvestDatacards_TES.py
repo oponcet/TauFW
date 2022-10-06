@@ -22,7 +22,7 @@ def harvest(setup, year, obs, **kwargs):
     era         = kwargs.get('era',        '%s-13TeV'%year  )
     analysis    = kwargs.get('analysis',   'ztt'            )
     indir       = kwargs.get('indir',      'input_%s'%year  )
-    outdir      = kwargs.get('outdir',     'output_%s'%year )
+    outdir      = kwargs.get('outdir',     'output/output_%s'%year )
     multiDimFit = kwargs.get('multiDimFit')
     verbosity   = kwargs.get('verbosity')
     outtag      = tag+extratag
