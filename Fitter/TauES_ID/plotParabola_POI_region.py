@@ -5,6 +5,7 @@
 # Add POI parameter (ex: tes, tid_SF) 
 
 import os, sys, re, glob, time
+from unittest import result
 import numpy, copy
 from array import array
 from argparse import ArgumentParser
@@ -28,8 +29,8 @@ CMSStyle.setTDRStyle()
 def plotParabola(setup,var,region,year,**kwargs):
     print green("plot parabola for %s, %s"%(region, var),pre="\n>>> ")
     
-    indir        = kwargs.get('indir',       "output/output_%s"%year )
-    outdir       = kwargs.get('outdir',      "plots/plots_%s"%year  )
+    indir        = kwargs.get('indir',       "output_%s"%year )
+    outdir       = kwargs.get('outdir',      "plots_%s"%year  )
     tag          = kwargs.get('tag',         ""               )
     plottag      = kwargs.get('plottag',     ""               )
     MDFslices    = kwargs.get('MDFslices',   None             )
@@ -56,7 +57,6 @@ def plotParabola(setup,var,region,year,**kwargs):
     print '>>>   file "%s"'%(filename)
     file = ensureTFile(filename)
     tree = file.Get('limit')
-    print poi
     # GET DeltaNLL
     list_nll = [ ]
     list_poi = [ ]
@@ -154,6 +154,12 @@ def plotParabola(setup,var,region,year,**kwargs):
     fontsize     = 0.044
     lineheight   = 0.05
     xtext, ytext = 0.90, 0.405
+    if poi == 'tid_SF':
+      title = "tau id scale factor"
+    elif poi == 'tes':
+      title = "tau energy scale"
+    else:
+      title = "parameter of interest"
     frame = canvas.DrawFrame(xmin,ymin,xmax,ymax)
     frame.GetYaxis().SetTitleSize(0.055)
     frame.GetXaxis().SetTitleSize(0.055)
@@ -163,7 +169,7 @@ def plotParabola(setup,var,region,year,**kwargs):
     frame.GetXaxis().SetTitleOffset(1.04)
     frame.GetYaxis().SetTitleOffset(1.02)
     frame.GetXaxis().SetNdivisions(508)
-    frame.GetXaxis().SetTitle('tau energy scale')
+    frame.GetXaxis().SetTitle(title)
     frame.GetYaxis().SetTitle('-2#Deltaln(L)')
     
     # GRAPH
@@ -270,8 +276,8 @@ def plotParabolaMDF(setup,var,year,**kwargs):
     """Plot multidimensional parabola."""
     print green("plot multidimensional parabola for %s"%(var),pre="\n>>> ")
     
-    indir      = kwargs.get('indir',      "output/output_%s"%year )
-    outdir     = kwargs.get('outdir',     "plots/plots_%s"%year  )
+    indir      = kwargs.get('indir',      "output_%s"%year )
+    outdir     = kwargs.get('outdir',     "plots_%s"%year  )
     poi          = kwargs.get('poi',       ""              )
     tag        = kwargs.get('tag',        ""               )
     nnlmin     = kwargs.get('nnlmin',     0                )
@@ -292,7 +298,7 @@ def plotParabolaMDF(setup,var,year,**kwargs):
     for poi1, poi2 in combinations(pois,2):
       
       if len(pois)>2:
-        canvasname = "plots/plots_%s/parabola_poi_%s_%s-%s_%s-%s%s"%(year,channel,var,"MDF",poi1,poi2,tag)
+        canvasname = "plots_%s/parabola_poi_%s_%s-%s_%s-%s%s"%(year,channel,var,"MDF",poi1,poi2,tag)
         canvasname = canvasname.replace('poi_DM','DM')
       
       graph = TGraph2D()
@@ -509,7 +515,7 @@ def findMultiDimSlices(channel,var,**kwargs):
     dictionary of the corresponding values of POI's."""
     year     = kwargs.get('year', "")
     tag      = kwargs.get('tag', "" )
-    indir    = kwargs.get('indir',       "output/output_%s"%year )
+    indir    = kwargs.get('indir',       "output_%s"%year )
     filename = '%s/higgsCombine.%s_%s-%s%s-%s-13TeV.MultiDimFit.mH90.root'%(indir,channel,var,'MDF',tag,year)
     file     = ensureTFile(filename)
     tree     = file.Get('limit')
@@ -530,7 +536,7 @@ def findMultiDimSlices(channel,var,**kwargs):
 
 
 def measurepoi(filename,unc=False,fit=False,asymmetric=True,**kwargs):
-    region = kwargs.get('plotRegions', "")
+    region = kwargs.get('scanRegions', "")
     """Create TGraph of DeltaNLL parabola vs. poi from MultiDimFit file."""
     if fit:
        return measurepoi_fit(filename,asymmetric=asymmetric,unc=unc)
@@ -654,10 +660,10 @@ def plotMeasurements(setup, measurements,binsOrder,**kwargs):
                  [(1.010,0.010,0.004),(0.992,0.002,0.008)]]
          ents = [ "m_tau", "m_vis" ]
     """
-    
     npoints      = len(measurements)
     minB         = 0.13
     colors       = [ kBlack, kBlue, kRed, kOrange, kGreen, kMagenta ]
+    poi          = kwargs.get('poi',          ""                  )
     title        = kwargs.get('title',       ""                   )
     text         = kwargs.get('text',        ""                   )
     ctext        = kwargs.get('ctext',       ""                   ) # corner text
@@ -801,7 +807,12 @@ def plotMeasurements(setup, measurements,binsOrder,**kwargs):
       xtext  = xmin-0.02*(xmax-xmin)
     for i, name in enumerate(binsOrder):
       ytext = i+0.5
-      text = setup["plotRegions"][name]["title"] if "title" in setup["plotRegions"][name] else name
+      if poi == "tes":
+        text = setup["tesRegions"][name]["title"] if "title" in setup["tesRegions"][name] else name
+      elif poi == "tid_SF":
+        text = setup["tid_SFRegions"][name]["title"] if "title" in setup["tid_SFRegions"][name] else name
+      else:
+        text = setup["regions"][name]["title"] if "title" in setup["regions"][name] else name     
       latex.DrawLatex(xtext,ytext,text)
     
     CMSStyle.setCMSLumiStyle(canvas,0)
@@ -1011,8 +1022,8 @@ def main(args):
     poi           = args.poi
     year          = args.year
     lumi          = 36.5 if year=='2016' else 41.4 if (year=='2017' or year=='UL2017') else 59.5 if (year=='2018' or year=='UL2018') else 19.5 if year=='UL2016_preVFP' else 16.8
-    indir         = "output/output_%s"%year
-    outdir        = "plots/plots_%s"%year
+    indir         = "output_%s"%year
+    outdir        = "plots_%s"%year
     breakdown     = args.breakdown
     multiDimFit   = args.multiDimFit
     summary       = args.summary
@@ -1044,11 +1055,11 @@ def main(args):
                     allObsTitles.append(var["title"])
                 else:
                     allObsTitles.append(v)
-        for r in setup["plotRegions"]:
+        for r in setup["plottingOrder"]:
             print r
-            isUsedInFit = True #change to true
+            isUsedInFit = False #change to true
             for v in setup["observables"]:
-                if r in setup["observables"][v]["plotRegions"]:
+                if r in setup["observables"][v]["scanRegions"]:
                     isUsedInFit = True
                     break
             if isUsedInFit and not r in allRegions:
@@ -1066,7 +1077,7 @@ def main(args):
             print allRegions
             # LOOP over regions
             for i, region in enumerate(allRegions):
-                if not region in variable["plotRegions"]:
+                if not region in variable["scanRegions"]:
                     if len(points)<=i: points.append([ ]); points_fit.append([ ])
                     points[i].append(None); points_fit[i].append(None)
                     continue
@@ -1104,7 +1115,7 @@ def main(args):
             measurements = readMeasurement(canvas)
 
             #plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=min(setup["TESvariations"]["values"]),xmax=max(setup["TESvariations"]["values"]),L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'])
-            plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=0.7,xmax=1.05,L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'])
+            plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=0.7,xmax=1.05,L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'], poi=poi)
 
        
 
@@ -1127,7 +1138,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--summary',     dest='summary', default=False, action='store_true', help="make summary of measurements")
     parser.add_argument(      '--custom',      dest='customSummary', nargs='*', default=False, action='store',help="make custom summary of measurements")
     parser.add_argument('-v', '--verbose',     dest='verbose',  default=False, action='store_true', help="set verbose")
-    parser.add_argument('-p', '--poi',     dest='poi', default='poi', type=str, action='store', help='use this parameter of interest')
+    parser.add_argument('-p', '--poi',         dest='poi', default='poi', type=str, action='store', help='use this parameter of interest')
 
     args = parser.parse_args()
     

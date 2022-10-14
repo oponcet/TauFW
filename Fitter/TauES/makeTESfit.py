@@ -37,9 +37,9 @@ for v in setup["observables"]:
         POI_OPTS="-P tes_%s --setParameterRanges tes_%s=%s -m 90 --setParameters r=1,tes_%s=1 --freezeParameters r " %(r,r,RANGE,r)
         #POI_OPTS="-P tes --setParameterRanges tes=%s -m 90 --setParameters r=1,tes=1 --freezeParameters r " %(RANGE)
         BINLABEL="mt_"+v+"-"+r+setup["tag"]+EXTRATAG+"-"+args.era+"-13TeV"
-        os.system("text2workspace.py output/output_%s/ztt_%s.txt"%(args.era,BINLABEL))
+        os.system("text2workspace.py output_%s/ztt_%s.txt"%(args.era,BINLABEL))
 
-        WORKSPACE="output/output_"+args.era+"/ztt_"+BINLABEL+".root" 
+        WORKSPACE="output_"+args.era+"/ztt_"+BINLABEL+".root" 
         os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all"%(WORKSPACE,ALGO,POI_OPTS,BINLABEL,FIT_OPTS,XRTD_OPTS,CMIN_OPTS))
         #os.system("combine -M GenerateOnly -t -1 --saveToys --setParameterRanges tes=%s -m 90 --setParameters r=1,tes=1 --freezeParameters r --freezeNuisanceGroups=all %s -n .%s "%(RANGE,WORKSPACE,BINLABEL))
 
@@ -55,11 +55,11 @@ for v in setup["observables"]:
 #         # os.system("combineTool.py -M Impacts -t -1 -n %s -d %s %s  --redefineSignalPOIs tes %s %s %s --doInitialFit"%(BINLABEL, WORKSPACE, FIT_OPTS, POI_OPTS, XRTD_OPTS, CMIN_OPTS))
 #         # os.system("combineTool.py -M Impacts -t -1 -n %s -d %s %s  --redefineSignalPOIs tes %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, FIT_OPTS, POI_OPTS, XRTD_OPTS, CMIN_OPTS))
 #         # os.system("combineTool.py -M Impacts -t -1 -n %s -d %s %s  --redefineSignalPOIs tes %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE, FIT_OPTS, POI_OPTS, XRTD_OPTS, CMIN_OPTS, BINLABEL))
-#         # os.system("plotImpacts.py -i plots/postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
-#         # os.system("convert -density 160 -trim plots/postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
+#         # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
+#         # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
 
 
-os.system("mv higgsCombine*root output/output_%s"%args.era)
+os.system("mv higgsCombine*root output_%s"%args.era)
 
 
 os.system("./TauES/plotParabola_TES.py -y %s -e %s -r %s,%s -s -a -c %s"%(args.era,EXTRATAG,min(setup["TESvariations"]["values"]),max(setup["TESvariations"]["values"]),args.config))

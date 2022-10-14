@@ -25,8 +25,8 @@ CMSStyle.setTDRStyle()
 def plotParabola(setup,var,region,year,**kwargs):
     print green("plot parabola for %s, %s"%(region, var),pre="\n>>> ")
     
-    indir        = kwargs.get('indir',       "./output/output_%s"%year )
-    outdir       = kwargs.get('outdir',      "./plots/plots_%s"%year  )
+    indir        = kwargs.get('indir',       "output_%s"%year )
+    outdir       = kwargs.get('outdir',      "plots_%s"%year  )
     tag          = kwargs.get('tag',         ""               )
     plottag      = kwargs.get('plottag',     ""               )
     MDFslices    = kwargs.get('MDFslices',   None             )
@@ -264,8 +264,8 @@ def plotParabolaMDF(setup,var,year,**kwargs):
     """Plot multidimensional parabola."""
     print green("plot multidimensional parabola for %s"%(var),pre="\n>>> ")
     
-    indir      = kwargs.get('indir',      "./output/output_%s"%year )
-    outdir     = kwargs.get('outdir',     "./plots/plots_%s"%year  )
+    indir      = kwargs.get('indir',      "output_%s"%year )
+    outdir     = kwargs.get('outdir',     "plots_%s"%year  )
     tag        = kwargs.get('tag',        ""               )
     nnlmin     = kwargs.get('nnlmin',     0                )
     MDFslices  = kwargs.get('MDFslices', { }               )
@@ -502,7 +502,7 @@ def findMultiDimSlices(channel,var,**kwargs):
     dictionary of the corresponding values of POI's."""
     year     = kwargs.get('year', "")
     tag      = kwargs.get('tag', "" )
-    indir    = kwargs.get('indir',       "./output/output_%s"%year )
+    indir    = kwargs.get('indir',       "output_%s"%year )
     filename = '%s/higgsCombine.%s_%s-%s%s-%s-13TeV.MultiDimFit.mH90.root'%(indir,channel,var,'MDF',tag,year)
     file     = ensureTFile(filename)
     tree     = file.Get('limit')
@@ -1003,8 +1003,8 @@ def main(args):
     verbosity     = args.verbose
     year          = args.year
     lumi          = 36.5 if year=='2016' else 41.4 if (year=='2017' or year=='UL2017') else 59.5 if (year=='2018' or year=='UL2018') else 19.5 if year=='UL2016_preVFP' else 16.8
-    indir         = "./output/output_%s"%year
-    outdir        = "./plots/plots_%s"%year
+    indir         = "output_%s"%year
+    outdir        = "plots_%s"%year
     breakdown     = args.breakdown
     multiDimFit   = args.multiDimFit
     summary       = args.summary

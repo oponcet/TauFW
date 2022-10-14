@@ -38,6 +38,27 @@ regions:
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}"
 
 plottingOrder: ["DM11", "DM10","DM1", "DM0"]
+plotRegions: ["DM0", "DM1", "DM10", "DM11"]
+
+tesRegions:
+    DM0: 
+        title: "h^{#pm}"
+    DM1: 
+        title: "h^{#pm}#pi^{0}"
+    DM10: 
+        title: "h^{#pm}h^{#mp}h^{#pm}"
+    DM11: 
+        title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
+
+tid_SFRegions:
+    DM0: 
+        title: "h^{#pm}"
+    DM1: 
+        title: "h^{#pm}#pi^{0}"
+    DM10: 
+        title: "h^{#pm}h^{#mp}h^{#pm}"
+    DM11: 
+        title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
 
 # Observables to be fitted and plotted
 # binning: as defined in TH1 (nbins, xmin, xmax)

@@ -25,16 +25,16 @@ CMIN_OPTS="--cminFallbackAlgo Minuit2,Migrad,0:0.5 --cminFallbackAlgo Minuit2,Mi
 os.system("./TauES/harvestDatacards_TES.py -M -y %s -c %s -e %s"%(args.era,args.config,EXTRATAG))
 
 LABEL=setup["tag"]+EXTRATAG+"_MDF-"+args.era+"-13TeV"
-os.system("combineCards.py --prefix=output/output_%s/ztt_mt_m_vis- DM0=DM0%s.txt DM1=DM1%s.txt DM10=DM10%s.txt DM11=DM11%s.txt output/output_%s/combinecards.txt"%(args.era,LABEL,LABEL,LABEL,LABEL,args.era))
+os.system("combineCards.py --prefix=/output_%s/ztt_mt_m_vis- DM0=DM0%s.txt DM1=DM1%s.txt DM10=DM10%s.txt DM11=DM11%s.txt output_%s/combinecards.txt"%(args.era,LABEL,LABEL,LABEL,LABEL,args.era))
     
-os.system("text2workspace.py output/output_%s/combinecards.txt"%(args.era))
+os.system("text2workspace.py output_%s/combinecards.txt"%(args.era))
 
 for v in setup["observables"]:
     print v
     variable = setup["observables"][v]
 
     BINLABEL="mt_"+v+"-MDF"+setup["tag"]+EXTRATAG+"-"+args.era+"-13TeV"
-    WORKSPACE="output/output_"+args.era+"/combinecards.root" 
+    WORKSPACE="output_"+args.era+"/combinecards.root" 
     os.system("combine -M MultiDimFit  -v 1 %s %s %s -n .%s %s %s %s --saveNLL --saveSpecifiedNuis all"%(WORKSPACE,ALGO,POI_OPTS,BINLABEL,FIT_OPTS,XRTD_OPTS,CMIN_OPTS))
 
         #Add save toy to save Asimov dataset 
@@ -48,9 +48,9 @@ for v in setup["observables"]:
         # os.system("combineTool.py -M Impacts -n %s -d %s %s  %s %s %s --redefineSignalPOIs tes_%s  -P tes_%s --setParameterRanges tes_%s=%s -m 90 --setParameters r=1,tes_%s=1 --doInitialFit"%(BINLABEL, WORKSPACE, FIT_OPTS, POI_OPTS, XRTD_OPTS, CMIN_OPTS,r,r,r,RANGE,r))
         # os.system("combineTool.py -M Impacts -n %s -d %s %s  %s %s %s --redefineSignalPOIs tes_%s  -P tes_%s --setParameterRanges tes_%s=%s -m 90 --setParameters r=1,tes_%s=1 --doFits --parallel 4"%(BINLABEL, WORKSPACE, FIT_OPTS, POI_OPTS, XRTD_OPTS, CMIN_OPTS,r,r,r,RANGE,r))
         # os.system("combineTool.py -M Impacts -n %s -d %s %s  %s %s %s --redefineSignalPOIs tes_%s -P tes_%s --setParameterRanges tes_%s=%s -m 90 --setParameters r=1,tes_%s=1 -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE, FIT_OPTS, POI_OPTS, XRTD_OPTS, CMIN_OPTS,r,r,r,RANGE,r,BINLABEL))
-        # os.system("plotImpacts.py -i plots/postfit/impacts_%s.json -o plots/postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
+        # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
     
-os.system("mv higgsCombine*root output/output_%s"%args.era)
+os.system("mv higgsCombine*root output_%s"%args.era)
 
 
 os.system("./TauES/plotParabola_TES.py -M -y %s -e %s -r %s,%s -s -a -c %s"%(args.era,EXTRATAG,min(setup["TESvariations"]["values"]),max(setup["TESvariations"]["values"]),args.config))

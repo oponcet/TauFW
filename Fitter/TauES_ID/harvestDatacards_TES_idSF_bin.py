@@ -24,7 +24,7 @@ def harvest(setup, year, obs, **kwargs):
     era         = kwargs.get('era',        '%s-13TeV'%year  )
     analysis    = kwargs.get('analysis',   'ztt'            )
     indir       = kwargs.get('indir',      'input_%s'%year  )
-    outdir      = kwargs.get('outdir',     'output/output_%s'%year )
+    outdir      = kwargs.get('outdir',     'output_%s'%year )
     multiDimFit = kwargs.get('multiDimFit')
     verbosity   = kwargs.get('verbosity')
     outtag      = tag+extratag
@@ -125,6 +125,9 @@ def harvest(setup, year, obs, **kwargs):
         harvester.SetGroup( 'zpt',      [ ".*shape_dy.*"     ])
         harvester.SetGroup( 'xsec',     [ ".*xsec.*"         ])
         harvester.SetGroup( 'norm',     [ ".*(lumi|Xsec|Norm|norm_qcd).*" ])
+        harvester.SetGroup( 'tid',      [ ".*tid.*"          ])
+        harvester.SetGroup( 'tes',      [ ".*tes.*"          ])
+
     
         # PRINT
         if verbosity>0:

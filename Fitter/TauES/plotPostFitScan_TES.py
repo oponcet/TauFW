@@ -33,7 +33,7 @@ kMyTemperature = array('i',[ FI+i for i in xrange(100)])
 gStyle.SetPalette(100,kMyTemperature)
 
 DIR         = "output"
-PLOTS_DIR   = "plots/postfit"
+PLOTS_DIR   = "postfit"
 
 def plotCorrelation(channel,var,region,year,*parameters,**kwargs):
     """Calculate and plot correlation between parameters."""
@@ -43,8 +43,8 @@ def plotCorrelation(channel,var,region,year,*parameters,**kwargs):
     
     title       = kwargs.get('title',     ""                )
     name        = kwargs.get('name',      ""                )
-    indir       = kwargs.get('indir',     "output/output_%s"%year  )
-    outdir      = kwargs.get('outdir',    "plots/postfit_%s"%year )
+    indir       = kwargs.get('indir',     "output_%s"%year  )
+    outdir      = kwargs.get('outdir',    "postfit_%s"%year )
     tag         = kwargs.get('tag',       ""                )
     plotlabel   = kwargs.get('plotlabel', ""                )
     order       = kwargs.get('order',     False             )
@@ -207,8 +207,8 @@ def plotPostFitValues(channel,var,region,year,*parameters,**kwargs):
     parameters  = [p.replace('$CAT',region).replace('$CHANNEL',channel) for p in list(parameters)]
     title       = kwargs.get('title',     ""    )
     name        = kwargs.get('name',      ""    )
-    indir       = kwargs.get('indir',     "output/output_%s"%year  )
-    outdir      = kwargs.get('outdir',    "plots/postfit_%s"%year )
+    indir       = kwargs.get('indir',     "output_%s"%year  )
+    outdir      = kwargs.get('outdir',    "postfit_%s"%year )
     tag         = kwargs.get('tag',       ""    )
     plotlabel   = kwargs.get('plotlabel', ""    )
     compareFD   = kwargs.get('compareFD', False ) and N==1
@@ -501,7 +501,7 @@ def chunkify(list,nmax,overlap=0,complete=False):
   
 def getBBBList(channel,var,region,year,process,**kwargs):
     """Get list of all BBB nuisance parameter for a proces."""
-    indir    = kwargs.get('indir', "output/output_%s"%year)
+    indir    = kwargs.get('indir', "output_%s"%year)
     era      = "%s-13TeV"%year
     tag      = kwargs.get('tag', "" )
     filename = '%s/higgsCombine.%s_%s-%s%s-%s.MultiDimFit.mH90.root'%(indir,channel,var,region,tag,era)
@@ -551,7 +551,7 @@ def main(args):
       "shape_jTauFake_$CAT", "rate_jTauFake_$CAT","trackedParam_tid_SF_$CAT"
     ]
     procsBBB  = [ 'QCD', 'W', 'TTT', 'ZTT' ] # 'JTF' ]
-    indir     = "output/output_%s"%year
+    indir     = "output_%s"%year
     
 
     for var in setup["observables"]:

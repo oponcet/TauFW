@@ -27,7 +27,7 @@ def harvest(setup, year, obs, **kwargs):
     era         = kwargs.get('era',        '%s-13TeV'%year  )
     analysis    = kwargs.get('analysis',   'ztt'            )
     indir       = kwargs.get('indir',      'input_%s'%year  )
-    outdir      = kwargs.get('outdir',     'output/output_%s'%year )
+    outdir      = kwargs.get('outdir',     'output_%s'%year )
     multiDimFit = kwargs.get('multiDimFit')
     verbosity   = kwargs.get('verbosity')
     outtag      = tag+extratag
@@ -42,7 +42,7 @@ def harvest(setup, year, obs, **kwargs):
         icat += 1
         cats.append((icat, region))
         # if not given, assume all defined regions should be fitted (be careful with potential overlap!)
-        print(cats)
+        print("region: %s") %(cats)
 
         signals = []
         backgrounds = []
@@ -78,7 +78,9 @@ def harvest(setup, year, obs, **kwargs):
             #print sysDef
          
         listbin = region.split("_")
+        print("listbin : %s") %(listbin)
         tid_name = "tid_SF_%s"%(listbin[1])
+        print("tid : %s") %(tid_name)
         harvester.cp().signals().AddSyst(harvester, tid_name,'rateParam', SystMap()(1.00))
 
         # EXTRACT SHAPES
@@ -98,7 +100,7 @@ def harvest(setup, year, obs, **kwargs):
         print analysis
         #tesname = "tes_%s"%(region)
         tesname = "tes_%s"%(listbin[0])
-        print tesname
+        print("tes: %s") %(tesname)
         tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
         tes.setConstant(True)
     
@@ -117,7 +119,7 @@ def harvest(setup, year, obs, **kwargs):
         
         harvester.ExtractData("ztt", "$BIN_data_obs")  # Extract the RooDataHist
 
-        harvester.SetAutoMCStats(harvester, 0, 1, 1) # Set the autoMCStats line (with -1 = no actual uncertainties)
+        harvester.SetAutoMCStats(harvester, 0, 1, 1) # Set the autoMCStats line (with -1 = no bbb uncertainties)
 
         # NUISANCE PARAMETER GROUPS
         # To do: export to config file
@@ -132,8 +134,11 @@ def harvest(setup, year, obs, **kwargs):
         harvester.SetGroup( 'zpt',      [ ".*shape_dy.*"     ])
         harvester.SetGroup( 'xsec',     [ ".*xsec.*"         ])
         harvester.SetGroup( 'norm',     [ ".*(lumi|Xsec|Norm|norm_qcd).*" ])
-    
-        # PRINT
+        harvester.SetGroup( 'tid',      [ ".*tid.*"          ])
+        harvester.SetGroup( 'tes',      [ ".*tes.*"          ])
+
+
+        #PRINT
         if verbosity>0:
             print green("\n>>> print observation...\n")
             harvester.PrintObs()
