@@ -38,7 +38,6 @@ regions:
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}"
 
 plottingOrder: ["DM11", "DM10","DM1", "DM0"]
-scanRegions: ["DM11", "DM10","DM1", "DM0"]
 
 
 tesRegions:
@@ -73,6 +72,8 @@ observables:
         extra:
             cut: "50<m_vis && m_vis<106"
         fitRegions: [DM0, DM1, DM10, DM11]
+        scanRegions: ["DM0", "DM1", "DM10", "DM11"] 
+
 # Assume that this code is meant to fit TES variations; more options could be added when adding other POIs
 
 TESvariations:

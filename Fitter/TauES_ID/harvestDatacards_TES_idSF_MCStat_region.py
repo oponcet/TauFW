@@ -79,8 +79,13 @@ def harvest(setup, year, obs, **kwargs):
          
         listbin = region.split("_")
         print("listbin : %s") %(listbin)
-        tid_name = "tid_SF_%s"%(listbin[1])
+
+        if len(listbin) == 1:
+          tid_name = "tid_SF_%s"%(listbin[0])
+        else:
+          tid_name = "tid_SF_%s"%(listbin[1])
         print("tid : %s") %(tid_name)
+
         harvester.cp().signals().AddSyst(harvester, tid_name,'rateParam', SystMap()(1.00))
 
         # EXTRACT SHAPES

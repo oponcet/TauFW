@@ -39,10 +39,10 @@ def combinedfit(setup, option, **kwargs):
     config       = kwargs.get('config',       ""                                                                                             )
 
     ### DM regions : tes and tid_SF
-    if option < '5':
+    if option < '8':
     # Generating datacards
         #os.system("./TauES_ID/harvestDatacards_TES_idSF.py -y %s -c %s -e %s "%(era,config,extratag))
-        os.system("./TauES_ID/harvestDatacards_TES_idSF_bin.py -v -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
+        os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat_region.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
     
     # Simultaneous fit require to combine the datacards 
     elif option == '4':
@@ -50,11 +50,6 @@ def combinedfit(setup, option, **kwargs):
         os.system("combineCards.py --prefix=output_%s/ztt_mt_m_vis- DM0=DM0%s.txt DM1=DM1%s.txt DM10=DM10%s.txt DM11=DM11%s.txt >output_%s/combinecards.txt" % (era, LABEL, LABEL, LABEL, LABEL, era))
         os.system("text2workspace.py output_%s/combinecards.txt" % (era))
     
-    ## Fit of tid_SF in pt regions with tes_DM and other tid_SF_pt as nuisance parameters  
-    elif option == '5' or option == '6' : 
-        # generate the datacards and do the fit
-        #os.system("./TauES_ID/harvestDatacards_TES_idSF_bin_pt.py -y %s -c %s -e %s " %(era, config, extratag))
-        print(" ok ")
     else:
         print("This option does not exist... try --help")
 
@@ -94,9 +89,9 @@ def combinedfit(setup, option, **kwargs):
             elif option == '2':
                 POI = "tid_SF_%s" % (r)
                 print(">>>>>>> tid_"+r+" fit")
-                POI_OPTS = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1,{.*tes.*}=1 --freezeParameters r " % (POI, POI, tes_range, r,tid_SF_range, POI)  # tes_DM
+                POI_OPTS = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1,{.*tes.*}=1 --freezeParameters r " % (POI, POI, tes_range, r,tid_SF_range)  # tes_DM
                 os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
-                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s 5s --trackParameters tes_%s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts, r))
+                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters tes_%s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts, r))
 
             # Fit of tes_DM and tid_SF_DM by DM, both are pois
             elif option == '3':  
@@ -110,12 +105,11 @@ def combinedfit(setup, option, **kwargs):
             # Fit of tes_DM with other tes_DM and id_SF as nuisance parameter 
             elif option == '4':
                 print(">>>>>>> Simultaneous fit of tes_"+r)
-                POI_OPTS = "-P tes_%s  --setParameterRanges tid_SF_DM0=%s:tid_SF_DM1=%s:tid_SF_DM10=%s:tid_SF_DM11=%s:tes_DM0=%s:tes_DM1=%s:tes_DM10=%s:tes_DM11=%s -m 90 \
-                            --setParameters r=1,tes_%s=1,tid_SF_%s=1 --freezeParameters r " % (r, tid_SF_range, tid_SF_range, tid_SF_range,tid_SF_range, tes_range, tes_range, tes_range, tes_range, r, r)
+                POI_OPTS = "-P tes_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r " % (r, tid_SF_range, tes_range)
                 WORKSPACE = "output_"+era+"/combinecards.root"
                 os.system("combine -M MultiDimFit  %s %s %s -n .%s %s %s %s %s "%(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
 
-            ## Fit of tid_SF in pt regions with tes_DM and other tid_SF_pt as nuisance parameters  
+            ## Fit of tid_SF in its regions with tes_region and other tid_SF_regions as nuisance parameters  
             elif option == '5': 
                 print(">>>>>>> Fit of tid_SF_"+r)
                 POI_OPTS = "-P tid_SF_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r" %(r, tid_SF_range, tes_range)
