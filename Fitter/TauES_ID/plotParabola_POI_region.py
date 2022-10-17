@@ -149,7 +149,10 @@ def plotParabola(setup,var,region,year,**kwargs):
     canvas.SetLeftMargin( 0.12 ); canvas.SetRightMargin(  0.04 )
     canvas.cd()
     
-    xmin, xmax   = 0.7, 1.05
+    if poi == 'tid_SF':
+          xmin, xmax = 0.7, 1.05
+    else :
+          xmin, xmax = min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]) 
     ymin, ymax   = 0.0,  10.
     fontsize     = 0.044
     lineheight   = 0.05
@@ -1114,8 +1117,13 @@ def main(args):
             canvas = "%s/measurement_poi_%s%s"%(outdir,channel,ftag)
             measurements = readMeasurement(canvas)
 
-            #plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=min(setup["TESvariations"]["values"]),xmax=max(setup["TESvariations"]["values"]),L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'])
-            plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=0.7,xmax=1.05,L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'], poi=poi)
+
+            if poi == 'tid_SF':
+                  plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau id scale factor",xmin=0.7,xmax=1.05,L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'], poi=poi)
+            #defaut case = tes 
+            else:
+                  plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=min(setup["TESvariations"]["values"]),xmax=max(setup["TESvariations"]["values"]),L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'], poi=poi)
+
 
        
 
