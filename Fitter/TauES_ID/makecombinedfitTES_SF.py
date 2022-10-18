@@ -1,9 +1,9 @@
 """
 Date : May 2022 
 Description :
- - fit of tes_DM with others parameters free (option 1),
- - fit of tid_SF_DM with other parameters free (option 2) 
- - combined fit of tes_DM and tid_SF_DM with other parameters free (option 3)
+ - fit of tes with others parameters free (option 1),
+ - fit of tid_SF with other parameters free (option 2) 
+ - combined fit of tes and tid_SF_DM with other parameters free (option 3)
  - Scan of tid_SF_pt for combined fit of tes_DM and tid_SF_pt (option 4)
  - Scan of tes_DM for combined fit of tes_DM and tid_SF_pt (option 5)
  - 2D Scan of tid_SF_pt et tes_DM for combined fit of tes_DM and tid_SF_pt (option 6)   
@@ -40,7 +40,6 @@ def combinedfit(setup, option, **kwargs):
     ### DM regions : tes and tid_SF
     if option < '7':
     # Generating datacards
-        #os.system("./TauES_ID/harvestDatacards_TES_idSF.py -y %s -c %s -e %s "%(era,config,extratag))
         os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat_region.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
     
     else:

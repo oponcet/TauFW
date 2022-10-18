@@ -187,7 +187,7 @@ class ModuleMuTau(ModuleTauPair):
     self.out.dz_1[0]                       = muon.dz
     self.out.q_1[0]                        = muon.charge
     self.out.iso_1[0]                      = muon.pfRelIso04_all # relative isolation
-    self.out.tkRelIso_1[0]                 = muon.tkRelIso
+    # self.out.tkRelIso_1[0]                 = muon.tkRelIso
     self.out.idMedium_1[0]                 = muon.mediumId
     self.out.idTight_1[0]                  = muon.tightId
     self.out.idHighPt_1[0]                 = muon.highPtId
@@ -220,11 +220,11 @@ class ModuleMuTau(ModuleTauPair):
     self.out.idDeepTau2017v2p1VSe_2[0]     = tau.idDeepTau2017v2p1VSe
     self.out.idDeepTau2017v2p1VSmu_2[0]    = tau.idDeepTau2017v2p1VSmu
     self.out.idDeepTau2017v2p1VSjet_2[0]   = tau.idDeepTau2017v2p1VSjet
-    self.out.chargedIso_2[0]               = tau.chargedIso
-    self.out.neutralIso_2[0]               = tau.neutralIso
-    self.out.leadTkPtOverTauPt_2[0]        = tau.leadTkPtOverTauPt
-    self.out.photonsOutsideSignalCone_2[0] = tau.photonsOutsideSignalCone
-    self.out.puCorr_2[0]                   = tau.puCorr
+    # self.out.chargedIso_2[0]               = tau.chargedIso
+    # self.out.neutralIso_2[0]               = tau.neutralIso
+    # self.out.leadTkPtOverTauPt_2[0]        = tau.leadTkPtOverTauPt
+    # self.out.photonsOutsideSignalCone_2[0] = tau.photonsOutsideSignalCone
+    # self.out.puCorr_2[0]                   = tau.puCorr
     
     
     # GENERATOR

@@ -311,8 +311,8 @@ def loosestIso(tau):
 def idIso(tau):
   """Compute WPs of cut-based tau isolation."""
   raw = tau.rawIso
-  if tau.photonsOutsideSignalCone/tau.pt<0.10:
-    return 0 if raw>4.5 else 1 if raw>3.5 else 3 if raw>2.5 else 7 if raw>1.5 else 15 if raw>0.8 else 31 # VVLoose, VLoose, Loose, Medium, Tight
+  # if tau.photonsOutsideSignalCone/tau.pt<0.10:
+  #   return 0 if raw>4.5 else 1 if raw>3.5 else 3 if raw>2.5 else 7 if raw>1.5 else 15 if raw>0.8 else 31 # VVLoose, VLoose, Loose, Medium, Tight
   return 0 if raw>4.5 else 1 if raw>3.5 else 3 # VVLoose, VLoose
 
 
@@ -335,7 +335,7 @@ def getlepvetoes(event, electrons, muons, taus, channel):
     if any(muon.DeltaR(tau)<0.4 for tau in taus): continue
     if muon.mediumId and all(m._index!=muon._index for m in muons):
       extramuon_veto = True
-    if muon.pt>15 and muon.isPFcand and muon.isGlobal and muon.isTracker:
+    if muon.pt>15 and muon.isPFcand and muon.isGlobal : #change and muon.isTracker 
       looseMuons.append(muon)
   
   # EXTRA ELECTRON VETO
