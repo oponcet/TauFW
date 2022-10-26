@@ -111,7 +111,7 @@ def harvest(setup, year, obs, **kwargs):
     
         # MORPHING
         print green(">>> morphing...")
-        BuildCMSHistFuncFactory(workspace, harvester, tes)
+        BuildCMSHistFuncFactory(workspace, harvester, tes, "ZTT")
     
         #workspace.Print()
         workspace.writeToFile("workspace_py.root")
