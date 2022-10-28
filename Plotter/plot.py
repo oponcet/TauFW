@@ -81,7 +81,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
   
   # PLOT
   outdir = ensuredir(repkey(outdir,CHANNEL=channel,ERA=era))
-  exts   = ['png','pdf'] if pdf else ['png'] # extensions
+  exts   = ['png','pdf','root'] if pdf else ['root'] # extensions
   for selection in selections:
     print ">>> Selection %r: %r"%(selection.title,selection.selection)
     stacks = sampleset.getstack(variables,selection,method='QCD_OSSS',parallel=parallel)
@@ -94,7 +94,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
       stack.draw(fraction=fraction)
       stack.drawlegend() #position)
       stack.drawtext(text)
-      stack.saveas(fname,ext='pdf',tag=tag)
+      stack.saveas(fname,ext='root',tag=tag)
       stack.close()
   
 
@@ -133,7 +133,7 @@ def main(args):
 
 if __name__ == "__main__":
   from argparse import ArgumentParser, RawTextHelpFormatter
-  eras = ['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018']
+  eras = ['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','UL2018v10']
   description = """Simple plotting script for pico analysis tuples"""
   parser = ArgumentParser(prog="plot",description=description,epilog="Good luck!")
   parser.add_argument('-y', '--era',     dest='eras', nargs='*', choices=eras, default=['2017'],

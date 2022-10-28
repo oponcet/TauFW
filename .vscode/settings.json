@@ -9,7 +9,11 @@
         "plot1D_tid_SF copy.C": "cpp",
         "plot2D_tid_SF.C": "cpp",
         "simplePlot.C": "cpp",
-        "makePlot.C": "cpp"
+        "makePlot.C": "cpp",
+        "findinNtuple.C": "cpp",
+        "vector": "cpp",
+        "iosfwd": "cpp",
+        "iterator": "cpp"
     },
     "python.formatting.provider": "yapf"
 }

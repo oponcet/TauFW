@@ -41,7 +41,7 @@ def combinedfit(setup, option, **kwargs):
     if option < '7':
     # Generating datacards
         print('Generating datacards')
-        #os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat_region.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
+        os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat_region.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
        
     else:
         print("This option does not exist... try --help")
@@ -55,12 +55,12 @@ def combinedfit(setup, option, **kwargs):
         ##Combining the datacards to do the fit simultaneously with all the parameters
         if  option > 2: 
             LABEL = setup["tag"]+extratag+"-"+era+"-13TeV"
-            # filelist = "" # List of the datacard files to merge in one file combinecards.txt
-            # for region in variable["fitRegions"]:
-            #     filelist += region + "=output_"+era+"/ztt_mt_m_vis-"+region+LABEL+".txt "
-            # print("filelist : %s") %(filelist) 
-            # os.system("combineCards.py %s >output_%s/combinecards.txt" % (filelist, era))
-            # os.system("text2workspace.py output_%s/combinecards.txt" % (era))
+            filelist = "" # List of the datacard files to merge in one file combinecards.txt
+            for region in variable["fitRegions"]:
+                filelist += region + "=output_"+era+"/ztt_mt_m_vis-"+region+LABEL+".txt "
+            print("filelist : %s") %(filelist) 
+            os.system("combineCards.py %s >output_%s/combinecards.txt" % (filelist, era))
+            os.system("text2workspace.py output_%s/combinecards.txt" % (era))
 
         ## For each region defined in scanRegions in the config file 
         for r in variable["scanRegions"]:
@@ -103,7 +103,7 @@ def combinedfit(setup, option, **kwargs):
             elif option == '4': 
                 print(">>>>>>> Fit of tid_SF_"+r)
                 POI_OPTS = "-P tid_SF_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r" %(r, tid_SF_range, tes_range)
-                WORKSPACE = "output_"+era+"_lastworkingversion/combinecards.root"
+                WORKSPACE = "output_"+era+"/combinecards.root"
                 os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tes.*}" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
 
             ## Fit of tes in DM regions with tid_SF and other tes_DM as nuisance parameters  

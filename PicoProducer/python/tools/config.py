@@ -56,16 +56,17 @@ _cfgdefaults   = OrderedDict([                    # ordered dictionary with defa
 sys.path.append(basedir)
 
 
-def getconfig(verb=0,refresh=False):
+def getconfig(verb=0,refresh=False, **kwargs):
   """Get configuration from JSON file."""
+  configfile = kwargs.get( 'configfile', "config.json")
   global _cfgdefaults, basedir, CONFIG
   if CONFIG and not refresh:
     return CONFIG
   
   # SETTING
   cfgdir   = ensuredir(basedir,"config")
-  cfgname  = os.path.join(cfgdir,"myconfig.json") #config.json
-  bkpname  = os.path.join(cfgdir,"myconfig.json.bkp") # back up to recover config if reset
+  cfgname  = os.path.join(cfgdir,configfile) #config.json
+  bkpname  = os.path.join(cfgdir,"config.json.bkp") # back up to recover config if reset
   cfgdict  = _cfgdefaults.copy()
   rqdstrs  = [k for k,v in _cfgdefaults.iteritems() if isinstance(v,basestring)]
   rqddicts = [k for k,v in _cfgdefaults.iteritems() if isinstance(v,dict)]
@@ -126,7 +127,7 @@ def setdefaultconfig(verb=0):
   
   # SETTING
   cfgdir  = ensuredir(basedir,"config")
-  cfgname = os.path.join(cfgdir,"myconfig.json")
+  cfgname = os.path.join(cfgdir,"config.json")
   cfgdict = _cfgdefaults.copy()
   if os.path.isfile(cfgname):
     LOG.warning("Config file '%s' already exists. Overwriting with defaults..."%(cfgname))
@@ -137,7 +138,7 @@ def setdefaultconfig(verb=0):
 
 class Config(object):
   
-  def __init__(self,cfgdict={ },path="myconfig.json"):
+  def __init__(self,cfgdict={ },path="config.json"):
     """Container class for a global configuration."""
     self._dict = cfgdict
     self._path    = path
