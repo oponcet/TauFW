@@ -91,7 +91,7 @@ class ModuleEMu(ModuleTauPair):
       if abs(electron.dz)>0.2: continue
       if abs(electron.dxy)>0.045: continue
       if not electron.convVeto: continue
-      if electron.lostHits>1: continue
+      # if electron.lostHits>1: continue
       if not (electron.mvaFall17V2Iso_WP90 or electron.mvaFall17V2noIso_WP90): continue
       electrons.append(electron)
     if len(electrons)==0:

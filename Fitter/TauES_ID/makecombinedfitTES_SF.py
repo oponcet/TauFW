@@ -13,7 +13,7 @@ Note that the name of the generated file will be changed with this option
 (seed will be added at the end of the file name) -> use os.rename line 
 Add the option --fastScan to do a fit without any systemetic
 Add the option --freezeNuisanceGroups=group to do a fit a group of nuisance parameters
-frozen, the groups are defined in harvestDatacards_TES_idSF.py
+frozen, the groups are defined in harvestDatacards_TES_idSF_MCStat.py
 """
 from distutils import filelist
 from distutils.command.config import config
@@ -30,7 +30,7 @@ def combinedfit(setup, option, **kwargs):
     extratag     = kwargs.get('extratag',     "_DeepTau"                                                                                     )
     algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1 --saveFitResult "                                                  )# --saveWorkspace
     fit_opts     = kwargs.get('fit_opts',     "--robustFit=1 --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.1")
-    npts_fit     = kwargs.get('npts_fit',     "--points=51"                                                                                  )
+    npts_fit     = kwargs.get('npts_fit',     "--points=201"                                                                                  )
     xrtd_opts    = kwargs.get('xrtd_opts',    "--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND"           )
     cmin_opts    = kwargs.get('cmin_opts',    "--cminFallbackAlgo Minuit2,Migrad,0:0.5 --cminFallbackAlgo Minuit2,Migrad,0:1.0 --cminPreScan")
     save_opts    = kwargs.get('save_opts',     "--saveNLL --saveSpecifiedNuis all"                                                            )
@@ -41,7 +41,7 @@ def combinedfit(setup, option, **kwargs):
     if option < '7':
     # Generating datacards
         print('Generating datacards')
-        os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat_region.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
+        os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
        
     else:
         print("This option does not exist... try --help")

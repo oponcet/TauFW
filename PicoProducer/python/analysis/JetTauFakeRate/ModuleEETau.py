@@ -265,7 +265,7 @@ class ModuleEETau(Module):
       if abs(electron.eta)>2.1: continue
       if abs(electron.dz)>0.2: continue
       if abs(electron.dxy)>0.045: continue
-      if electron.lostHits>1: continue
+      # if electron.lostHits>1: continue
       if not (electron.mvaFall17V2Iso_WP90) : continue
       if electron.pfRelIso03_all > 0.50: continue
       electrons.append(electron)

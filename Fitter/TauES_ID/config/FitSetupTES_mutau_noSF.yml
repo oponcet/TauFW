@@ -13,8 +13,10 @@ channel: mutau
 
 # Tag can be used to differentiate between scenarios
 
-#tag: "_mutau_mt65_noSF_DM"
-tag: "_mutau_mt65_noSF_DM_stitching"
+tag: "_mutau_mt65_noSF_DM"
+#tag: "_mutau_mt65_noSF_DM_stitching"
+#tag: "_mutau_mt65_noSF_DM_binmvis"
+
 
 baselineCuts: "q_1*q_2<0 && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017v2p1VSjet_2>=32 && idDeepTau2017v2p1VSe_2>=2 && idDeepTau2017v2p1VSmu_2>=8 && !lepton_vetoes_notau && metfilter"
 

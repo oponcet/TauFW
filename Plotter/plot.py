@@ -81,7 +81,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
   
   # PLOT
   outdir = ensuredir(repkey(outdir,CHANNEL=channel,ERA=era))
-  exts   = ['png','pdf','root'] if pdf else ['root'] # extensions
+  exts   = ['png','pdf','root'] if pdf else ['pdf'] # extensions
   for selection in selections:
     print ">>> Selection %r: %r"%(selection.title,selection.selection)
     stacks = sampleset.getstack(variables,selection,method='QCD_OSSS',parallel=parallel)
@@ -94,7 +94,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
       stack.draw(fraction=fraction)
       stack.drawlegend() #position)
       stack.drawtext(text)
-      stack.saveas(fname,ext='root',tag=tag)
+      stack.saveas(fname,ext='pdf',tag=tag)
       stack.close()
   
 
@@ -125,7 +125,7 @@ def main(args):
       addsfs = [ ] #"getTauIDSF(dm_2,genmatch_2)"]
       rmsfs  = [ ] if (setup['channel']=='mumu' or not notauidsf) else ['idweight_2','ltfweight_2'] # remove tau ID SFs
       split  = ['DY'] if 'tau' in setup['channel'] else [ ] # split these backgrounds into tau components
-      sampleset = getsampleset(setup['channel'],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split)
+      sampleset = getsampleset(setup['channel'],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split, configfile ="config_old.json")
       plot(sampleset,setup,parallel=parallel,tag=tag,extratext=extratext,outdir=outdir,era=era,
            varfilter=varfilter,selfilter=selfilter,fraction=fraction,pdf=pdf)
       sampleset.close()
