@@ -76,8 +76,8 @@ def combinedfit(setup, option, **kwargs):
                 NP = "rgx{.*tid.*}"
                 print(">>>>>>>"+POI+" fit")
                 POI_OPTS = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r " % (POI, POI, tes_range, r,tid_SF_range)  # tes_DM
-                # os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
-                # os.system("combine -M MultiDimFit  %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts,NP))
+                os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
+                os.system("combine -M MultiDimFit  %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts,NP))
                 # ##Impact plot
                 # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1 --freezeParameters r "%(POI, POI, tes_range, r,tid_SF_range)
                 # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
@@ -92,15 +92,15 @@ def combinedfit(setup, option, **kwargs):
                 NP = "rgx{.*tid.*}" 
                 print(">>>>>>> tid_"+r+" fit")
                 POI_OPTS = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r " % (POI, POI, tid_SF_range, r,tid_SF_range)  # tes_DM
-                # os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
-                # os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts, NP))
+                os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
+                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts, NP))
                  ##Impact plot
-                POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,tes_%s=1 --freezeParameters r %s"%(POI, POI,tid_SF_range, r,tes_range,r,save_opts)
-                os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-                os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-                os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,POI, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
-                os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
-                os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
+                # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,tes_%s=1 --freezeParameters r %s"%(POI, POI,tid_SF_range, r,tes_range,r,save_opts)
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,POI, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
+                # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
+                # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
                 
 
 
@@ -157,7 +157,7 @@ def combinedfit(setup, option, **kwargs):
 
     if option == '2' or option == '4' :
       print(">>> Plot parabola")
-      #os.system("./TauES_ID/plotParabola_POI_region.py -p tid_SF -y %s -e %s -r %s,%s -s -a -c %s"% (era, extratag, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), config))
+      os.system("./TauES_ID/plotParabola_POI_region.py -p tid_SF -y %s -e %s -r %s,%s -s -a -c %s"% (era, extratag, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), config))
     
     elif option == '1' or option == '5' :
         print(">>> Plot parabola")
