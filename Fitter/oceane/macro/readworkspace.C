@@ -12,11 +12,12 @@
 #include "RooConstVar.h"
 #include "RooProdPdf.h"
 #include "TH1.h"
-
+#include "CMS_lumi.C"
 
 using namespace RooFit;
 
 void plotCMSHist(Char_t *region, Char_t *tag){
+
     // Save the canvas
     TCanvas *c = new TCanvas();
 
@@ -32,7 +33,7 @@ void plotCMSHist(Char_t *region, Char_t *tag){
 
     // Retrieve the worksapce, RooDataHist, and variable 
     RooWorkspace *w = (RooWorkspace *)f->Get("ztt");    
-    //w->Print();
+    w->Print();
 
     // // Read dataset
     // const char* pdfName = "DM0_pt1_data_obs";
@@ -46,14 +47,14 @@ void plotCMSHist(Char_t *region, Char_t *tag){
     printf("'%s'\n", dm);
     char *pt = strtok(NULL, "_");
     printf("'%s'\n", pt);
-    //TString sregion = TString(dm)+"_"+TString(pt);
-    TString sregion = TString(dm);
+    TString sregion = TString(dm)+"_"+TString(pt);
+    //TString sregion = TString(dm);
 
 
     TString stes = "tes_"+TString(dm);
     TString smvis = "CMS_x_"+TString(sregion);
-    //TString histfName = TString(dm)+"_"+TString(pt)+"_ZTT_morph";
-    TString histfName = TString(dm)+"_ZTT_morph";
+    TString histfName = TString(dm)+"_"+TString(pt)+"_ZTT_morph";
+    //TString histfName = TString(dm)+"_ZTT_morph";
 
     CMSHistFunc *histf = (CMSHistFunc *)w->obj(histfName); //use w->data() for dataset and w->pdf() for pdf
 
@@ -73,18 +74,18 @@ void plotCMSHist(Char_t *region, Char_t *tag){
                               0.992, 0.994, 0.996, 0.998, 1.000, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012,
                               1.014, 1.016, 1.018, 1.020, 1.022, 1.024, 1.026, 1.028, 1.030};
 
-    // for (int i = 0; i <1; i++)
-    // {
-    //     std::cout << "tes = " << TESvariations[i] << std::endl;
-    //     tes->setVal(TESvariations[i]);
-    //     tes->setConstant(true);
-    //     histf->plotOn(mvisframe);
-    //     mvisframe->Draw();
+    for (int i = 0; i <1; i++)
+    {
+        std::cout << "tes = " << TESvariations[i] << std::endl;
+        tes->setVal(TESvariations[i]);
+        tes->setConstant(true);
+        histf->plotOn(mvisframe);
+        mvisframe->Draw();
 
-    //     c->Update();
-    // }
+        c->Update();
+    }
 
-    // histf->Print();
+    histf->Print();
 
 
 
@@ -97,20 +98,20 @@ void plotCMSHist(Char_t *region, Char_t *tag){
     // hh->Draw("colz");
 
 
-    //// mvis max in function of tes 
-    TH1* hmvis = histf->createHistogram("hh",*mvis,Binning(100));
+    // //// mvis max in function of tes 
+    // TH1* hmvis = histf->createHistogram("hh",*mvis,Binning(160));
 
-    mvis->setVal(hmvis->GetMean());
+    // mvis->setVal(hmvis->GetMean());
 
-    mvis->setConstant(true);
+    // mvis->setConstant(true);
 
-    std::cout << mvis->getValV() << std::endl;
+    // std::cout << mvis->getValV() << std::endl;
 
     // histf->plotOn(tesframe);
     // tesframe->Draw();
 
-    TH1* hh = histf->createHistogram("hh",*tes,Binning(100));
-    hh->Draw("");
+    // TH1* hh = histf->createHistogram("hh",*tes,Binning(160));
+    // hh->Draw("");
 
     c->Update();
 
@@ -123,7 +124,9 @@ void plotCMSHist(Char_t *region, Char_t *tag){
 
 void checkMorphing(Char_t *region, Char_t *tag){
     //// Save the canvas
-    TCanvas *c = new TCanvas();
+    TCanvas *c1 = new TCanvas();
+
+
 
     // Open the file of the workspace
     //const char* wFileName= "../../output_UL2018/combine.root";
@@ -145,14 +148,14 @@ void checkMorphing(Char_t *region, Char_t *tag){
     printf("'%s'\n", dm);
     char *pt = strtok(NULL, "_");
     printf("'%s'\n", pt);
-    //TString sregion = TString(dm)+"_"+TString(pt);
-    TString sregion = TString(dm);
+    TString sregion = TString(dm)+"_"+TString(pt);
+    //TString sregion = TString(dm); // dm only
 
 
     TString stes = "tes_"+TString(dm);
     TString smvis = "CMS_x_"+TString(sregion);
-    //TString histfName = TString(dm)+"_"+TString(pt)+"_ZTT_morph";
-    TString histfName = TString(dm)+"_ZTT_morph";
+    TString histfName = TString(dm)+"_"+TString(pt)+"_ZTT_morph";
+    //TString histfName = TString(dm)+"_ZTT_morph"; // dm only
 
     CMSHistFunc *histf = (CMSHistFunc *)w->obj(histfName); //use w->data() for dataset and w->pdf() for pdf
 
@@ -164,24 +167,23 @@ void checkMorphing(Char_t *region, Char_t *tag){
 
     
     //// Mvis distrbution for TES variations 
-    double TESvariations[61] ;
+    double TESvariations[120] ;
 
-    double mvisvariations[61];
-    double mviserror[61];
+    double mvisvariations[120];
+    double mviserror[120];
 
     double tmptes = 0.970;
 
-    TH1F* hMeanmvis = new TH1F("hMeanmvis", "",100, 0.970,1.030);
+    TH1F* hMeanmvis = new TH1F("hMeanmvis", "",120, 0.970,1.03);
     
-    for (int i = 0; i <61; i++)
+    for (int i = 1; i <120; i++)
     {
         TESvariations[i] = tmptes;
-        std::cout << "tes = " << TESvariations[i] << std::endl;
         tes->setVal(TESvariations[i]);
         tes->setConstant(true);
 
-        TH1* hmvis = histf->createHistogram("hh",*mvis,Binning(40));
-        hmvis->Fit("gaus","","", 52.0, 75.0);
+        TH1* hmvis = histf->createHistogram("hh",*mvis,Binning(200));
+        hmvis->Fit("gaus","","", 55.0, 75.0);
         TF1 *fitresult = hmvis->GetFunction("gaus");
         mviserror[i] =  fitresult->GetParError(1);
         mvisvariations[i] = hmvis->GetFunction("gaus")->GetParameter(1); //getMean of the gaussiane fit 
@@ -191,13 +193,34 @@ void checkMorphing(Char_t *region, Char_t *tag){
         std::cout << "Error = " <<  mviserror[i] <<  std::endl;
         std::cout << "Tes = " <<  TESvariations[i] <<  std::endl;
        
-        //hmvis->Draw("");
+        hmvis->Draw("");
         hMeanmvis->Fill(TESvariations[i], mvisvariations[i]);
-        c->Update();
-        tmptes += 0.001;
+        tmptes += 0.0005 ;
+        c1->Update();
+        TString outputFile1 = "./oceane/macro/plot_pdf/fit_mvis/pdf_ztt_morph_mvis"+TString(sregion)+TString(tag)+".root";
+        c1->SaveAs(outputFile1);
     }
-    //hMeanmvis->SetError(mviserror);
-    hMeanmvis->Draw("");
+    hMeanmvis->SetError(mviserror);
+
+    // Save 1st canvas
+
+    
+    if(c1)c1->Close();
+
+    // 2nd canvas 
+
+
+    TCanvas *c2 = new TCanvas();
+    c2->SetGrid();
+    gStyle->SetOptStat(0);
+
+    hMeanmvis->GetXaxis()->SetNdivisions(30);
+    hMeanmvis->GetXaxis()->SetLabelSize(.015);
+    hMeanmvis->GetYaxis()->SetRangeUser(59,65);
+    hMeanmvis->GetXaxis()->SetTitle("TES");
+    hMeanmvis->GetYaxis()->SetTitle("mvis peak in GeV");
+    c2->Modified();
+    hMeanmvis->Draw("E");
 
 
   
@@ -213,10 +236,13 @@ void checkMorphing(Char_t *region, Char_t *tag){
     // TH1* hh = histf->createHistogram("hh",*tes,Binning(100));
     
 
-    c->Update();
+    c2->Update();
 
-    TString outputFile = "./oceane/macro/plot_pdf/pdf_dat_obs_"+TString(sregion)+TString(tag)+".root";
-    c->SaveAs(outputFile);
+    
+    TString outputFile2 = "./oceane/macro/plot_pdf/pdf_ztt_morph"+TString(sregion)+TString(tag)+".root";
+    TString outputFile2_pdf = "./oceane/macro/plot_pdf/pdf_ztt_morph"+TString(sregion)+TString(tag)+".pdf";
+    c2->SaveAs(outputFile2);
+    c2->SaveAs(outputFile2_pdf);
 
     return;
 }
@@ -233,20 +259,20 @@ void readworkspace(){
                             "DM10_pt7","DM11_pt1","DM11_pt2","DM11_pt3",
                             "DM11_pt4","DM11_pt5","DM11_pt6","DM11_pt7",
                             "DM0","DM1","DM10","DM11"};
-    Char_t tag[99][99] = {"_mtlt65_noSF_DMpt","_mtlt65_SF_regionpt_","_mtlt65_noSF_DMpt_mvisbin","_mutau_mt65_noSF_DM_binmvis"};
+    Char_t tag[99][99] = {"_mtlt65_noSF_DMpt","_mtlt65_SF_regionpt","_mtlt65_noSF_DMpt_mvisbin","_mutau_mt65_noSF_DM_binmvis"};
 
 
 
-//    for (int i = 28; i < 32; i++)
-//    {
-//     plotCMSHist(region[i],tag[3]);
-//    }
+   for (int i = 0; i < 1; i++)
+   {
+    plotCMSHist(region[i],tag[0]);
+   }
     
 
-for (int i = 29; i < 30; i++)
-   {
-    checkMorphing(region[i],tag[3]);
-   }
+// for (int i = 28; i < 29; i++)
+//    {
+//     checkMorphing(region[i],tag[3]);
+//    }
     
  
 

@@ -109,7 +109,8 @@ def createinputs(fname,sampleset,obsset,bins,syst="",**kwargs):
       obs.changecontext(selection)
     hists = sampleset.gethists(obsset,selection,method=method,split=True,
                                parallel=parallel,filter=filters,veto=vetoes,replaceweight=replaceweight)
-    
+    print(obsset)
+    print(selection)
     # SAVE HIST
     ljust = 4+max(11,len(htag)) # extra space
     TAB   = LOG.table("%10.1f %10d  %-18s  %s")

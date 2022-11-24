@@ -2,7 +2,7 @@
 # Author: Izaak Neutelings (January 2018)
 # Modification by Saskia Falke and Oceane Poncet (June 2022)
 # Add tid SF as nuisance parameter that affect the norm = rateParameter
-# Use sum of the of the backrgound processes for the bin-by-bin nuisance parameters
+# Use sum of the of the background processes for the bin-by-bin nuisance parameters
 
 import ROOT; ROOT.PyConfig.IgnoreCommandLineOptions = True
 import os, sys, re
@@ -63,8 +63,6 @@ def harvest(setup, year, obs, **kwargs):
         # CAVEAT: Assume we always want to fit TES as POI; if running for mumu channel, everything will be bkg
         harvester.AddProcesses(tesshifts, [analysis], [era], [channel], signals, cats, True)
 
-    
-        # NUISSANCE PARAMETERS
         print green("\n>>> defining nuissance parameters ...")
   
         if "systematics" in setup:
@@ -97,7 +95,8 @@ def harvest(setup, year, obs, **kwargs):
         harvester.cp().channel([channel]).backgrounds().ExtractShapes(filename, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
         harvester.cp().channel([channel]).signals().ExtractShapes(filename, "$BIN/$PROCESS_TES$MASS", "$BIN/$PROCESS_TES$MASS_$SYSTEMATIC")
         #harvester.cp().channel([channel]).process(sysDef["processes"]).ExtractShapes( filename, "$BIN/$PROCESS_SF", "$BIN/$PROCESS_$SYSTEMATIC_SF") ###change
-   
+
+
 
    
         # ROOVAR
@@ -108,6 +107,7 @@ def harvest(setup, year, obs, **kwargs):
         print("tes: %s") %(tesname)
         tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
         tes.setConstant(True)
+    
     
         # MORPHING
         print green(">>> morphing...")
@@ -125,6 +125,7 @@ def harvest(setup, year, obs, **kwargs):
         harvester.ExtractData("ztt", "$BIN_data_obs")  # Extract the RooDataHist
 
         harvester.SetAutoMCStats(harvester, 0, 1, 1) # Set the autoMCStats line (with -1 = no bbb uncertainties)
+
 
         # NUISANCE PARAMETER GROUPS
         # To do: export to config file

@@ -15,7 +15,7 @@ channel: mutau
 
 tag: "_mutau_mt65_noSF_DM"
 #tag: "_mutau_mt65_noSF_DM_stitching"
-#tag: "_mutau_mt65_noSF_DM_binmvis"
+#tag: "_mutau_mt65_noSF_DM_binmvis1000_rebin"
 
 
 baselineCuts: "q_1*q_2<0 && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017v2p1VSjet_2>=32 && idDeepTau2017v2p1VSe_2>=2 && idDeepTau2017v2p1VSmu_2>=8 && !lepton_vetoes_notau && metfilter"
@@ -69,7 +69,7 @@ tid_SFRegions:
 
 observables:
     m_vis:
-        binning: [8, 50, 106]
+        binning: [10, 50, 106]
         title: "m_{vis}"
         extra:
             cut: "50<m_vis && m_vis<106"
