@@ -13,7 +13,7 @@ channel: mutau
 
 # Tag can be used to differentiate between scenarios
 
-tag: "_mtlt50"
+tag: "_mtlt65_test_stitch"
 
 baselineCuts: "q_1*q_2<0 && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017v2p1VSjet_2>=32 && idDeepTau2017v2p1VSe_2>=2 && idDeepTau2017v2p1VSmu_2>=8 && !lepton_vetoes_notau && metfilter"
 
@@ -76,7 +76,9 @@ samples:
 # Processes taken into account in analysis
 
 #processes: ["ZTT","ZL","ZJ","W","VV","ST","TTT","TTL","TTJ","QCD","data_obs"]
-processes: ["data_obs"]
+processes: ["ZTT","data_obs"]
+
+#processes: ["data_obs"]
 
 
 # Additional scale factors per year for specific processes (correction of xsec, reco SFs, etc.)

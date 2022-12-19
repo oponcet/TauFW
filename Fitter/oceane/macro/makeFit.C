@@ -35,7 +35,7 @@ void fit(Char_t *tag, Char_t *channel, Char_t *observable)
   // ZTT WORKSAPCE
   //TFile *fztt = new TFile("./output_UL2018/ztt_mt_" + TString(observable) + "-" + TString(channel) + TString(tag) + "_DeepTau-UL2018-13TeV.root"); // workspace
                                                                                                                                                    // Retrieve workspace from file
-   TFile *fztt = new TFile("./output_UL2018/combinecards.root"); //Combine DM 
+  TFile *fztt = new TFile("./output_UL2018/combinecards.root"); //Combine DM 
   RooWorkspace *w = (RooWorkspace *)fztt->Get("w");
   RooStats::ModelConfig *mc = (RooStats::ModelConfig *)w->obj("ModelConfig");
   RooAbsPdf *pdf = mc->GetPdf();
@@ -122,8 +122,10 @@ void parabola(Char_t *tag, Char_t *channel, Char_t *observable)
 
   // ----------------------------------
   // ZTT WORKSAPCE
-  TFile *fztt = new TFile("./output_UL2018/ztt_mt_" + TString(observable) + "-" + TString(channel) + TString(tag) + "_DeepTau-UL2018-13TeV.root"); // workspace
-                                                                                                                                                   // Retrieve workspace from file
+  TFile *fztt = new TFile("./output_UL2018/combinecards.root"); 
+
+  // TFile *fztt = new TFile("./output_UL2018/ztt_mt_" + TString(observable) + "-" + TString(channel) + TString(tag) + "_DeepTau.input-UL2018-13TeV.root"); // workspace
+  //                                                                                                                                                  // Retrieve workspace from file
   RooWorkspace *w = (RooWorkspace *)fztt->Get("w");
   RooStats::ModelConfig *mc = (RooStats::ModelConfig *)w->obj("ModelConfig");
   RooAbsPdf *pdf = mc->GetPdf();
@@ -191,27 +193,30 @@ void parabola_syst(Char_t *tag, Char_t *channel, Char_t *observable)
   RooAbsPdf *pdf = mc->GetPdf();
   RooAbsData *dataset = w->data("data_obs");//dataset of the real data 
 
-  // mc->Print();
-  //  w->Print();
+  mc->Print();
+  //w->Print();
   // RooAbsRealLValue *tes = w->var("tes");
   // RooAbsRealLValue *r = w->var("r");
   // // Set tes to 1 to have it as reference for the calculation of NLL
   // tes->setVal(1);
   // tes->setConstant(true);
   RooAbsRealLValue *r = w->var("r");
+  r->setVal(1);
   r->setConstant(true);
 
   //Case with combined DM 
-  RooRealVar *tes_DM0 = w->var("tes_DM0");
-  RooRealVar *tes_DM1 = w->var("tes_DM1");
-  RooRealVar *tes_DM10 = w->var("tes_DM10");
+  // RooRealVar *tes_DM0 = w->var("tes_DM0");
+  // RooRealVar *tes_DM1 = w->var("tes_DM1");
+  // RooRealVar *tes_DM10 = w->var("tes_DM10");
   RooRealVar *tes_DM11 = w->var("tes_DM11");
  
-  tes_DM0->setVal(1);
-  tes_DM1->setVal(1);
-  tes_DM10->setVal(1);
+  // tes_DM0->setVal(1);
+  // tes_DM1->setVal(1);
+  // tes_DM10->setVal(1);
   tes_DM11->setVal(1);
-  RooArgSet tes(*tes_DM0,*tes_DM1,*tes_DM10,*tes_DM11);
+  //RooArgSet tes(*tes_DM0,*tes_DM1,*tes_DM10,*tes_DM11);
+  RooArgSet tes(*tes_DM11);
+
 
   RooAbsReal *nll = pdf->createNLL(*dataset, RooFit::Constrain(*mc->GetNuisanceParameters()), RooFit::GlobalObservables(*mc->GetGlobalObservables()));
   nll->enableOffsetting(kTRUE);
@@ -220,13 +225,13 @@ void parabola_syst(Char_t *tag, Char_t *channel, Char_t *observable)
   {
     // tes->setVal(TESvariations[i]);
     // tes->setConstant(true);
-    tes_DM0->setVal(TESvariations[i]);
-    tes_DM1->setVal(TESvariations[i]);
-    tes_DM10->setVal(TESvariations[i]);
+    //tes_DM0->setVal(TESvariations[i]);
+    // tes_DM1->setVal(TESvariations[i]);
+    // tes_DM10->setVal(TESvariations[i]);
     tes_DM11->setVal(TESvariations[i]);
-    tes_DM0->setConstant(false);
-    tes_DM1->setConstant(false);
-    tes_DM10->setConstant(false);
+    // tes_DM0->setConstant(false);
+    // tes_DM1->setConstant(false);
+    // tes_DM10->setConstant(false);
     tes_DM11->setConstant(false);
     // // ----------------------------------
     // Minimise: take errors from MINUIT
@@ -244,19 +249,19 @@ void parabola_syst(Char_t *tag, Char_t *channel, Char_t *observable)
 
     cout << "TES = " << TESvariations[i] << " result = " << result_tot->minNll() << endl;
     g->SetPoint(i, TESvariations[i], result_tot->minNll());
-    result_tot->Print("v");
+    //result_tot->Print("v");
   }
   // // ----------------------------------
   // Graph
   g->SetMarkerStyle(2);
-  g->SetTitle("Likelihood Asimov with systematics");
+  g->SetTitle("Likelihood with systematics");
   g->GetXaxis()->SetTitle("TES");
   g->GetYaxis()->SetTitle("-log(L)");
   g->GetXaxis()->SetRangeUser(0.96, 1.04);
   g->Draw("AP");
   CMSLabel(0, 0.001, TString(observable) + "-" + TString(channel), kBlack, 0.08);
   c1->Update();
-  c1->SaveAs("./fit/parabole_syst" + TString(observable) + "-" + TString(channel) + "-UL2018-13TeV" + TString(tag) + ".root");
+  c1->SaveAs("./oceane/fit/parabole_syst" + TString(observable) + "-" + TString(channel) + "-UL2018-13TeV" + TString(tag) + ".root");
 
 
   return;
@@ -264,7 +269,7 @@ void parabola_syst(Char_t *tag, Char_t *channel, Char_t *observable)
 
 void makeFit()
 {
-  Char_t tag[2][12] = {"_mtlt65", "_mtlt65_pT"};
+  Char_t tag[5][99] = {"_mtlt65", "_mtlt65_pT","_mtlt65_noSF_DMpt","_mutau_mt65_noSF_DM_highpt","_mutau_mt65_noSF_DM"};
   Char_t channel[13][15] = {"baseline", "DM0", "DM1", "DM10", "DM11", "DM0_pTlow",
                             "DM1_pTlow", "DM10_pTlow", "DM11_pTlow", "DM0_pThigh", "DM1_pThigh",
                             "DM10_pThigh", "DM11_pThigh"};
@@ -277,7 +282,11 @@ void makeFit()
   //   parabola_syst(tag[0], channel[i], observable[1]);
   // }
   
-  fit(tag[0], channel[1], observable[0]);
-  //parabola_syst(tag[0], channel[1], observable[0]);
+  //fit(tag[2], channel[1], observable[0]);
+  //parabola(tag[2], channel[1], observable[0]);
+
+  parabola_syst(tag[4], channel[4], observable[0]);
+  //parabola(tag[4], channel[4], observable[0]);
+
   return;
 }

@@ -13,6 +13,9 @@ channel: mutau
 
 # Tag can be used to differentiate between scenarios
 
+#tag: "_mtlt65_noSF_DMpt_mvisbin_50_rebin"
+
+#tag: "_mtlt65_noSF_DMpt_mvisbin_160_rebin"
 tag: "_mtlt65_noSF_DMpt"
 #tag: "_mtlt65_noSF_DMpt_stitching"
 #tag: "_mtlt65_noSF_DMpt_mvisbin_200"
@@ -75,28 +78,28 @@ regions:
         definition: "mt_1<65 && dm_2==11 && pt_2>35 && pt_2<40"
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
     DM0_pt5: 
-        definition: "mt_1<65 && dm_2==0 && pt_2>40 && pt_2<50"
+        definition: "mt_1<65 && dm_2==0 && pt_2>40 && pt_2<65"
         title: "h^{#pm}"
     DM1_pt5: 
-        definition: "mt_1<65 && dm_2==1 && pt_2>40 && pt_2<50"
+        definition: "mt_1<65 && dm_2==1 && pt_2>40 && pt_2<65"
         title: "h^{#pm}#pi^{0}"
     DM10_pt5: 
-        definition: "mt_1<65 && dm_2==10 && pt_2>40 && pt_2<50"
+        definition: "mt_1<65 && dm_2==10 && pt_2>40 && pt_2<65"
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11_pt5: 
-        definition: "mt_1<65 && dm_2==11 && pt_2>40 && pt_2<50"
+        definition: "mt_1<65 && dm_2==11 && pt_2>40 && pt_2<65"
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
     DM0_pt6: 
-        definition: "mt_1<65 && dm_2==0 && pt_2>50 && pt_2<70"
+        definition: "mt_1<65 && dm_2==0 && pt_2>65 && pt_2<70"
         title: "h^{#pm}"
     DM1_pt6: 
-        definition: "mt_1<65 && dm_2==1 && pt_2>50 && pt_2<70"
+        definition: "mt_1<65 && dm_2==1 && pt_2>65 && pt_2<70"
         title: "h^{#pm}#pi^{0}"
     DM10_pt6: 
-        definition: "mt_1<65 && dm_2==10 && pt_2>50 && pt_2<70"
+        definition: "mt_1<65 && dm_2==10 && pt_2>65 && pt_2<70"
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11_pt6: 
-        definition: "mt_1<65 && dm_2==11 && pt_2>50 && pt_2<70"
+        definition: "mt_1<65 && dm_2==11 && pt_2>65 && pt_2<70"
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
     DM0_pt7: 
         definition: "mt_1<65 && dm_2==0 && pt_2>70"
@@ -112,7 +115,8 @@ regions:
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
 
 # # #tes 
-plottingOrder: ["DM11", "DM10","DM1", "DM0"]
+plottingOrder: ["DM11", "DM10","DM1", "DM0"] # option 5
+#plottingOrder: ["DM11"]
 
 #tid SF
 #plottingOrder: ["pt1", "pt2", "pt3", "pt4", "pt5", "pt6", "pt7"]
@@ -141,28 +145,31 @@ tid_SFRegions:
     pt4: 
         title: "35<p_{t_{#tau}}<40" ###
     pt5: 
-        title: "40<p_{t_{#tau}}<50"
+        title: "40<p_{t_{#tau}}<65"
     pt6: 
-        title: "50<p_{t_{#tau}}<70"
+        title: "65<p_{t_{#tau}}<70"
     pt7: 
         title: "70<p_{t_{#tau}}" ###
 
 
 observables:
     m_vis:
-        binning: [10, 50, 106]
+        binning: [8, 50, 106]
         title: "m_{vis}"
         extra:
             cut: "50<m_vis && m_vis<106"
         fitRegions: ["DM0_pt1","DM0_pt2","DM0_pt3","DM0_pt4","DM0_pt5","DM0_pt6","DM0_pt7", "DM1_pt1","DM1_pt2","DM1_pt3","DM1_pt4","DM1_pt5","DM1_pt6","DM1_pt7","DM10_pt1","DM10_pt2","DM10_pt3","DM10_pt4","DM10_pt5","DM10_pt6","DM10_pt7","DM11_pt1","DM11_pt2","DM11_pt3","DM11_pt4","DM11_pt5","DM11_pt6","DM11_pt7"]
+        #fitRegions: ["DM11_pt1","DM11_pt2","DM11_pt3","DM11_pt4","DM11_pt5","DM11_pt6","DM11_pt7"]
         #scanRegions: ["pt1", "pt2", "pt3", "pt4", "pt5", "pt6", "pt7"] #option 4
         scanRegions: ["DM0", "DM1", "DM10", "DM11"] #option 5
+        #scanRegions: ["DM11"] #option 5
 
 
 # Assume that this code is meant to fit TES variations; more options could be added when adding other POIs
 
 TESvariations:
-    values: [0.970, 0.972, 0.974, 0.976, 0.978, 0.980, 0.982, 0.984, 0.986, 0.988, 0.990, 0.992, 0.994, 0.996, 0.998, 1.000, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012, 1.014, 1.016, 1.018, 1.020, 1.022, 1.024, 1.026, 1.028, 1.030]
+    #values: [0.970, 0.972, 0.974, 0.976, 0.978, 0.980, 0.982, 0.984, 0.986, 0.988, 0.990, 0.992, 0.994, 0.996, 0.998, 1.000, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012, 1.014, 1.016, 1.018, 1.020, 1.022, 1.024, 1.026, 1.028, 1.030]
+    values: [0.970, 0.974, 0.978, 0.982, 0.986, 0.990, 0.994, 0.998, 1.002, 1.006, 1.010, 1.014, 1.018, 1.022, 1.026, 1.030]
     #values: [0.970, 0.971, 0.972, 0.973, 0.974, 0.975, 0.976, 0.977, 0.978, 0.979, 0.980, 0.981, 0.982, 0.983, 0.984, 0.985, 0.986, 0.987, 0.988, 0.989,0.990, 0.991, 0.992, 0.993, 0.994, 0.995, 0.996, 0.997, 0.998, 0.999, 1.000, 1.001, 1.002, 1.003, 1.004, 1.005, 1.006, 1.007, 1.008, 1.009, 1.010, 1.011, 1.012, 1.013, 1.014, 1.015, 1.016, 1.017, 1.018, 1.019, 1.020, 1.021, 1.022, 1.023, 1.024, 1.025, 1.026, 1.027, 1.028, 1.029, 1.030]
     processes: ["ZTT"]
 

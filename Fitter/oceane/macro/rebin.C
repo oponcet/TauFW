@@ -39,7 +39,7 @@ void rebin(){
 
         // File
         //TString inFileName = "input/ztt_mt_tes_m_vis.inputs-UL2018-13TeV_mutau_mt65_noSF_DM_binmvis1000_rebin.root";
-        TString inFileName = "input/ztt_mt_tes_m_vis.inputs-UL2018-13TeV_mtlt65_noSF_DMpt_mvisbin_200_rebin.root";
+        TString inFileName = "input/ztt_mt_tes_m_vis.inputs-UL2018-13TeV_mtlt65_noSF_DMpt_mvisbin_160_rebin.root";
         TFile* file = new TFile(inFileName, "UPDATE");
 
         std::cout << dirName[i] << std::endl;

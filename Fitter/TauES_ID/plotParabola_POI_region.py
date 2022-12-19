@@ -265,6 +265,7 @@ def plotParabola(setup,var,region,year,**kwargs):
     
     CMSStyle.setCMSLumiStyle(canvas,0)
     #canvas.SetTicks(1,1)
+    canvas.SetGrid()
     canvas.Modified()
     canvas.Update()
     canvas.SaveAs(canvasname+".png")
@@ -538,29 +539,30 @@ def findMultiDimSlices(channel,var,**kwargs):
     
 
 
-def measurepoi(filename,unc=False,fit=False,asymmetric=True,**kwargs):
-    region = kwargs.get('scanRegions', "")
+def measurepoi(filename,poi,region,unc=False,fit=False,asymmetric=True,**kwargs):
+    #region = kwargs.get('scanRegions', "")
+
     """Create TGraph of DeltaNLL parabola vs. poi from MultiDimFit file."""
     if fit:
-       return measurepoi_fit(filename,asymmetric=asymmetric,unc=unc)
+       return measurepoi_fit(filename,poi=poi,asymmetric=asymmetric,unc=unc)
     file = ensureTFile(filename)
     tree = file.Get('limit')
-    poi, nll = [ ], [ ]
+    poi_list, nll = [ ], [ ]
     for event in tree:
-      poiname = "poi_%s"%region #combine DM 
-      poi.append(getattr(tree,poiname)) #combine DM
+      poiname = "%s_%s"%(poi,region) #combine DM
+      poi_list.append(getattr(tree,poiname)) #combine DM
       #poi.append(tree.poi)
       nll.append(2*tree.deltaNLL)
     file.Close()
     nllmin = min(nll)
     imin   = nll.index(nllmin)
-    poimin = poi[imin]
+    poimin = poi_list[imin]
 
     if unc:
       nll_left  = nll[:imin]
-      poi_left  = poi[:imin]
+      poi_left  = poi_list[:imin]
       nll_right = nll[imin:]
-      poi_right = poi[imin:]
+      poi_right = poi_list[imin:]
       if len(nll_left)==0 or len(nll_right)==0 : 
         print "ERROR! measurepoi: Parabola does not have a minimum within given range!"
         exit(1)
@@ -587,7 +589,7 @@ def measurepoi(filename,unc=False,fit=False,asymmetric=True,**kwargs):
     
 
 
-def measurepoi_fit(filename,asymmetric=True,unc=False):
+def measurepoi_fit(filename,poi,asymmetric=True,unc=False):
     """Create TGraph of DeltaNLL parabola vs. poi from MultiDimFit file."""
     file = ensureTFile(filename)
     tree = file.Get('limit')

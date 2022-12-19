@@ -17,7 +17,7 @@ def main(args):
   verbosity = args.verbosity
   setupConfFile = args.config
   plot      = False
-  outdir    = ensuredir("input")
+  outdir    = ensuredir("/afs/cern.ch/user/o/oponcet/private/stage_M2_PSA/code/CMSSW_10_6_13/src/TauFW/Fitter/input")
   plotdir   = ensuredir(outdir,"plots")
   analysis  = 'ztt'
 
