@@ -31,66 +31,66 @@ samples  = [
   
   # TTBAR
   M('TT','TTTo2L2Nu',
-    "/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True,toppt=True"),
+    "/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True,toppt=True"), #v16 missing changed to v15
   M('TT','TTToSemiLeptonic',
     "/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
     store=storage,url=url,files=filelist,opts="useT1=True,toppt=True"),
   M('TT','TTToHadronic',
-    "/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True,toppt=True"),
+    "/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True,toppt=True"), #v16 missing changed to v15
   
   # W+JETS
   M('WJ','WJetsToLNu',
-    "/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
+    "/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True"), #v16 missing changed to v15
   M('WJ','W1JetsToLNu',
-    "/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
+    "/W1JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True"), #v16 missing changed to v15
   M('WJ','W2JetsToLNu',
-    "/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
+    "/W2JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True"), #v16 missing changed to v15
   M('WJ','W3JetsToLNu',
-    "/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
-  M('WJ','W4JetsToLNu',
-    "/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
+    "/W3JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True"), #v16 missing changed to v15
+  # M('WJ','W4JetsToLNu',
+  #   "/W4JetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v2/NANOAODSIM",
+  #   store=storage,url=url,files=filelist,opts="useT1=True"), # RunIISummer20UL18 missing  
   
   # SINGLE TOP
   M('ST','ST_tW_antitop',
-    "/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
+    "/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True"), #v16 missing changed to v15
   M('ST','ST_tW_top',
-    "/ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
-  M('ST','ST_t-channel_antitop',
-    "/ST_t-channel_antitop_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
-  M('ST','ST_t-channel_top',
-    "/ST_t-channel_top_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM", # BUGGY Summer19
-    #/ST_t-channel_top_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM # In Production
-    store=storage,url=url,files=filelist,opts="useT1=True"),
+    "/ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True"), #v16 missing changed to v15
+  # M('ST','ST_t-channel_antitop',
+  #   "/ST_t-channel_antitop_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
+  #   store=storage,url=url,files=filelist,opts="useT1=True"),  # RunIISummer20UL18 missing  
+  # M('ST','ST_t-channel_top',
+  #   "/ST_t-channel_top_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM", # BUGGY Summer19
+  #   #/ST_t-channel_top_5f_InclusiveDecays_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM # In Production
+  #   store=storage,url=url,files=filelist,opts="useT1=True"), # RunIISummer20UL18 missing 
   
   # DIBOSON
   M('VV','WW',
-    "/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
+    "/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True"), #v16 missing changed to v15
   M('VV','WZ',
-    "/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
+    "/WZ_TuneCP5_13TeV-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True"), #v16 missing changed to v15
   M('VV','ZZ',
-    "/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL18NanoAODv9-106X_upgrade2018_realistic_v16_L1v1-v1/NANOAODSIM",
-    store=storage,url=url,files=filelist,opts="useT1=True"),
+    "/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM",
+    store=storage,url=url,files=filelist,opts="useT1=True"), #v16 missing changed to v15
   
   # SINGLE MUON
-  D('Data','SingleMuon_Run2018A',"/SingleMuon/Run2018A-UL2018_MiniAODv1_NanoAODv2-v3/NANOAOD",
+  D('Data','SingleMuon_Run2018A',"/SingleMuon/Run2018A-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD", #v2 missing changed to v1
     store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'mutau','mumu','emu','mumutau','mumettau']),
-  D('Data','SingleMuon_Run2018B',"/SingleMuon/Run2018B-UL2018_MiniAODv1_NanoAODv2-v2/NANOAOD",
+  D('Data','SingleMuon_Run2018B',"/SingleMuon/Run2018B-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD", #v2 missing changed to v1
     store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'mutau','mumu','emu','mumutau','mumettau']),
-  D('Data','SingleMuon_Run2018C',"/SingleMuon/Run2018C-UL2018_MiniAODv1_NanoAODv2-v2/NANOAOD",
+  D('Data','SingleMuon_Run2018C',"/SingleMuon/Run2018C-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD", #v2 missing changed to v1
     store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'mutau','mumu','emu','mumutau','mumettau']),
-  D('Data','SingleMuon_Run2018D',"/SingleMuon/Run2018D-UL2018_MiniAODv1_NanoAODv2-v2/NANOAOD",
+  D('Data','SingleMuon_Run2018D',"/SingleMuon/Run2018D-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD", #v2 missing changed to v1
     store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'mutau','mumu','emu','mumutau','mumettau']),
   
   # SINGLE ELECTRON
@@ -103,14 +103,14 @@ samples  = [
   D('Data','EGamma_Run2018D',"/EGamma/Run2018D-UL2018_MiniAODv1_NanoAODv2-v2/NANOAOD",
     store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'etau','ee','eetau']),
   
-  # TAU
-  D('Data','Tau_Run2018A',"/Tau/Run2018A-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD",
-    store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'tautau']),
-  D('Data','Tau_Run2018B',"/Tau/Run2018B-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD",
-    store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'tautau']),
-  D('Data','Tau_Run2018C',"/Tau/Run2018C-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD",
-    store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'tautau']),
-  D('Data','Tau_Run2018D',"/Tau/Run2018D-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD",
-    store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'tautau']),
+  # # TAU
+  # D('Data','Tau_Run2018A',"/Tau/Run2018A-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD",
+  #   store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'tautau']),
+  # D('Data','Tau_Run2018B',"/Tau/Run2018B-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD",
+  #   store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'tautau']),
+  # D('Data','Tau_Run2018C',"/Tau/Run2018C-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD",
+  #   store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'tautau']),
+  # D('Data','Tau_Run2018D',"/Tau/Run2018D-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD",
+  #   store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'tautau']),
   
 ]

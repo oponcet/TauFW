@@ -12,7 +12,6 @@
 #include "RooConstVar.h"
 #include "RooProdPdf.h"
 #include "TH1.h"
-#include "CMS_lumi.C"
 
 using namespace RooFit;
 
@@ -384,13 +383,13 @@ void yieldmvis(Char_t *region, Char_t *tag, const int ibin)
     printf("'%s'\n", dm);
     char *pt = strtok(NULL, "_");
     printf("'%s'\n", pt);
-    // TString sregion = TString(dm)+"_"+TString(pt);
+    //TString sregion = TString(dm)+"_"+TString(pt);
     TString sregion = TString(dm); // dm only
 
     // Variable
     TString stes = "tes_" + TString(dm);
     TString smvis = "CMS_x_" + TString(sregion);
-    // TString histfName = TString(dm)+"_"+TString(pt)+"_ZTT_morph";
+    //TString histfName = TString(dm)+"_"+TString(pt)+"_ZTT_morph";
     TString histfName = TString(dm) + "_ZTT_morph"; // dm only
 
     CMSHistFunc *histf = (CMSHistFunc *)w->obj(histfName); // use w->data() for dataset and w->pdf() for pdf
@@ -402,7 +401,7 @@ void yieldmvis(Char_t *region, Char_t *tag, const int ibin)
     RooRealVar *tes = w->var(stes);
     tes->Print();
     RooRealVar *morphmvis = w->var(smvis);
-    morphmvis->Print();
+    //morphmvis->Print();
 
     //// Mvis distribution for TES variation
     const int nbinstes = 31;
@@ -411,7 +410,7 @@ void yieldmvis(Char_t *region, Char_t *tag, const int ibin)
                                       1.014, 1.016, 1.018, 1.020, 1.022, 1.024, 1.026, 1.028, 1.030};
 
     double binyiedl[nbinstes]; // contains the values of the yeild for each TEvariation
-
+    double binyiedlerror[nbinstes];
     // Canvas to save
     TCanvas *c1 = new TCanvas();
 
@@ -425,12 +424,18 @@ void yieldmvis(Char_t *region, Char_t *tag, const int ibin)
         TH1 *hmvismorph = histf->createHistogram("hh", *morphmvis, Binning(8));
         // hmvismorph->Draw();
         binyiedl[i] = hmvismorph->GetBinContent(ibin);
+        binyiedlerror[i] = hmvismorph->GetBinError(ibin);
         //std::cout << "binyield 1 = " << binyiedl[i] << std::endl;
         hmvismorph->Delete();
     }
     TH1F *hyieldbin = new TH1F("hyiedlbin", "", nbinstes, 0.970, 1.03); // nbins-1
     hyieldbin->FillN(nbinstes, TESvariations, binyiedl);
-    hyieldbin->Draw("hist p");
+    for (int i = 1; i < nbinstes; i++)
+    {
+        hyieldbin->SetBinError(i,binyiedlerror[i]);
+    }
+    
+    hyieldbin->Draw("");
     //hyieldbin->GetYaxis()->SetRangeUser(14000, 16000);
     hyieldbin->SetMarkerStyle(2); // small crosses  
     hyieldbin->SetMarkerSize(1);
@@ -463,7 +468,7 @@ void readworkspace()
                              "DM10_pt3", "DM10_pt4", "DM10_pt5", "DM10_pt6",
                              "DM10_pt7", "DM11_pt1", "DM11_pt2", "DM11_pt3",
                              "DM11_pt4", "DM11_pt5", "DM11_pt6", "DM11_pt7",
-                             "DM0", "DM1", "DM10", "DM11"}; // 30e elements
+                             "DM0", "DM1", "DM10", "DM11"}; // lasy [31]
     Char_t tag[99][99] = {"_mtlt65_noSF_DMpt", "_mtlt65_SF_regionpt", "_mtlt65_noSF_DMpt_mvisbin",
                           "_mutau_mt65_noSF_DM_binmvis", "_mutau_mt65_noSF_DM"};
 
@@ -485,9 +490,9 @@ void readworkspace()
 
     for (int ibin = 1; ibin < 9; ibin++)
     {
-         yieldmvis(region[28], tag[4], ibin);
+         yieldmvis(region[31], tag[4], ibin);
     }
-    
+    //yieldmvis(region[0], tag[0], 3);
    
 
     return;

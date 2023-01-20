@@ -17,7 +17,7 @@ def main(args):
   verbosity = args.verbosity
   setupConfFile = args.config
   plot      = False
-  outdir    = ensuredir("/afs/cern.ch/user/o/oponcet/private/stage_M2_PSA/code/CMSSW_10_6_13/src/TauFW/Fitter/input")
+  outdir    = ensuredir("/afs/cern.ch/user/o/oponcet/private/TauFW/CMSSW_10_6_13/src/TauFW/Fitter/input")
   plotdir   = ensuredir(outdir,"plots")
   analysis  = 'ztt'
 
@@ -38,7 +38,7 @@ def main(args):
       
     # GET SAMPLESET
     sname     = setup["samples"]["filename"]
-    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="config_old.json")
+    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="config_old.json") #config_old.json
 
     # Potentially split up samples in several processes
     if "split" in setup["samples"]:

@@ -29,7 +29,7 @@ def combinedfit(setup, option, **kwargs):
     tid_SF_range = kwargs.get('tid_SF_range', "0.5,1.5"                                                                                                       )
     extratag     = kwargs.get('extratag',     "_DeepTau"                                                                                                      )
     algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1 --saveFitResult "                                                                   )# --saveWorkspace
-    npts_fit     = kwargs.get('npts_fit',     "--points=31"                                                                                                  )
+    npts_fit     = kwargs.get('npts_fit',     "--points=101"                                                                                                  )
     fit_opts     = kwargs.get('fit_opts',     "--robustFit=1 --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.001 %s" %(npts_fit))
     xrtd_opts    = kwargs.get('xrtd_opts',    "--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND"                            )
     cmin_opts    = kwargs.get('cmin_opts',    "--cminFallbackAlgo Minuit2,Migrad,0:0.0001 --cminPreScan"                                                 )
@@ -95,12 +95,12 @@ def combinedfit(setup, option, **kwargs):
                 os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
                 os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts, NP))
                  ##Impact plot
-                POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1 --freezeParameters r %s"%(POI, POI,tid_SF_range, r,tes_range,r)
-                os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-                os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-                os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,POI, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
-                os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
-                os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
+                # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1 --freezeParameters r %s"%(POI, POI,tid_SF_range, r,tes_range,r)
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,POI, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
+                # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
+                # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
                 
 
 
