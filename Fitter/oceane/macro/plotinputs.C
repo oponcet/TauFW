@@ -46,14 +46,20 @@ void fill_new_hists(TString region, int nbins, TString tag) {
 void plotinputs(){
 
     std::vector<TString> decaymodes = {"DM0","DM1","DM10","DM11"};
-    std::vector<TString> decaymodespt = {"DM0_pt1","DM0_pt2","DM0_pt3","DM0_pt4","DM0_pt5","DM0_pt6","DM0_pt7", "DM1_pt1","DM1_pt2","DM1_pt3","DM1_pt4","DM1_pt5","DM1_pt6","DM1_pt7","DM10_pt1","DM10_pt2","DM10_pt3","DM10_pt4","DM10_pt5","DM10_pt6","DM10_pt7","DM11_pt1","DM11_pt2","DM11_pt3","DM11_pt4","DM11_pt5","DM11_pt6","DM11_pt7"};//28
-    std::vector<TString> tags = {"_mutau_mt65_noSF_DM","_mutau_mt65_noSF_DM_stitching_baseline","_mtlt65_noSF_DMpt_stitching","_mtlt65_noSF_DMpt"};
+    std::vector<TString> decaymodespt = {"DM0_pt1","DM0_pt2","DM0_pt3","DM0_pt4","DM0_pt5", //4
+                                         "DM0_pt6","DM0_pt7", "DM1_pt1","DM1_pt2","DM1_pt3", //9
+                                         "DM1_pt4","DM1_pt5","DM1_pt6","DM1_pt7","DM10_pt1", //14
+                                         "DM10_pt2","DM10_pt3","DM10_pt4","DM10_pt5","DM10_pt6", //19
+                                         "DM10_pt7","DM11_pt1","DM11_pt2","DM11_pt3","DM11_pt4", //24
+                                         "DM11_pt5","DM11_pt6","DM11_pt7"};//27
+    std::vector<TString> tags = {"_mutau_mt65_noSF_DM","_mutau_mt65_noSF_DM_stitching_baseline","_mtlt65_noSF_DMpt_stitching","_mtlt65_noSF_DMpt","_mutau_mt65_noSF_DM_2pt_stitching_8bins","_mutau_mt65_noSF_DM_2pt_8bins"};
 
     //fill_new_hists(decaymodes[0], 8, tags[2]);
 
-    for (int i = 0; i < 28; i++)
+    for (int i = 0; i <= 1; i++)
     {
-        fill_new_hists(decaymodespt[i], 8, tags[2]);
+        fill_new_hists(decaymodespt[i], 8, tags[4]);
+        fill_new_hists(decaymodespt[i], 8, tags[5]);
     }
     
 }

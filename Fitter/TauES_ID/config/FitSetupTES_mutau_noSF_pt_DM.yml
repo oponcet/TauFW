@@ -17,7 +17,8 @@ channel: mutau
 
 #tag: "_mtlt65_noSF_DMpt_mvisbin_160_rebin"
 #tag: "_mtlt65_noSF_DMpt"
-tag: "_mtlt65_noSF_DMpt_stitching"
+#tag: "_mtlt65_noSF_DMpt_stitching"
+tag: "_mtlt65_noSF_DMpt_8bins"
 #tag: "_mtlt65_noSF_DMpt_mvisbin_200"
 
 baselineCuts: "q_1*q_2<0 && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017v2p1VSjet_2>=32 && idDeepTau2017v2p1VSe_2>=2 && idDeepTau2017v2p1VSmu_2>=8 && !lepton_vetoes_notau && metfilter"

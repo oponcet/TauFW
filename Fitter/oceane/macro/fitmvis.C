@@ -7,130 +7,333 @@
 #include "TFile.h"
 #include "TH1D.h"
 #include "TDirectory.h"
+#include "RooWorkspace.h"
+#include "RooRealVar.h"
+#include "RooDataHist.h"
+#include "RooGaussian.h"
+#include "RooAddPdf.h"
 
-// This function return the ZTT histo in the input and region wanted 
-TH1D* getztt(TString region, TString tag) {
-    TString inputfile = "input/ztt_mt_tes_m_vis.inputs-UL2018-13TeV_"+TString(tag)+".root";
+// This function return the ZTT histo in the input and region wanted
+TH1D *getztt(TString region, TString tag, double tes)
+{
+    TString inputfile = "input/ztt_mt_tes_m_vis.inputs-UL2018-13TeV" + TString(tag) + ".root";
     TFile *file = TFile::Open(inputfile);
-    TDirectory *dir = (TDirectory*)file->Get(region);
-    TString histname = "ZTT";
-    TH1D *histZTT = (TH1D*)dir->Get(histname);
-    TFile *outf = new TFile("file.root", "RECREATE");
+    TDirectory *dir = (TDirectory *)file->Get(region);
+    TString histname;
+    if (tes == 0)
+    {
+        histname = "ZTT";
+    }
+    else
+    {
+        histname = TString::Format("ZTT_TES%.3f", tes);
+        std::cout << "histname : " << histname << std::endl;
+    }
+    TH1D *histZTT = (TH1D *)dir->Get(histname);
     return histZTT;
+    file->Close();
+
 }
 
-// Fit ZTT with a sum of three gaussian 
-RooAddPdf* fitztt(TH1D* histZTT) {
-    // Create RooRealVar for the observable
-    RooRealVar x("x", "x", histZTT->GetXaxis()->GetXmin(), histZTT->GetXaxis()->GetXmax());
+RooWorkspace *createWorkspace(TH1 *histZTT)
+{
+    // Create RooRealVar for the histogram's x-axis
+    RooRealVar x("x", "x", histZTT->GetXaxis()->GetXmin(), histZTT->GetXaxis()->GetXmax(), "GeV");
     // Create RooDataHist for the histogram
-    RooDataHist data("data", "data", x,  RooFit::Import(*histZTT));
-    // Create Gaussian PDFs
-    RooRealVar mean1("mean1", "mean1", histZTT->GetMaximum());
-    RooRealVar sigma1("sigma1", "sigma1", 1);
+    RooDataHist data("data", "data", x, RooFit::Import(*histZTT));
+    int binmax = histZTT->GetMaximumBin();
+    double xmax = histZTT->GetXaxis()->GetBinCenter(binmax);
+    double rms = histZTT->GetRMS();
+    // std::cout << " rms = " << rms << std::endl;  // constant width
+    // std::cout << " max = " << xmax << std::endl; // constant width
+    // //   Create Gaussian PDFs
+    RooRealVar mean1("mean1", "mean1", xmax, xmax - rms, xmax + rms, "GeV"); // xmax+RMS
+    RooRealVar sigma1("sigma1", "sigma1", rms, 0, 2 * rms, "GeV");
     RooGaussian gauss1("gauss1", "gauss1", x, mean1, sigma1);
-    RooRealVar mean2("mean2", "mean2", histZTT->GetMaximum());
-    RooRealVar sigma2("sigma2", "sigma2", 1);
+    RooRealVar mean2("mean2", "mean2", xmax + 0.5 * rms, xmax, xmax + 2 * rms, "GeV"); // xmax + 1-2 RMS
+    RooRealVar sigma2("sigma2", "sigma2", 1, 0, 1000, "GeV");
     RooGaussian gauss2("gauss2", "gauss2", x, mean2, sigma2);
-    RooRealVar mean3("mean3", "mean3", histZTT->GetMaximum());
-    RooRealVar sigma3("sigma3", "sigma3", 1);
+    RooRealVar mean3("mean3", "mean3", xmax - 0.5 * rms, xmax - 2 * rms, xmax, "GeV");
+    RooRealVar sigma3("sigma3", "sigma3", 1, 0, 1000, "GeV");
     RooGaussian gauss3("gauss3", "gauss3", x, mean3, sigma3);
-    // Create a sum of Gaussian PDFs
-    RooRealVar frac1("frac1", "frac1", 0.4);
-    RooRealVar frac2("frac2", "frac2", 0.3);
-    RooRealVar frac3("frac3", "frac3", 0.3);
-
-    RooAddPdf* pdf = new RooAddPdf("pdf", "pdf", RooArgList(gauss1, gauss2, gauss3), RooArgList(frac1, frac2, frac3));
-    // Perform the fit
-    pdf->fitTo(data,RooFit::SumW2Error(kTRUE));
-    pdf->Print();
-    return pdf;
+    RooRealVar norm("norm", "norm", histZTT->Integral(), 0, 1000000000);
+    mean1.setConstant(kFALSE);
+    // // Create a sum of Gaussian PDFs
+    RooRealVar frac1("frac1", "frac1", 0.6, 0.5, 1.0);
+    RooRealVar frac2("frac2", "frac2", 0.3, 0.0, 1.0);
+    RooAddPdf pdf("pdf", "pdf", RooArgList(gauss1, gauss2, gauss3), RooArgList(frac1, frac2));
+    RooExtendPdf extended_pdf("extended_pdf", "extended_pdf", pdf, norm);
+    pdf.Print();
+    // Create the RooWorkspace
+    RooWorkspace *ws = new RooWorkspace("ws");
+    // // Import the PDF, the variable, and the data into the workspace
+    ws->import(extended_pdf);
+    ws->import(data);
+    // Return the pointer to the RooWorkspace
+    return ws;
 }
 
-
-void drawHistFunc(TH1D* histZTT, TString region, TString tag ) {
-    // Create RooRealVar for the observable
-    RooRealVar x("x", "x", histZTT->GetXaxis()->GetXmin(), histZTT->GetXaxis()->GetXmax());
-    // Create RooDataHist for the histogram
-    RooDataHist data("data", "data", x,  RooFit::Import(*histZTT));
-    // Create Gaussian PDFs
-    RooRealVar mean1("mean1", "mean1", 62);
-    RooRealVar sigma1("sigma1", "sigma1", 1);
-    RooGaussian gauss1("gauss1", "gauss1", x, mean1, sigma1);
-    RooRealVar mean2("mean2", "mean2",62);
-    RooRealVar sigma2("sigma2", "sigma2", 1);
-    RooGaussian gauss2("gauss2", "gauss2", x, mean2, sigma2);
-    RooRealVar mean3("mean3", "mean3", 62);
-    RooRealVar sigma3("sigma3", "sigma3", 1);
-    RooGaussian gauss3("gauss3", "gauss3", x, mean3, sigma3);
-    // Create a sum of Gaussian PDFs
-    RooRealVar frac1("frac1", "frac1", 0.6); //sum should be 1 
-    RooRealVar frac2("frac2", "frac2", 0.3);
-    RooRealVar frac3("frac3", "frac3", 0.1);
-
-    RooAddPdf* pdf = new RooAddPdf("pdf", "pdf", RooArgList(gauss1, gauss2, gauss3), RooArgList(frac1, frac2, frac3));
-    
-    // Set fit parameter 
-    mean1.setVal(62);
-    sigma1.setVal(1);
-    frac1.setVal(0.6);
-    mean2.setVal(62);
-    sigma2.setVal(1);
-    frac2.setVal(0.3);
-    mean3.setVal(62);
-    sigma3.setVal(1);
-    frac3.setVal(0.1);  
-
+// Function for fitting the data to the PDF
+void fitZTT(RooWorkspace *ws)
+{
+    // Get the PDF, the variable, and the data from the workspace
+    RooAbsPdf *pdf = (RooAbsPdf *)ws->pdf("extended_pdf");
+    RooRealVar *x = (RooRealVar *)ws->var("x");
+    RooDataHist *data = (RooDataHist *)ws->data("data");
     // Perform the fit
-    pdf->fitTo(data,RooFit::SumW2Error(kTRUE), RooFit::Minimizer("Minuit2"));
+    RooFitResult *result = pdf->fitTo(*data, RooFit::SumW2Error(kTRUE), RooFit::Minimizer("Minuit2"), RooFit::Extended(true), RooFit::Save());
+    result->Print();
+    ws->import(*result); // import the result object into the workspace
+    return result;
+}
 
-    // Output file 
-    TString outputFile1 = "./oceane/macro/output/zttfit/zttfit" + TString(tag)+"_"+TString(region) + ".root";
-    TFile *outf = new TFile(outputFile1, "RECREATE"); 
-
-    // Create a new RooPlot
-    RooPlot* frame = x.frame();
-    // Draw the histogram with error bars
-    data.plotOn(frame, RooFit::Name("histZTT"));
-    // Draw the fit function on top of the histogram
-    pdf->plotOn(frame, RooFit::LineColor(kRed), RooFit::Name("pdf"),RooFit::DrawOption("same"));
-    // Draw the fit function on top of the histogram
-    gauss1.plotOn(frame, RooFit::LineColor(kBlue), RooFit::Name("gauss1"),RooFit::DrawOption("same"),RooFit::LineStyle(9));
-    gauss2.plotOn(frame, RooFit::LineColor(kGreen), RooFit::Name("gauss2"),RooFit::DrawOption("same"),RooFit::LineStyle(9));
-    gauss3.plotOn(frame, RooFit::LineColor(kRed), RooFit::Name("gauss3"),RooFit::DrawOption("same"),RooFit::LineStyle(9));
+// Function for plotting the results
+void plotResults(RooWorkspace *ws, TString region, TString tag)
+{
+    // Output file
+    TString outputFile1 = "./oceane/macro/output/zttfit/zttfit" + TString(tag) + "_" + TString(region) + ".root";
+    TFile *outf = new TFile(outputFile1, "RECREATE");
+    std::cout << " >>> Region = " << region << std::endl;
+    // Get the PDF, the variable, and the data from the workspace
+    RooAddPdf *pdf = (RooAddPdf *)ws->pdf("pdf");
+    RooRealVar *x = (RooRealVar *)ws->var("x");
+    RooRealVar *norm = (RooRealVar *)ws->var("norm"); // get the normalisation of the pdf
+    RooDataHist *data = (RooDataHist *)ws->data("data");
+    RooFitResult *result = (RooFitResult *)ws->obj("fitResult");
+    RooPlot *frame = x->frame();
+    std::cout << "nbins = " << data->numEntries() << std::endl;
     // Draw the frame on a canvas
-    TCanvas* c = new TCanvas("c", "Fit Result", 800, 600);
+    TCanvas *c = new TCanvas("c", "Fit Result", 800, 600);
+    // Upper plot will be in pad1
+    TPad *pad1 = new TPad("pad1", "pad1", 0, 0.3, 1, 1.0);
+    pad1->SetBottomMargin(0); // Upper and lower plot are joined
+    pad1->SetGridx();         // Vertical grid
+    pad1->Draw();             // Draw the upper pad: pad1
+    pad1->cd();               // pad1 becomes the current pad
+    // Draw the histogram with error bars
+    data->plotOn(frame, RooFit::Name("histZTT"), RooFit::DataError(RooAbsData::SumW2));
+    // Draw the fit function on top of the histogram
+    pdf->plotOn(frame, RooFit::LineColor(kRed), RooFit::Name("pdf"), RooFit::DrawOption("same"));
+    // Get the gauss functions
+    RooArgSet *compSet = pdf->getComponents();
+    RooGaussian *gauss1 = (RooGaussian *)compSet->find("gauss1");
+    RooGaussian *gauss2 = (RooGaussian *)compSet->find("gauss2");
+    RooGaussian *gauss3 = (RooGaussian *)compSet->find("gauss3");
+    // Get the frac
+    RooRealVar *frac1 = (RooRealVar *)ws->var("frac1");
+
+    // Draw the fit function on top of the histogram
+    gauss1->plotOn(frame, RooFit::LineColor(kBlue), RooFit::Name("gauss1"), RooFit::DrawOption("same"), RooFit::LineStyle(9));
+    gauss2->plotOn(frame, RooFit::LineColor(kCyan + 2), RooFit::Name("gauss2"), RooFit::DrawOption("same"), RooFit::LineStyle(9));
+    gauss3->plotOn(frame, RooFit::LineColor(kViolet + 2), RooFit::Name("gauss3"), RooFit::DrawOption("same"), RooFit::LineStyle(9));
     frame->Draw();
     // Add a legend
-    TLegend *legend = new TLegend(0.7,0.7,0.9,0.9);
-    legend->AddEntry(frame->findObject("histZTT"),"histZTT","l");
-    legend->AddEntry(frame->findObject("pdf"),"pdf","l");
-    legend->AddEntry(frame->findObject("gauss1"),"gauss1","l");
-    legend->AddEntry(frame->findObject("gauss2"),"gauss2","l");
-    legend->AddEntry(frame->findObject("gauss3"),"gauss3","l");
+    TLegend *legend = new TLegend(0.7, 0.7, 0.9, 0.9);
+    legend->AddEntry(frame->findObject("histZTT"), "histZTT", "l");
+    legend->AddEntry(frame->findObject("pdf"), "pdf", "l");
+    legend->AddEntry(frame->findObject("gauss1"), "gauss1", "l");
+    legend->AddEntry(frame->findObject("gauss2"), "gauss2", "l");
+    legend->AddEntry(frame->findObject("gauss3"), "gauss3", "l");
     legend->Draw();
     // Display the fit result on the canvas
     pdf->paramOn(frame);
-    //pdf->paramOn(frame, RooFit::Layout(0.6, 0.9, 0.9));
-    histZTT->Write();
+    // result->Print();
+    //  Create a RooChi2Var object
+    //  RooChi2Var chi2("chi2", "chi2", *pdf, *data);
+    //  std::cout << "chi2 = " << chi2.getVal() << std::endl;
+    //  // // Get the number of degrees of freedom
+    //  int nfparam = result->floatParsFinal().getSize(); // number degrees of freedom
+    //  //double chi2_ndof = frame->chiSquare("pdf", "histZTT",nfparam); // chi2_dof
+    //  //std::cout << "nfparam = " << nfparam << std::endl;
+    //  int nbins = data->numEntries();
+    //  //std::cout << "nbins = " << nbins << std::endl;
+    //  int ndof = nbins - nfparam;
+    //  //std::cout << "ndof = " << ndof << std::endl;
+    //  // Calculate chi2/dof
+    //  double chi2_ndof = chi2.getVal() / ndof*1.0;
+    //  std::cout << "chi2/ndof = " << chi2_ndof << std::endl;
+    //   // Add the chi2/dof value to the plot
+    //  TPaveText *pt = new TPaveText(0.7,0.6,0.9,0.7,"NDC");
+    //  TString text = TString::Format("#chi^{2}/dof = %.2f", chi2_ndof);
+    //  pt->AddText(text);
+    //  pt->SetFillColor(0);
+    //  pt->SetBorderSize(0);
+    //  pt->Draw("same");
+    // pdf->paramOn(frame, RooFit::Layout(0.6, 0.9, 0.9));
+    data->Write();
     pdf->Write();
+    c->Update();
+    //
+    //  Ratio plot
+    TH1 *pdf_hist = pdf->createHistogram("pdf_hist", *x, RooFit::Binning(data->numEntries()));
+    TH1 *ztt_hist = data->createHistogram("ztt_hist", *x, RooFit::Binning(data->numEntries()));
+    pdf_hist->Scale(norm->getVal());
+    std::cout << "bins pdf_hist = " << pdf_hist->GetNbinsX() << std::endl;
+    std::cout << "bins ztt_hist = " << ztt_hist->GetNbinsX() << std::endl;
+
+    // lower plot will be in pad
+    c->cd(); // Go back to the main canvas before defining pad2
+    TPad *pad2 = new TPad("pad2", "pad2", 0, 0.05, 1, 0.3);
+    pad2->SetTopMargin(0);
+    pad2->SetBottomMargin(0.2);
+    pad2->SetGridx(); // vertical grid
+    pad2->Draw();
+    pad2->cd();
+    // Define the ratio plot
+    TH1 *h3 = (TH1 *)ztt_hist->Clone("h3");
+    h3->SetLineColor(kBlack);
+    h3->Sumw2();
+    h3->SetStats(0); // No statistics on lower plot
+    h3->Divide(pdf_hist);
+    h3->SetMarkerStyle(21);
+    h3->SetMinimum(0); // Define Y ..
+    h3->SetMaximum(2); // .. range
+    // ztt_hist->Draw();
+    // pdf_hist->Draw();
+    h3->Draw("ep"); // Draw the ratio plot
     c->Update();
     c->Write();
     outf->Close();
     delete outf;
 }
-   
 
+void plotShiftedPdf(RooWorkspace *ws_original, TString region, TString tag, double tes)
+{
+    // Output file
+    TString outputFile1 = "./oceane/macro/output/zttfit/zttfit_shift" + TString(tag) + "_" + TString(region) + ".root";
+    TFile *outf1 = new TFile(outputFile1, "UPDATE");
 
+    // Create a new workspace
+    RooWorkspace *ws = new RooWorkspace(*ws_original);
 
-void fitmvis(){
-    
+    // Get the PDF, the variable, and the data from the workspace
+    RooAddPdf *pdf = (RooAddPdf *)ws->pdf("pdf");
+    RooRealVar *x = (RooRealVar *)ws->var("x");
+    RooDataHist *data = (RooDataHist *)ws->data("data");
+    RooRealVar *norm = (RooRealVar *)ws->var("norm"); // get the normalisation of the pdf
 
-    TH1D *histZTT = getztt("DM0","mutau_mt65_noSF_DM_binmvis1000"); // get ZTT 
-    // RooAddPdf *pdf = fitztt(histZTT);
-    // pdf->Print();
+    // Get the gauss functions
+    RooArgSet *compSet = pdf->getComponents();
+    RooGaussian *gauss1 = (RooGaussian *)compSet->find("gauss1");
+    RooGaussian *gauss2 = (RooGaussian *)compSet->find("gauss2");
+    RooGaussian *gauss3 = (RooGaussian *)compSet->find("gauss3");
 
-    drawHistFunc(histZTT,"DM0","mutau_mt65_noSF_DM");
+    // gauss1->Print();
 
+    // Get the mean variables for the Gaussian PDFs
+    RooRealVar *mean1 = (RooRealVar *)ws->var("mean1");
+    RooRealVar *mean2 = (RooRealVar *)ws->var("mean2");
+    RooRealVar *mean3 = (RooRealVar *)ws->var("mean3");
+    // Get the sigma variables for the Gaussian PDFs
+    RooRealVar *sigma1 = (RooRealVar *)ws->var("sigma1");
+    RooRealVar *sigma2 = (RooRealVar *)ws->var("sigma2");
+    RooRealVar *sigma3 = (RooRealVar *)ws->var("sigma3");
+    std::cout << "mean1_shifted = " << mean1->getVal() << std::endl;
 
+    if (tes != 0)
+    {
+        // // Shift the means and the sigma by applying the TES factor
+        mean1->setVal(mean1->getVal() * tes);
+        mean2->setVal(mean2->getVal() * tes);
+        mean3->setVal(mean3->getVal() * tes);
+        sigma1->setVal(sigma1->getVal() * tes);
+        sigma2->setVal(sigma2->getVal() * tes);
+        sigma3->setVal(sigma3->getVal() * tes);
+    }
+    else
+    {
+        std::cout << "nominal tes : no shift" << std::endl;
+    }
+
+    // // Get the ZTT_tes0.97 histogram
+    TH1D *histZTT_tes = getztt(region, tag, tes);
+
+    // // Create a new RooPlot object
+    RooPlot *xframe = ws->var("x")->frame();
+
+    // Create RooDataHist for the histogram
+    RooDataHist data_shifted("data_shifted", "data_shifted", *x, RooFit::Import(*histZTT_tes));
+
+    // Create the canvas
+    outf1->cd();
+    TCanvas *c1 = new TCanvas(TString::Format("tes_%.3f", tes), TString::Format("tes_%.3f", tes), 800, 600);
+    c1->cd();
+    // Upper plot will be in pad1
+    TPad *pad1 = new TPad("pad1", "pad1", 0, 0.3, 1, 1.0);
+    pad1->SetBottomMargin(0); // Upper and lower plot are joined
+    pad1->SetGridx();         // Vertical grid
+    pad1->Draw();             // Draw the upper pad: pad1
+    pad1->cd();               // pad1 becomes the current pad
+    // Plot the ZTT_tes0.97 histogram on the RooPlot
+    data_shifted.plotOn(xframe, RooFit::MarkerColor(kBlue));
+
+    // Plot the shifted PDF on the RooPlot
+    pdf->plotOn(xframe, RooFit::LineColor(kRed), RooFit::DrawOption("same"));
+
+    // Draw the RooPlot
+
+    xframe->Draw();
+
+    // lower plot will be in pad
+    c1->cd(); // Go back to the main canvas before defining pad2
+    TPad *pad2 = new TPad("pad2", "pad2", 0, 0.05, 1, 0.3);
+    pad2->SetTopMargin(0);
+    pad2->SetBottomMargin(0.2);
+    pad2->SetGridx(); // vertical grid
+    pad2->Draw();
+    pad2->cd();
+    //  Ratio plot
+    TH1 *pdf_hist = pdf->createHistogram("pdf_hist", *x, RooFit::Binning(histZTT_tes->GetNbinsX()));
+    pdf_hist->Scale(norm->getVal());
+    // Define the ratio plot
+    TH1 *h3 = (TH1 *)histZTT_tes->Clone("h3");
+    h3->SetLineColor(kBlack);
+    h3->Sumw2();
+    h3->SetStats(0); // No statistics on lower plot
+    h3->Divide(pdf_hist);
+    h3->SetMarkerStyle(21);
+    h3->SetMinimum(0); // Define Y ..
+    h3->SetMaximum(3); // .. range
+    // ztt_hist->Draw();
+    // pdf_hist->Draw();
+    h3->Draw("ep"); // Draw the ratio plot
+    c1->Update();
+    // c1->ls();
+    // outf1->ls();
+    c1->Write();
+    outf1->Close();
+}
+
+void fitmvis()
+{
+    gROOT->SetBatch(kTRUE);
+    std::vector<TString> decaymodes = {"DM0", "DM1", "DM10", "DM11"};
+    std::vector<TString> decaymodespt = {"DM0_pt1", "DM0_pt2", "DM0_pt3", "DM0_pt4", "DM0_pt5", "DM0_pt6", "DM0_pt7", "DM1_pt1", "DM1_pt2", "DM1_pt3", "DM1_pt4", "DM1_pt5", "DM1_pt6", "DM1_pt7", "DM10_pt1", "DM10_pt2", "DM10_pt3", "DM10_pt4", "DM10_pt5", "DM10_pt6", "DM10_pt7", "DM11_pt1", "DM11_pt2", "DM11_pt3", "DM11_pt4", "DM11_pt5", "DM11_pt6", "DM11_pt7"}; // 28
+    std::vector<TString> tags = {"_mutau_mt65_noSF_DM", "_mutau_mt65_noSF_DM_stitching_baseline", "_mtlt65_noSF_DMpt_stitching",
+                                 "_mtlt65_noSF_DMpt", "_mtlt65_noSF_DMpt_mvisbin_50", "_mutau_mt65_noSF_DM_2pt_stitching_8bins",
+                                 "_mutau_mt65_noSF_DM_binmvis1000", "_mtlt65_noSF_DMpt_mvisbin_50"};
+
+    // // Get ZTT from inputs
+    std::cout << ">>>>> get ztt region : " << decaymodespt[1] << std::endl;
+    TH1D *histZTT = getztt(decaymodespt[1], tags[5], 0);
+    // // Create the workspace
+    std::cout << ">>>>> create workspace  " << std::endl;
+    RooWorkspace *ws = createWorkspace(histZTT);
+    // Fit ZTT with pdf
+    std::cout << ">>>>> fit ztt  " << std::endl;
+    fitZTT(ws);
+    std::cout << ">>>>> plot   " << std::endl;
+    plotResults(ws, decaymodespt[1], tags[7]);
+
+    const int ntes = 31;
+
+    double tes_values[ntes] = {0.970, 0.972, 0.974, 0.976, 0.978, 0.980, 0.982, 0.984, 0.986, 0.988, 0.990,
+                               0.992, 0.994, 0.996, 0.998, 1.000, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012,
+                               1.014, 1.016, 1.018, 1.020, 1.022, 1.024, 1.026, 1.028, 1.030};
+
+    for (int ites = 0; ites < ntes; ites++)
+    {
+        plotShiftedPdf(ws, decaymodespt[1], tags[7], tes_values[ites]);
+    }
+    // plotShiftedPdf(ws, decaymodespt[0], tags[7], 0.970);
 }
