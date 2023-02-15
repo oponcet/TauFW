@@ -80,7 +80,7 @@ def main(args):
     observables = []
     for obsName in setup["observables"]:
       obs = setup["observables"][obsName]
-      if "binVariable" in obs["binning"]:
+      if "binVariable" in obs["binning"]: # useful for non constant binning 
         observables.append( Var(obsName, obs["binning"]["binVariable"], **obs["extra"]) )
       else:
         observables.append( Var(obsName, obs["binning"][0], obs["binning"][1], obs["binning"][2], **obs["extra"]) )
