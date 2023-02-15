@@ -21,56 +21,61 @@ using namespace std;
 
 void plotresults(){
 
+
   TCanvas *c = new TCanvas("c", "tid_SF", 25, 25, 800, 800);
-  //c->DrawFrame(0,0,1000,1.5);
+  c->DrawFrame(0,0,1000,1.5);
 
   //TID
-  // c->Print("./plots_UL2018/results_tid.pdf[");
-  // TGraphAsymmErrors *g = new TGraphAsymmErrors("./plots_UL2018/tid.txt","%lg %lg %lg %lg %lg %lg");
-
-  // g->SetTitle( "Measurement of tid SF;""Tau pt (GeV);""tid sf");
-  // g->SetMarkerStyle(8);
-
-  // c->cd();
-  // g->Draw("APE");
-  // g->Print();
-
-  // g->GetYaxis()->SetRangeUser(0,1.5);
-  // g->GetXaxis()->SetRangeUser(20,1000);
- 
-  // gPad->SetLogx();
-
-
-  // // Canvas saved
-  // c->Update();
-  // c->Modified();
-  
-  // c->Print("./plots_UL2018/results_tid.pdf");
-  // c->Print("./plots_UL2018/results_tid.pdf]");
-  // c->SaveAs("./plots_UL2018/results_tid.root");
-
   c->Print("./plots_UL2018/results_tid.pdf[");
-  TGraphAsymmErrors *g = new TGraphAsymmErrors("./plots_UL2018/tes.txt","%lg %lg %lg %lg %lg %lg");
 
-  g->SetTitle( "Measurement of tes;""tes;""DM");
+  double pt[7] = {22.5, 27.5, 32.5, 37.5, 45, 55, 70, 90, 150};
+  double pt_error[7] = {2.5, 2.5, 2.5, 2.5, 5, 5, 10, 10, 50};
+
+  TGraphAsymmErrors *g = new TGraphAsymmErrors("./plots_UL2018/measurement_poi_mt_mtlt65_noSF_DMpt_DeepTau.txt","%lg %lg %lg %lg %lg %lg");
+
+  g->SetTitle( "Measurement of tid SF;""Tau pt (GeV);""tid sf");
   g->SetMarkerStyle(8);
 
   c->cd();
   g->Draw("APE");
   g->Print();
 
-  g->GetXaxis()->SetRangeUser(0.95,1.05);
-  g->GetYaxis()->SetRangeUser(0,10);
+  g->GetYaxis()->SetRangeUser(0,1.5);
+  g->GetXaxis()->SetRangeUser(20,1000);
  
+  gPad->SetLogx();
 
 
   // Canvas saved
   c->Update();
   c->Modified();
   
-  c->Print("./plots_UL2018/results_tes.pdf");
-  c->Print("./plots_UL2018/results_tes.pdf]");
-  c->SaveAs("./plots_UL2018/results_tes.root");
+  c->Print("./plots_UL2018/results_tid.pdf");
+  c->Print("./plots_UL2018/results_tid.pdf]");
+  c->SaveAs("./plots_UL2018/results_tid.root");
+
+  c->Print("./plots_UL2018/results_tid.pdf[");
+  //TGraphAsymmErrors *g = new TGraphAsymmErrors("./plots_UL2018/tes.txt","%lg %lg %lg %lg %lg %lg");
+
+  // g->SetTitle( "Measurement of tes;""tes;""DM");
+  // g->SetMarkerStyle(8);
+
+  // c->cd();
+  // g->Draw("APE");
+  // g->Print();
+
+  // g->GetXaxis()->SetRangeUser(0.95,1.05);
+  // g->GetYaxis()->SetRangeUser(0,10);
+ 
+
+
+  // // Canvas saved
+  // c->Update();
+  // c->Modified();
+  
+  // c->Print("./plots_UL2018/results_tes.pdf");
+  // c->Print("./plots_UL2018/results_tes.pdf]");
+  // c->SaveAs("./plots_UL2018/results_tes.root");
 
   
   

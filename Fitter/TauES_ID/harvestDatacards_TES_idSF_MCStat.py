@@ -75,14 +75,29 @@ def harvest(setup, year, obs, **kwargs):
             #harvester.cp().signals().AddSyst(harvester, 'tid_SF_$BIN','rateParam', SystMap()(1.00))
             #print sysDef
          
-        listbin = region.split("_")
-        print("listbin : %s") %(listbin)
+        # listbin = region.split("_")
+        # print("listbin : %s") %(listbin)
 
-        if len(listbin) == 1:
-          tid_name = "tid_SF_%s"%(listbin[0])
+        # if len(listbin) == 1:
+        #   tid_name = "tid_SF_%s"%(listbin[0])
+        # else:
+        #   tid_name = "tid_SF_%s"%(listbin[1])
+        # print("tid : %s") %(tid_name)
+
+        listbin = region.split("_")
+        if region in setup["tid_SFRegions"]:
+          tid_name = "tid_SF_%s" %(region)
         else:
-          tid_name = "tid_SF_%s"%(listbin[1])
-        print("tid : %s") %(tid_name)
+          print("listbin : %s") %(listbin)
+
+          if len(listbin) == 1:
+            tid_name = "tid_SF_%s"%(listbin[0])
+          else:
+            tid_name = "tid_SF_%s"%(listbin[1])
+        print(">>> tid : %s") %(tid_name)
+
+
+        
 
         harvester.cp().signals().AddSyst(harvester, tid_name,'rateParam', SystMap()(1.00))
 
@@ -102,9 +117,17 @@ def harvest(setup, year, obs, **kwargs):
         # ROOVAR
         workspace = RooWorkspace(analysis,analysis)
         print analysis
-        #tesname = "tes_%s"%(region)
-        tesname = "tes_%s"%(listbin[0])
+
+        if region in setup["tesRegions"]:
+          tesname = "tes_%s" %(region)
+        else:
+          tesname = "tes_%s"%(listbin[0])
         print("tes: %s") %(tesname)
+
+
+        #tesname = "tes_%s"%(region)
+        # tesname = "tes_%s"%(listbin[0])
+        # print("tes: %s") %(tesname)
         tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
         tes.setConstant(True)
     

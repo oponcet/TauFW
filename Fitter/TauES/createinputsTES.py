@@ -80,8 +80,11 @@ def main(args):
     observables = []
     for obsName in setup["observables"]:
       obs = setup["observables"][obsName]
-      observables.append( Var(obsName, obs["binning"][0], obs["binning"][1], obs["binning"][2], **obs["extra"]) )
-
+      if "binVariable" in obs["binning"]:
+        observables.append( Var(obsName, obs["binning"]["binVariable"], **obs["extra"]) )
+      else:
+        observables.append( Var(obsName, obs["binning"][0], obs["binning"][1], obs["binning"][2], **obs["extra"]) )
+      
 
     ############
     #   BINS / FIT REGIONS  #

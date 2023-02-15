@@ -68,16 +68,16 @@ void plotCMSHist(Char_t *region, Char_t *tag)
     RooPlot *mvisframe = mvis->frame();
 
     //// Mvis distrbution for TES variations
-    double TESvariations[32] = {0.970, 0.971, 0.972, 0.974, 0.976, 0.978, 0.980, 0.982, 0.984, 0.986, 0.988, 0.990,
+    double TESvariations[34] = {0.970, 0.971, 0.972, 0.973, 0.974, 0.975, 0.976, 0.978, 0.980, 0.982, 0.984, 0.986, 0.988, 0.990,
                                 0.992, 0.994, 0.996, 0.998, 1.000, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012,
                                 1.014, 1.016, 1.018, 1.020, 1.022, 1.024, 1.026, 1.028, 1.030};
 
-    for (int i = 12; i < 13; i++)
+    for (int i = 0; i < 6; i++)
     {
         std::cout << "tes = " << TESvariations[i] << std::endl;
         tes->setVal(TESvariations[i]);
         tes->setConstant(true);
-        histf->plotOn(mvisframe);
+        histf->plotOn(mvisframe, LineColor(i));
         mvisframe->Draw();
 
         c->Update();
@@ -470,7 +470,7 @@ void readworkspace()
                              "DM11_pt4", "DM11_pt5", "DM11_pt6", "DM11_pt7",
                              "DM0", "DM1", "DM10", "DM11"}; // lasy [31]
     Char_t tag[99][99] = {"_mtlt65_noSF_DMpt", "_mtlt65_SF_regionpt", "_mtlt65_noSF_DMpt_mvisbin",
-                          "_mutau_mt65_noSF_DM_binmvis", "_mutau_mt65_noSF_DM"};
+                          "_mutau_mt65_noSF_DM_binmvis", "_mutau_mt65_noSF_DM","_mtlt65_noSF_DMpt_var_stich"};
 
     //    for (int i = 0; i < 1; i++)
     //    {
@@ -488,12 +488,13 @@ void readworkspace()
 
     // compareMorph(region[28], tag[4]);
 
-    for (int ibin = 1; ibin < 9; ibin++)
-    {
-         yieldmvis(region[31], tag[4], ibin);
-    }
+    // for (int ibin = 1; ibin < 9; ibin++)
+    // {
+    //      yieldmvis(region[31], tag[4], ibin);
+    // }
     //yieldmvis(region[0], tag[0], 3);
    
+    plotCMSHist(region[0],tag[5]);
 
     return;
 }
