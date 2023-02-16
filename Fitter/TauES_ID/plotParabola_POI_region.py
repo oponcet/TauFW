@@ -1314,7 +1314,7 @@ def main(args):
             else:
                   plotMeasurements(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions) ,canvas=canvas,xtitle="tau energy scale",xmin=min(setup["TESvariations"]["values"]),xmax=max(setup["TESvariations"]["values"]),L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'], poi=poi)
 
-            plotidSF_pt(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions),xtitle="tau id scale factor",xmin=0.7,xmax=1.05,L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'], poi=poi)
+            #plotidSF_pt(setup, measurements, (setup["plottingOrder"] if "plottingOrder" in setup else allRegions),xtitle="tau id scale factor",xmin=0.7,xmax=1.05,L=0.20, position="out",entries=allObsTitles,emargin=0.14,cposition='topright',exts=['png','pdf'], poi=poi)
 
        
 

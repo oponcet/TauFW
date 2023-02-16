@@ -37,128 +37,128 @@ def combinedfit(setup, option, **kwargs):
     era          = kwargs.get('era',          ""                                                                                                              )
     config       = kwargs.get('config',       ""                                                                                                              )
 
-    # ### DM regions : tes and tid_SF
-    # if option < '7':
-    # # Generating datacards
-    #     print('Generating datacards')
-    #     os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
+    ### DM regions : tes and tid_SF
+    if option < '7':
+    # Generating datacards
+        print('Generating datacards')
+        os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
        
-    # else:
-    #     print("This option does not exist... try --help")
+    else:
+        print("This option does not exist... try --help")
 
 
-    # # Variable like m_vis 
-    # for v in setup["observables"]:
-    #     variable = setup["observables"][v]
-    #     print("Observable : "+v)
+    # Variable like m_vis 
+    for v in setup["observables"]:
+        variable = setup["observables"][v]
+        print("Observable : "+v)
 
-    #     ##Combining the datacards to do the fit simultaneously with all the parameters
-    #     if  option > 2: 
-    #         LABEL = setup["tag"]+extratag+"-"+era+"-13TeV"
-    #         filelist = "" # List of the datacard files to merge in one file combinecards.txt
-    #         for region in variable["fitRegions"]:
-    #             filelist += region + "=output_"+era+"/ztt_mt_m_vis-"+region+LABEL+".txt "
-    #         #print("filelist : %s") %(filelist) 
-    #         os.system("combineCards.py %s >output_%s/combinecards.txt" % (filelist, era))
-    #         print(">>>>>>>>> merging datacards is done ")
-    #         os.system("text2workspace.py output_%s/combinecards.txt " % (era))
+        ##Combining the datacards to do the fit simultaneously with all the parameters
+        if  option > 2: 
+            LABEL = setup["tag"]+extratag+"-"+era+"-13TeV"
+            filelist = "" # List of the datacard files to merge in one file combinecards.txt
+            for region in variable["fitRegions"]:
+                filelist += region + "=output_"+era+"/ztt_mt_m_vis-"+region+LABEL+".txt "
+            #print("filelist : %s") %(filelist) 
+            os.system("combineCards.py %s >output_%s/combinecards.txt" % (filelist, era))
+            print(">>>>>>>>> merging datacards is done ")
+            os.system("text2workspace.py output_%s/combinecards.txt " % (era))
 
-    #     ## For each region defined in scanRegions in the config file 
-    #     for r in variable["scanRegions"]:
-    #         print("Region : "+r)
+        ## For each region defined in scanRegions in the config file 
+        for r in variable["scanRegions"]:
+            print("Region : "+r)
 
-    #         # Global variables
-    #         BINLABEL = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV"
-    #         WORKSPACE = "output_"+era+"/ztt_"+BINLABEL+".root"
+            # Global variables
+            BINLABEL = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV"
+            WORKSPACE = "output_"+era+"/ztt_"+BINLABEL+".root"
 
-    #         # Fit of tes_DM by DM with tid_SF as a nuisance parameter 
-    #         if option == '1':
-    #             POI = "tes_%s" % (r)
-    #             NP = "rgx{.*tid.*}"
-    #             print(">>>>>>>"+POI+" fit")
-    #             POI_OPTS = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r " % (POI, POI, tes_range, r,tid_SF_range)  # tes_DM
-    #             os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
-    #             os.system("combine -M MultiDimFit  %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts,NP))
-    #             # ##Impact plot
-    #             # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1 --freezeParameters r "%(POI, POI, tes_range, r,tid_SF_range)
-    #             # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-    #             # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-    #             # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,POI, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
-    #             # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
-    #             # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
+            # Fit of tes_DM by DM with tid_SF as a nuisance parameter 
+            if option == '1':
+                POI = "tes_%s" % (r)
+                NP = "rgx{.*tid.*}"
+                print(">>>>>>>"+POI+" fit")
+                POI_OPTS = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r " % (POI, POI, tes_range, r,tid_SF_range)  # tes_DM
+                os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
+                os.system("combine -M MultiDimFit  %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts,NP))
+                # ##Impact plot
+                # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1 --freezeParameters r "%(POI, POI, tes_range, r,tid_SF_range)
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,POI, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
+                # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
+                # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
                 
-    #         # Fit of tid_SF_DM by DM with tes as a nuisance parameter
-    #         elif option == '2':
-    #             POI = "tid_SF_%s" % (r)
-    #             NP = "rgx{.*tid.*}" 
-    #             print(">>>>>>> tid_"+r+" fit")
-    #             POI_OPTS = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r " % (POI, POI, tid_SF_range, r,tid_SF_range)  # tes_DM
-    #             os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
-    #             os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts, NP))
-    #              ##Impact plot
-    #             # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1 --freezeParameters r %s"%(POI, POI,tid_SF_range, r,tes_range,r)
-    #             # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-    #             # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-    #             # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,POI, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
-    #             # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
-    #             # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
+            # Fit of tid_SF_DM by DM with tes as a nuisance parameter
+            elif option == '2':
+                POI = "tid_SF_%s" % (r)
+                NP = "rgx{.*tid.*}" 
+                print(">>>>>>> tid_"+r+" fit")
+                POI_OPTS = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r " % (POI, POI, tid_SF_range, r,tid_SF_range)  # tes_DM
+                os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
+                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts, NP))
+                 ##Impact plot
+                # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1 --freezeParameters r %s"%(POI, POI,tid_SF_range, r,tes_range,r)
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,POI, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
+                # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
+                # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
                 
 
 
-    #         # 2D Fit of tes_DM and tid_SF_DM by DM, both are pois
-    #         elif option == '3':  
-    #             print(">>>>>>> Fit of tid_SF_"+r+" and tes_"+r)
-    #             POI1 = "tid_SF_%s" % (r)
-    #             POI2 = "tes_%s" % (r)
-    #             POI_OPTS = "-P %s -P %s --setParameterRanges %s=%s:%s=%s -m 90 --setParameters r=1,%s=1,%s=1 --freezeParameters r " % (POI2, POI1, POI2, tes_range, POI1,tid_SF_range, POI2, POI1)
-    #             os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
-    #             os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s " %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
+            # 2D Fit of tes_DM and tid_SF_DM by DM, both are pois
+            elif option == '3':  
+                print(">>>>>>> Fit of tid_SF_"+r+" and tes_"+r)
+                POI1 = "tid_SF_%s" % (r)
+                POI2 = "tes_%s" % (r)
+                POI_OPTS = "-P %s -P %s --setParameterRanges %s=%s:%s=%s -m 90 --setParameters r=1,%s=1,%s=1 --freezeParameters r " % (POI2, POI1, POI2, tes_range, POI1,tid_SF_range, POI2, POI1)
+                os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
+                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s " %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
 
 
-    #         ### Fit with combined datacards 
-    #         ## Fit of tid_SF in its regions with tes_region and other tid_SF_regions as nuisance parameters  
-    #         elif option == '4': 
-    #             print(">>>>>>> Fit of tid_SF_"+r)
-    #             POI_OPTS = "-P tid_SF_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r" %(r, tid_SF_range, tes_range)
-    #             WORKSPACE = "output_"+era+"/combinecards.root"
-    #             os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tes.*}" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
-    #             # POI_OPTS_I = "-P tid_SF_%s --setParameterRanges tid_SF_%s=%s -m 90 --setParameters r=1 --freezeParameters r" %(r,r, tid_SF_range)
-    #             # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs tid_SF_%s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, r,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-    #             # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs tid_SF_%s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, r,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
-    #             # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs tid_SF_%s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,r, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
-    #             # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
-    #             # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
+            ### Fit with combined datacards 
+            ## Fit of tid_SF in its regions with tes_region and other tid_SF_regions as nuisance parameters  
+            elif option == '4': 
+                print(">>>>>>> Fit of tid_SF_"+r)
+                POI_OPTS = "-P tid_SF_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r" %(r, tid_SF_range, tes_range)
+                WORKSPACE = "output_"+era+"/combinecards.root"
+                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tes.*}" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
+                # POI_OPTS_I = "-P tid_SF_%s --setParameterRanges tid_SF_%s=%s -m 90 --setParameters r=1 --freezeParameters r" %(r,r, tid_SF_range)
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs tid_SF_%s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, r,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs tid_SF_%s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, r,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
+                # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs tid_SF_%s %s %s %s %s -o postfit/impacts_%s.json"%(BINLABEL, WORKSPACE,r, fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts, BINLABEL))
+                # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABEL,BINLABEL))
+                # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABEL,BINLABEL))
 
 
-    #         ## Fit of tes in DM regions with tid_SF and other tes_DM as nuisance parameters  
-    #         elif option == '5':
-    #             print(">>>>>>> simultaneous fit of tid_SF in pt bins and tes_"+r + " in DM")
-    #             POI_OPTS = "-P tes_%s --redefineSignalPOIs tes_DM0,tes_DM1,tes_DM10,tes_DM11 --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r,rgx{.*tid.*} --floatOtherPOIs=1" %(r, tid_SF_range, tes_range)
-    #             WORKSPACE = "output_"+era+"/combinecards.root"
-    #             os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tid.*} --saveInactivePOI=1" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
-    #             # # Add this when addind -saveToys option to combine
-    #             # print("higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.123456.root")
-    #             # os.rename("higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.123456.root", "higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.root")
-    #             # #os.rename("higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.GenerateOnly.mH90.123456.root", "higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.root")
+            ## Fit of tes in DM regions with tid_SF and other tes_DM as nuisance parameters  
+            elif option == '5':
+                print(">>>>>>> simultaneous fit of tid_SF in pt bins and tes_"+r + " in DM")
+                POI_OPTS = "-P tes_%s --redefineSignalPOIs tes_DM0,tes_DM1,tes_DM10,tes_DM11 --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r,rgx{.*tid.*} --floatOtherPOIs=1" %(r, tid_SF_range, tes_range)
+                WORKSPACE = "output_"+era+"/combinecards.root"
+                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tid.*} --saveInactivePOI=1" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
+                # # Add this when addind -saveToys option to combine
+                # print("higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.123456.root")
+                # os.rename("higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.123456.root", "higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.root")
+                # #os.rename("higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.GenerateOnly.mH90.123456.root", "higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.root")
 
-    #         ### 2D Fit of tes_DM and tid_SF in DM and pt regions with others tid_SF and tes_DM as nuisance parameter
-    #         elif option == '6':
-    #             #for each decay mode
-    #             for r in setup['tidRegions']: #["DM0","DM1","DM10","DM11"]
-    #                 for dm in setup['tesRegions']:
-    #                     BINLABEL = "mt_"+v+"-"+r+dm+setup["tag"]+extratag+"-"+era+"-13TeV"
-    #                     print("Region : "+r)
-    #                     print(">>>>>>> simultaneous fit of tes_" +r + " in pt bins and tes_"+r + "in DM")
-    #                     POI_OPTS = "-P tid_SF_%s -P tes_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1 --freezeParameters r" %(r,dm, tid_SF_range, tes_range)
-    #                     WORKSPACE = "output_"+era+"/combinecards.root"
-    #                     os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s " %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
+            ### 2D Fit of tes_DM and tid_SF in DM and pt regions with others tid_SF and tes_DM as nuisance parameter
+            elif option == '6':
+                #for each decay mode
+                for r in setup['tidRegions']: #["DM0","DM1","DM10","DM11"]
+                    for dm in setup['tesRegions']:
+                        BINLABEL = "mt_"+v+"-"+r+dm+setup["tag"]+extratag+"-"+era+"-13TeV"
+                        print("Region : "+r)
+                        print(">>>>>>> simultaneous fit of tes_" +r + " in pt bins and tes_"+r + "in DM")
+                        POI_OPTS = "-P tid_SF_%s -P tes_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1 --freezeParameters r" %(r,dm, tid_SF_range, tes_range)
+                        WORKSPACE = "output_"+era+"/combinecards.root"
+                        os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s " %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
 
-    #         else:
-    #             continue
+            else:
+                continue
 
-    # os.system("mv higgsCombine*root output_%s"%era)
+    os.system("mv higgsCombine*root output_%s"%era)
 
-    ### Plot 
+    ## Plot 
 
     if option == '2' or option == '4' :
       print(">>> Plot parabola")
