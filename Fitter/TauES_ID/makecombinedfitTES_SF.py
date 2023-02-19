@@ -38,7 +38,7 @@ def combinedfit(setup, option, **kwargs):
     config       = kwargs.get('config',       ""                                                                                                              )
 
     ### DM regions : tes and tid_SF
-    if option < '7':
+    if int(option) < '7':
     # Generating datacards
         print('Generating datacards')
         os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
