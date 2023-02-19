@@ -150,6 +150,17 @@ def harvest(setup, year, obs, **kwargs):
         harvester.SetAutoMCStats(harvester, 0, 1, 1) # Set the autoMCStats line (with -1 = no bbb uncertainties)
 
 
+        # Rebin histograms for channel using Auto Rebinning
+
+        # rebin = AutoRebin()
+        # rebin.SetBinThreshold(100)
+        # rebin.SetBinUncertFraction(0.2)
+        # rebin.SetRebinMode(1)
+        # rebin.SetPerformRebin(True)
+        # rebin.SetVerbosity(1) 
+        # rebin.Rebin(harvester,harvester)
+
+
         # NUISANCE PARAMETER GROUPS
         # To do: export to config file
         print green(">>> setting nuisance parameter groups...")

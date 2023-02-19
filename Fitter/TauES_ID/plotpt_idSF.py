@@ -18,7 +18,7 @@ def load_pt_values(setup,**kwargs):
     pt_error_list  = []
     bins_order = setup["plottingOrder"]
     for ibin, ptregion in enumerate(bins_order):
-        print("region = %s" %(ptregion))
+        # print("region = %s" %(ptregion))
         title = setup["tid_SFRegions"][ptregion]["title"]
         str_pt_lo = title.split("<")[0].split(" ")[-1]
         str_pt_hi = title.split("<")[-1].split(" ")[0]
@@ -28,7 +28,7 @@ def load_pt_values(setup,**kwargs):
         pt_error = pt_avg - pt_lo
         pt_avg_list.append(pt_avg)
         pt_error_list.append(pt_error)
-        print("pt average = %f and pt error = %s" %(pt_avg, pt_error))
+        # print("pt average = %f and pt error = %s" %(pt_avg, pt_error))
 
     return pt_avg_list, pt_error_list
 
@@ -52,24 +52,25 @@ def load_sf_measurements(setup,year,**kwargs):
           id_SFs_errhi.append(float(cols[2]))
           id_SFs_errlo.append(float(cols[3]))
   #Print the lists
-  print(region)
-  print(id_SFs)
-  print(id_SFs_errhi)
-  print(id_SFs_errlo)
+  # print(region)
+  # print(id_SFs)
+  # print(id_SFs_errhi)
+  # print(id_SFs_errlo)
   return region, id_SFs, id_SFs_errhi, id_SFs_errlo
 
 
-def plot_dm_graph(setup,year,dm_bins,**kwargs):
+def plot_dm_graph(setup,year,**kwargs):
 
   indir   = kwargs.get('indir',       "plots_%s"%year )
   outdir  = kwargs.get('outdir',      "plots_%s"%year )
   tag     = kwargs.get('tag',         ""              )
-  dm_bins = kwargs.get('dm_bins',     False           )
+  dm_bins = kwargs.get('dm_bins',     False              )
 
   pt_avg_list, pt_error_list = load_pt_values(setup)
-  region, id_SFs, id_SFs_errhi, id_SFs_errlo = load_sf_measurements(setup, year, tag=tag)
+  region, id_SFs, id_SFs_errhi, id_SFs_errlo = load_sf_measurements(setup, year, tag=tag, indir=indir)
   
-  if dm_bins==False:
+  print(dm_bins)
+  if bool(dm_bins)==False:
     print(">>> DM inclusive ")
     graph = ROOT.TGraphAsymmErrors(len(pt_avg_list),
                                     array("d", pt_avg_list),
@@ -135,7 +136,7 @@ def plot_dm_graph(setup,year,dm_bins,**kwargs):
       graph.SetTitle("ID Scale Factors vs. pT for %s" % dm)
       graph.GetXaxis().SetTitle("pT [GeV]")
       graph.GetYaxis().SetTitle("ID Scale Factors")
-      graph.GetYaxis().SetRangeUser(0.65, 1.1)
+      #graph.GetYaxis().SetRangeUser(0.65, 1.1)
       
       # add the graph to the dictionary
       graphs_dict[dm] = graph
@@ -144,7 +145,7 @@ def plot_dm_graph(setup,year,dm_bins,**kwargs):
       ROOT.gROOT.SetBatch(True)
       
       # draw the graph
-      canvasname = "%s/id_SF_ptplot_%s" %(outdir,dm)
+      canvasname = "%s/id_SF_ptplot%s_%s" %(outdir,tag,dm)
       canvas = ROOT.TCanvas(canvasname, canvasname, 800, 600)
       graph.Draw("AP")
       canvas.Draw()
@@ -160,19 +161,20 @@ def ensureDirectory(dirname):
 
 def main(args):
     
-    print "Using configuration file: %s"%args.config
-    with open(args.config, 'r') as file:
-        setup = yaml.safe_load(file)
+  print "Using configuration file: %s"%args.config
+  with open(args.config, 'r') as file:
+      setup = yaml.safe_load(file)
 
-    tag           = setup["tag"] if "tag" in setup else ""
-    year          = args.year
-    dm_bins       = args.dm_bins
-    indir         = "plots_%s"%year
-    outdir        = "plots_%s"%year
-    ensureDirectory(outdir)
-    CMSStyle.setCMSEra(year)
-    
-    plot_dm_graph(setup,year,dm_bins,outdir=outdir,tag=tag)
+  tag           = setup["tag"] if "tag" in setup else ""
+  year          = args.year
+  dm_bins       = args.dm_bins
+  indir         = "plots_%s"%year
+  outdir        = "plots_%s"%year
+  ensureDirectory(outdir)
+  CMSStyle.setCMSEra(year)
+  print(dm_bins)
+
+  plot_dm_graph(setup,year,dm_bins=dm_bins,indir=indir,outdir=outdir,tag=tag)
 
 
 

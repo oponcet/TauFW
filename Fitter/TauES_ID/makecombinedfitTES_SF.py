@@ -26,7 +26,7 @@ from argparse import ArgumentParser
 ### Fitting function using combine tool
 def combinedfit(setup, option, **kwargs):
     tes_range    = kwargs.get('tes_range',    "%s,%s" %(min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))                         )
-    tid_SF_range = kwargs.get('tid_SF_range', "0.5,1.5"                                                                                                       )
+    tid_SF_range = kwargs.get('tid_SF_range', "0.4,1.6"                                                                                                       )
     extratag     = kwargs.get('extratag',     "_DeepTau"                                                                                                      )
     algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1 --saveFitResult "                                                                   )# --saveWorkspace
     npts_fit     = kwargs.get('npts_fit',     "--points=61"                                                                                                  )
@@ -53,15 +53,15 @@ def combinedfit(setup, option, **kwargs):
         print("Observable : "+v)
 
         ##Combining the datacards to do the fit simultaneously with all the parameters
-        if  option > 2: 
+        if  int(option) > 2: 
             LABEL = setup["tag"]+extratag+"-"+era+"-13TeV"
             filelist = "" # List of the datacard files to merge in one file combinecards.txt
             for region in variable["fitRegions"]:
                 filelist += region + "=output_"+era+"/ztt_mt_m_vis-"+region+LABEL+".txt "
             #print("filelist : %s") %(filelist) 
-            os.system("combineCards.py %s >output_%s/combinecards.txt" % (filelist, era))
+            os.system("combineCards.py %s >output_%s/combinecards%s.txt" % (filelist, era,setup["tag"]))
             print(">>>>>>>>> merging datacards is done ")
-            os.system("text2workspace.py output_%s/combinecards.txt " % (era))
+            os.system("text2workspace.py output_%s/combinecards%s.txt " % (era,setup["tag"]))
 
         ## For each region defined in scanRegions in the config file 
         for r in variable["scanRegions"]:
@@ -116,12 +116,12 @@ def combinedfit(setup, option, **kwargs):
 
 
             ### Fit with combined datacards 
-            ## Fit of tid_SF in its regions with tes_region and other tid_SF_regions as nuisance parameters  
+            ## Fit of tid_SF in its regions with tes_region and other tid_SF_regions as nuisance parameters    tes_DM0,tes_DM1,tes_DM10,tes_DM11
             elif option == '4': 
                 print(">>>>>>> Fit of tid_SF_"+r)
-                POI_OPTS = "-P tid_SF_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r" %(r, tid_SF_range, tes_range)
-                WORKSPACE = "output_"+era+"/combinecards.root"
-                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tes.*}" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
+                POI_OPTS = "-P tid_SF_%s --redefineSignalPOIs tes_DM0,tes_DM1,tes_DM10,tes_DM11 --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters  r=1,rgx{.*tes.*}=1 --freezeParameters r,var{.*tes.*} --floatOtherPOIs=1" %(r, tid_SF_range,tes_range)
+                WORKSPACE = "output_"+era+"/combinecards%s.root"%(setup["tag"])
+                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s  --trackParameters rgx{.*tid.*} --saveInactivePOI=1" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
                 # POI_OPTS_I = "-P tid_SF_%s --setParameterRanges tid_SF_%s=%s -m 90 --setParameters r=1 --freezeParameters r" %(r,r, tid_SF_range)
                 # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs tid_SF_%s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, r,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
                 # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs tid_SF_%s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, r,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
@@ -134,7 +134,7 @@ def combinedfit(setup, option, **kwargs):
             elif option == '5':
                 print(">>>>>>> simultaneous fit of tid_SF in pt bins and tes_"+r + " in DM")
                 POI_OPTS = "-P tes_%s --redefineSignalPOIs tes_DM0,tes_DM1,tes_DM10,tes_DM11 --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r,rgx{.*tid.*} --floatOtherPOIs=1" %(r, tid_SF_range, tes_range)
-                WORKSPACE = "output_"+era+"/combinecards.root"
+                WORKSPACE = "output_"+era+"/combinecards%s.root"%(setup["tag"])
                 os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tid.*} --saveInactivePOI=1" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
                 # # Add this when addind -saveToys option to combine
                 # print("higgsCombine.mt_"+v+"-"+r+setup["tag"]+"_DeepTau-UL2018-13TeV.MultiDimFit.mH90.123456.root")
@@ -150,7 +150,7 @@ def combinedfit(setup, option, **kwargs):
                         print("Region : "+r)
                         print(">>>>>>> simultaneous fit of tes_" +r + " in pt bins and tes_"+r + "in DM")
                         POI_OPTS = "-P tid_SF_%s -P tes_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1 --freezeParameters r" %(r,dm, tid_SF_range, tes_range)
-                        WORKSPACE = "output_"+era+"/combinecards.root"
+                        WORKSPACE = "output_"+era+"/combinecards%s.root"%(setup["tag"])
                         os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s " %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
 
             else:
@@ -163,7 +163,8 @@ def combinedfit(setup, option, **kwargs):
     if option == '2' or option == '4' :
       print(">>> Plot parabola")
       os.system("./TauES_ID/plotParabola_POI_region.py -p tid_SF -y %s -e %s -r %s,%s -s -a -c %s"% (era, extratag, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), config))
-    
+      os.system("./TauES_ID/plotPostFitScan_POI.py --poi tid_SF -y %s -e %s -r %s,%s -c %s" %(era,extratag,min(tid_SF_range),max(tid_SF_range), config))
+
     elif option == '1' or option == '5' :
         print(">>> Plot parabola")
         os.system("./TauES_ID/plotParabola_POI_region.py -p tes -y %s -e %s -r %s,%s -s -a -c %s" % (era, extratag, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), config))

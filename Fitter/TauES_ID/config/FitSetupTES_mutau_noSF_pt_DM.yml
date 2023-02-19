@@ -32,88 +32,88 @@ baselineCuts: "q_1*q_2<0 && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017v2
 
 regions:
     DM0_pt1: 
-        definition: "mt_1<65 && dm_2==0 && pt_2>20 && pt_2<25 && gendm_2==0"
+        definition: "mt_1<65 && dm_2==0 && pt_2>20 && pt_2<25 "
         title: "h^{#pm}"
     DM1_pt1: 
-        definition: "mt_1<65 && dm_2==1 && pt_2>20 && pt_2<25 && gendm_2==1"
+        definition: "mt_1<65 && dm_2==1 && pt_2>20 && pt_2<25 "
         title: "h^{#pm}#pi^{0}"
     DM10_pt1: 
-        definition: "mt_1<65 && dm_2==10 && pt_2>20 && pt_2<25 && gendm_2==10"
+        definition: "mt_1<65 && dm_2==10 && pt_2>20 && pt_2<25 "
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11_pt1: 
-        definition: "mt_1<65 && dm_2==11 && pt_2>20 && pt_2<25 && gendm_2==11"
+        definition: "mt_1<65 && dm_2==11 && pt_2>20 && pt_2<25 "
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
     DM0_pt2: 
-        definition: "mt_1<65 && dm_2==0 && pt_2>25 && pt_2<30 && gendm_2==0"
+        definition: "mt_1<65 && dm_2==0 && pt_2>25 && pt_2<30 "
         title: "h^{#pm}"
     DM1_pt2: 
-        definition: "mt_1<65 && dm_2==1 && pt_2>25 && pt_2<30 && gendm_2==1"
+        definition: "mt_1<65 && dm_2==1 && pt_2>25 && pt_2<30 "
         title: "h^{#pm}#pi^{0}"
     DM10_pt2: 
-        definition: "mt_1<65 && dm_2==10 && pt_2>25 && pt_2<30 && gendm_2==10"
+        definition: "mt_1<65 && dm_2==10 && pt_2>25 && pt_2<30 "
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11_pt2: 
-        definition: "mt_1<65 && dm_2==11 && pt_2>25 && pt_2<30 && gendm_2==11"
+        definition: "mt_1<65 && dm_2==11 && pt_2>25 && pt_2<30 "
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
     DM0_pt3: 
-        definition: "mt_1<65 && dm_2==0 && pt_2>30 && pt_2<35 && gendm_2==0"
+        definition: "mt_1<65 && dm_2==0 && pt_2>30 && pt_2<35 "
         title: "h^{#pm}"
     DM1_pt3: 
-        definition: "mt_1<65 && dm_2==1 && pt_2>30 && pt_2<35 && gendm_2==1"
+        definition: "mt_1<65 && dm_2==1 && pt_2>30 && pt_2<35 "
         title: "h^{#pm}#pi^{0}"
     DM10_pt3: 
-        definition: "mt_1<65 && dm_2==10 && pt_2>30 && pt_2<35 && gendm_2==10"
+        definition: "mt_1<65 && dm_2==10 && pt_2>30 && pt_2<35 "
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11_pt3: 
-        definition: "mt_1<65 && dm_2==11 && pt_2>30 && pt_2<35 && gendm_2==11"
+        definition: "mt_1<65 && dm_2==11 && pt_2>30 && pt_2<35 "
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
     DM0_pt4: 
-        definition: "mt_1<65 && dm_2==0 && pt_2>35 && pt_2<40 && gendm_2==0"
+        definition: "mt_1<65 && dm_2==0 && pt_2>35 && pt_2<40 "
         title: "h^{#pm}"
     DM1_pt4: 
-        definition: "mt_1<65 && dm_2==1 && pt_2>35 && pt_2<40 && gendm_2==1"
+        definition: "mt_1<65 && dm_2==1 && pt_2>35 && pt_2<40 "
         title: "h^{#pm}#pi^{0}"
     DM10_pt4: 
-        definition: "mt_1<65 && dm_2==10 && pt_2>35 && pt_2<40 && gendm_2==10"
+        definition: "mt_1<65 && dm_2==10 && pt_2>35 && pt_2<40 "
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11_pt4: 
-        definition: "mt_1<65 && dm_2==11 && pt_2>35 && pt_2<40 && gendm_2==11"
+        definition: "mt_1<65 && dm_2==11 && pt_2>35 && pt_2<40 "
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
     DM0_pt5: 
-        definition: "mt_1<65 && dm_2==0 && pt_2>40 && pt_2<50 && gendm_2==0"
+        definition: "mt_1<65 && dm_2==0 && pt_2>40 && pt_2<50 "
         title: "h^{#pm}"
     DM1_pt5: 
-        definition: "mt_1<65 && dm_2==1 && pt_2>40 && pt_2<50 && gendm_2==1"
+        definition: "mt_1<65 && dm_2==1 && pt_2>40 && pt_2<50 "
         title: "h^{#pm}#pi^{0}"
     DM10_pt5: 
-        definition: "mt_1<65 && dm_2==10 && pt_2>40 && pt_2<50 && gendm_2==10"
+        definition: "mt_1<65 && dm_2==10 && pt_2>40 && pt_2<50 "
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11_pt5: 
-        definition: "mt_1<65 && dm_2==11 && pt_2>40 && pt_2<50 && gendm_2==11"
+        definition: "mt_1<65 && dm_2==11 && pt_2>40 && pt_2<50 "
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
     DM0_pt6: 
-        definition: "mt_1<65 && dm_2==0 && pt_2>50 && pt_2<70 && gendm_2==0"
+        definition: "mt_1<65 && dm_2==0 && pt_2>50 && pt_2<70 "
         title: "h^{#pm}"
     DM1_pt6: 
-        definition: "mt_1<65 && dm_2==1 && pt_2>50 && pt_2<70 && gendm_2==1"
+        definition: "mt_1<65 && dm_2==1 && pt_2>50 && pt_2<70 "
         title: "h^{#pm}#pi^{0}"
     DM10_pt6: 
-        definition: "mt_1<65 && dm_2==10 && pt_2>50 && pt_2<70 && gendm_2==10"
+        definition: "mt_1<65 && dm_2==10 && pt_2>50 && pt_2<70 "
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11_pt6: 
-        definition: "mt_1<65 && dm_2==11 && pt_2>50 && pt_2<70 && gendm_2==11"
+        definition: "mt_1<65 && dm_2==11 && pt_2>50 && pt_2<70 "
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
     DM0_pt7: 
-        definition: "mt_1<65 && dm_2==0 && pt_2>70 && gendm_2==0"
+        definition: "mt_1<65 && dm_2==0 && pt_2>70 "
         title: "h^{#pm}"
     DM1_pt7: 
-        definition: "mt_1<65 && dm_2==1 && pt_2>70 && gendm_2==1"
+        definition: "mt_1<65 && dm_2==1 && pt_2>70 "
         title: "h^{#pm}#pi^{0}"
     DM10_pt7: 
-        definition: "mt_1<65 && dm_2==10 && pt_2>70 && gendm_2==10"
+        definition: "mt_1<65 && dm_2==10 && pt_2>70 "
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11_pt7: 
-        definition: "mt_1<65 && dm_2==11 && pt_2>70 && gendm_2==11"
+        definition: "mt_1<65 && dm_2==11 && pt_2>70 "
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}" ###
 
 # # #tes 
