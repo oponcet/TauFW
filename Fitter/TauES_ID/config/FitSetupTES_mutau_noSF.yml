@@ -29,17 +29,20 @@ baselineCuts: "q_1*q_2<0 && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2017v2
 #     - additional cross section scale factors applied to some processes need to be given in these regions to be considered --> adjust in scaleFactors section
 
 regions:
+    baseline:
+        definition: "dm_2==0"
+        title: "baseline"
     DM0: 
-        definition: "mt_1<65 && dm_2==0"
+        definition: "dm_2==0"
         title: "h^{#pm}"
     DM1: 
-        definition: "mt_1<65 && dm_2==1"
+        definition: "dm_2==1"
         title: "h^{#pm}#pi^{0}"
     DM10: 
-        definition: "mt_1<65 && dm_2==10"
+        definition: "dm_2==10"
         title: "h^{#pm}h^{#mp}h^{#pm}"
     DM11: 
-        definition: "mt_1<65 && dm_2==11"
+        definition: " dm_2==11"
         title: "h^{#pm}h^{#mp}h^{#pm}#pi^{0}"
 
 plottingOrder: ["DM11", "DM10","DM1", "DM0"]
@@ -159,10 +162,10 @@ systematics:
         effect: "lnN"
         processes: ["ZTT", "ZL", "ZJ", "TTT", "TTL", "TTJ", "W", "ST", "VV"]
         scaleFactor: 1.02
-    xsec_dy:
-        effect: "lnN"
-        processes: ["ZTT", "ZL", "ZJ"]
-        scaleFactor: 1.02
+    # xsec_dy:
+    #     effect: "lnN"
+    #     processes: ["ZTT", "ZL", "ZJ"]
+    #     scaleFactor: 1.02
     xsec_tt:
         effect: "lnN"
         processes: ["TTT", "TTL", "TTJ"]
@@ -190,11 +193,15 @@ systematics:
 
 # Additional scale factors per year for specific processes (correction of xsec, reco SFs, etc.)
 
-scaleFactors:
-    WNFs:
-        processes: ["W"]
-        values:
-            'UL2016_preVFP': { 'dm_2==0': 0.939,  'dm_2==1': 1.031,  'dm_2==10': 1.065,  'dm_2==11': 1.021  }
-            'UL2016_postVFP': { 'dm_2==0': 0.919,  'dm_2==1': 0.972,  'dm_2==10': 1.112,  'dm_2==11': 1.074  }
-            'UL2017': { 'dm_2==0': 0.971,  'dm_2==1': 0.995,  'dm_2==10': 1.109,  'dm_2==11': 1.075  }
-            'UL2018': { 'dm_2==0': 1.007,  'dm_2==1': 0.968,  'dm_2==10': 1.079,  'dm_2==11': 1.044  }
+# scaleFactors:
+#     WNFs:
+#         processes: ["W"]
+#         values:
+#             'UL2016_preVFP': { 'dm_2==0': 0.939,  'dm_2==1': 1.031,  'dm_2==10': 1.065,  'dm_2==11': 1.021  }
+#             'UL2016_postVFP': { 'dm_2==0': 0.919,  'dm_2==1': 0.972,  'dm_2==10': 1.112,  'dm_2==11': 1.074  }
+#             'UL2017': { 'dm_2==0': 0.971,  'dm_2==1': 0.995,  'dm_2==10': 1.109,  'dm_2==11': 1.075  }
+#             'UL2018': { 'dm_2==0': 1.007,  'dm_2==1': 0.968,  'dm_2==10': 1.079,  'dm_2==11': 1.044  }
+#     idFs:    
+#         processes: ["ZTT"]
+#         values:
+#             'UL2018': { 'dm_2==0 && genmatch_2==5': 0.8667,  'dm_2==1 && genmatch_2==5': 0.8333 ,  'dm_2==10 && genmatch_2==5': 0.8000,  ' dm_2==11 && genmatch_2==5': 0.7667 }

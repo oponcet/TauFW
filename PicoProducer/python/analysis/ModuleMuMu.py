@@ -32,6 +32,8 @@ class ModuleMuMu(ModuleTauPair):
       self.trigger    = lambda e: e.HLT_IsoMu24 or e.HLT_IsoMu27 #or e.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1
       self.muon1CutPt = lambda e: 26
       self.muonCutEta = lambda e: 2.4
+      # self.muon1CutEta = lambda e: 2.1
+      # self.muon2CutEta = lambda e: 2.4
     self.muon2CutPt   = 15
     self.tauCutPt     = 20
     self.tauCutEta    = 2.3

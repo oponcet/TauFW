@@ -38,7 +38,7 @@ def main(args):
       
     # GET SAMPLESET
     sname     = setup["samples"]["filename"]
-    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="config_old.json") #config_old.json
+    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="config_zpt.json") #config_old.json
 
     # Potentially split up samples in several processes
     if "split" in setup["samples"]:
@@ -53,21 +53,21 @@ def main(args):
         sampleset.rename(renamedSample,setup["samples"]["rename"][renamedSample])
 
     # On-the-fly reweighting of specific processes -- do after splitting and renaming!
-    if "scaleFactors" in setup:
-      for SF in setup["scaleFactors"]:
-        SFset = setup["scaleFactors"][SF]
-        if not era in SFset["values"]: continue
-        print "Reweighting with SF -- %s -- for the following processes: %s"%(SF, SFset["processes"])
-        for proc in SFset["processes"]:
-          weight = "( q_1*q_2<0 ? ( "
-          for cond in SFset["values"][era]:
-            weight += cond+" ? "+str(SFset["values"][era][cond])+" : ("
-          weight += "1.0)"
-          for i in range(len(SFset["values"][era])-1):
-            weight += " )"
-          weight +=  ") : 1.0 )"
-          print "Applying weight: %s"%weight
-          sampleset.get(proc, unique=True).addextraweight(weight)
+    # if "scaleFactors" in setup:
+    #   for SF in setup["scaleFactors"]:
+    #     SFset = setup["scaleFactors"][SF]
+    #     if not era in SFset["values"]: continue
+    #     print "Reweighting with SF -- %s -- for the following processes: %s"%(SF, SFset["processes"])
+    #     for proc in SFset["processes"]:
+    #       weight = "( q_1*q_2<0 ? ( "
+    #       for cond in SFset["values"][era]:
+    #         weight += cond+" ? "+str(SFset["values"][era][cond])+" : ("
+    #       weight += "1.0)"
+    #       for i in range(len(SFset["values"][era])-1):
+    #         weight += " )"
+    #       weight +=  ") : 1.0 )"
+    #       print "Applying weight: %s"%weight
+    #       sampleset.get(proc, unique=True).addextraweight(weight)
 
     # Name of observed data 
     sampleset.datasample.name = setup["samples"]["data"]
@@ -89,10 +89,11 @@ def main(args):
     ############
     #   BINS / FIT REGIONS  #
     ############
-      
     bins = [ Sel("baseline", setup["baselineCuts"]) ]
     if "regions" in setup:
       for region in setup["regions"]:
+        print(" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        print(region)
         bins.append(Sel(region, setup["baselineCuts"]+" && "+setup["regions"][region]["definition"]))
 
 
@@ -107,6 +108,7 @@ def main(args):
     fname   = "%s/%s_%s_tes_$OBS.inputs-%s-%s.root"%(outdir,analysis,chshort,era,tag)
 
     print "Nominal inputs"
+    print(setup["processes"])
     createinputs(fname, sampleset, observables, bins, filter=setup["processes"], dots=True)
 
     if "TESvariations" in setup:

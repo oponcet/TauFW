@@ -38,7 +38,6 @@ def main(args):
                                rmsf=rmsf,dyweight='zptweight')
       
       if channel=='mumu':
-        
         # RENAME (HTT convention)
         if sampleset.has('DY_M50'):
           sampleset.rename('DY_M50','ZLL')
@@ -57,7 +56,7 @@ def main(args):
         samplesets['Nom'].printtable(merged=True,split=True)
         if verbosity>=2:
           samplesets['Nom'].printobjs(file=True)
-      
+        print("done 1")
       else:
         
         # SPLIT & RENAME (HTT convention)

@@ -28,12 +28,14 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
   ]
   if 'regions' in setup: # add extra regions on top of baseline
     for region in setup['regions']:
+      print(region)
       skwargs = setup['regions'][region].copy() # extra key-word options
       assert 'definition' in skwargs
       selstr = setup['baselineCuts']+" && "+skwargs.pop('definition')
       selections.append(Sel(region,selstr,**skwargs))
   selections = filtervars(selections,selfilter) # filter variable list with -S/--sel flag
-  
+  print("selection")
+  print(selections)
   # VARIABLES
   variables = [
     # Var('pt_1',  "Muon pt",    40,  0, 120, ctitle={'etau':"Electron pt",'tautau':"Leading tau_h pt",'mumu':"Leading muon pt",'emu':"Electron pt"},cbins={"nbtag\w*>":(40,0,200)}),
@@ -50,7 +52,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
     # Var('nbtag', "Number of b jets (Medium, pt > 30 GeV)", 8, 0, 8),
     # Var('met',    50,  0, 150,cbins={"nbtag\w*>":(50,0,250)}),
     # #Var('genmet', 50,  0, 150, fname="$VAR_log", logyrange=4, data=False, logy=True, ncols=2, pos='TT'),
-    # Var('pt_ll',   "p_{T}(mutau_h)", 25, 0, 200, ctitle={'etau':"p_{T}(etau_h)",'tautau':"p_{T}(tau_htau_h)",'emu':"p_{T}(emu)"}),
+    #Var('pt_ll',   "p_{T}(mutau_h)", 25, 0, 200, ctitle={'etau':"p_{T}(etau_h)",'tautau':"p_{T}(tau_htau_h)",'emu':"p_{T}(emu)"}),
     # Var('dR_ll',   "DR(mutau_h)",    30, 0, 6.0, ctitle={'etau':"DR(etau_h)",'tautau':"DR(tau_htau_h)",'emu':"DR(emu)"}),
     # Var('deta_ll', "deta(mutau_h)",  20, 0, 6.0, ctitle={'etau':"deta(etau_h)",'tautau':"deta(tautau)",'emu':"deta(emu)"},logy=True,pos='TRR',cbins={"abs(deta_ll)<":(10,0,3)}), #, ymargin=8, logyrange=2.6
     # Var('dzeta',  56, -180, 100, pos='L;y=0.87',units='GeV',cbins={"nbtag\w*>":(35,-220,130)}),
@@ -59,7 +61,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
     loadmacro("python/macros/mapDecayModes.C") # for mapRecoDM
     dmlabels  = ["h^{#pm}","h^{#pm}h^{0}","h^{#pm}h^{#mp}h^{#pm}","h^{#pm}h^{#mp}h^{#pm}h^{0}","Other"]
     variables += [
-      Var('m_vis',           30,  0, 300, fname="mvis",ctitle={'mumu':"m_mumu",'emu':"m_emu"},cbins={"pt_\d>":( 30,  0, 300),"nbtag\w*>":(60,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
+      Var('m_vis',           8,  50, 106, fname="mvis",ctitle={'mumu':"m_mumu",'emu':"m_emu"},cbins={"pt_\d>":( 8,  50, 106),"nbtag\w*>":(60,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
       #Var('m_vis',          20,  0, 200, fname="mvis_coarse",ctitle={'mumu':"m_mumu",'emu':"m_emu"},cbins={"pt_\d>":(25,0,250),"nbtag\w*>":(30,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
       # Var("m_2",            30,  0,   3, title="m_tau",veto=["njet","nbtag","dm_2==0"]),
       # Var("dm_2",           14,  0,  14, fname="dm_2",title="Reconstructed tau_h decay mode",veto="dm_2==",position="TMC",ymargin=1.2),
@@ -72,10 +74,15 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
     ]
   elif 'mumu' in channel:
      variables += [
-      Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR", cbins={"m_vis>200":(40,200,1000)}), # alias: m_ll alias of m_vis
-      Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR_log", logy=True, ymin=1e2, cbins={"m_vis>200":(40,200,1000)} ),
-      Var('m_ll', "m_mumu", 40, 70,  110, fname="$VAR_Zmass", veto=["m_vis>200"] ),
-      Var('m_ll', "m_mumu",  1, 70,  110, fname="$VAR_1bin", veto=["m_vis>200"] ),
+      # Var('m_ll', "m_mumu", 20,  0,  200, fname="$VAR", cbins={"m_vis>200":(20,  0,  200)}), # alias: m_ll alias of m_vis
+      # Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR_log", logy=True, ymin=1e2, cbins={"m_vis>200":(40,200,1000)} ),
+      # Var('m_ll', "m_mumu", 40, 70,  110, fname="$VAR_Zmass", veto=["m_vis>200"] ),
+      # Var('m_ll', "m_mumu",  1, 70,  110, fname="$VAR_1bin", veto=["m_vis>200"] ),
+      Var('pt_ll',   "p_{T}(mumu)", 25, 0, 200, ctitle={'mumu':"p_{T}(mumu)"}),
+      # Var('pt_1',  "Muon pt1",    40,  0, 120, ctitle={'mumu':"Leading muon pt"},cbins={"nbtag\w*>":(40,0,200)}),
+      # Var('pt_2',  "Muon pt2",   40,  0, 120, ctitle={'mumu':"Subleading muon pt"},cbins={"nbtag\w*>":(40,0,200)}),
+      #Var('m_ll', "m_mumu", 52,  0,  300, fname="$VAR_largerange"), # alias: m_ll alias of m_vis
+
     ]
   variables  = filtervars(variables,varfilter)  # filter variable list with -V/--var flag
   
@@ -127,14 +134,20 @@ def main(args):
       print(addsfs)
       rmsfs  = [ ] if (setup['channel']=='mumu' or not notauidsf) else ['idweight_2','ltfweight_2'] # remove tau ID SFs
       split  = ['DY'] if 'tau' in setup['channel'] else [ ] # split these backgrounds into tau components
-      sampleset = getsampleset(setup['channel'],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split, configfile ="config_old.json")
-      # On-the-fly reweighting of specific processes -- do after splitting and renaming!
+      sampleset = getsampleset(setup['channel'],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split, configfile ="config_old.json") #config_zpt.json
+     
+     
+     
+      # On-the-fly reweighting of specific processes -- do after splitting and renaming! 
       if "scaleFactors" in setup:
+        print("scaleFactors")
         for SF in setup["scaleFactors"]:
+          print(SF)
           SFset = setup["scaleFactors"][SF]
           if not era in SFset["values"]: continue
           print "Reweighting with SF -- %s -- for the following processes: %s"%(SF, SFset["processes"])
           for proc in SFset["processes"]:
+            print(SFset["processes"])
             weight = "( q_1*q_2<0 ? ( "
             for cond in SFset["values"][era]:
               weight += cond+" ? "+str(SFset["values"][era][cond])+" : ("
@@ -143,7 +156,7 @@ def main(args):
               weight += " )"
             weight +=  ") : 1.0 )"
             print "Applying weight: %s"%weight
-            sampleset.get(proc, unique=True).addextraweight(weight)
+            sampleset.get(proc, unique=True,split=True).addextraweight(weight)
      
       plot(sampleset,setup,parallel=parallel,tag=tag,extratext=extratext,outdir=outdir,era=era,
            varfilter=varfilter,selfilter=selfilter,fraction=fraction,pdf=pdf)

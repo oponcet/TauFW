@@ -402,6 +402,7 @@ void plotShiftedPdf(RooWorkspace *ws_original, TString region, TString tag, doub
     // c1->ls();
     // outf1->ls();
     c1->Write();
+    //std::cout <<"tes = "<< tes<<  " ,bin 10 = " << histZTT_tes->GetBinContent(10) << std::endl;
     //c1->SaveAs(outputFilepdf);
     outf1->Close();
     
@@ -418,7 +419,7 @@ void fitmvis()
                                  "_mtlt65_noSF_DMpt_100bins"};
     int idm = 4;
 
-    for (int idm = 0; idm < 2; idm++) // decaymodespt.size()
+    for (int idm = 0; idm <1; idm++) // decaymodespt.size()
     { 
         // // Get ZTT from inputs
         std::cout << ">>>>> get ztt region : " << decaymodespt[idm] << std::endl;
@@ -438,7 +439,7 @@ void fitmvis()
                                    0.992, 0.994, 0.996, 0.998, 1.000, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012,
                                    1.014, 1.016, 1.018, 1.020, 1.022, 1.024, 1.026, 1.028, 1.030};
 
-        for (int ites = 0; ites < 1; ites++) //ntes
+        for (int ites = 0; ites < ntes; ites++) //ntes
         {
             plotShiftedPdf(ws, decaymodespt[idm], tags[7], tes_values[ites]);
         }

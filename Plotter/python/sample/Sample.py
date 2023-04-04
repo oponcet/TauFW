@@ -159,7 +159,7 @@ class Sample(object):
       print ">>> %s  Split samples:"%(title)
       for sample in self.splitsamples:
         sample.printobjs(title+"    ",file=file)
-  
+
   def get_max_name_len(self,indent=0):
     """Help function for SampleSet.printtable to make automatic columns."""
     if isinstance(self,MergedSample):
@@ -564,7 +564,9 @@ class Sample(object):
   
   def addextraweight(self, weight):
     """Add extra weight. Join with existing weight if it exists."""
+    print(self)
     if isinstance(self,MergedSample):
+      print("<<<<<isinstance")
       for sample in self.samples:
         sample.addextraweight(weight)
     else:
@@ -604,6 +606,7 @@ class Sample(object):
   def replaceweight(self, oldweight, newweight, **kwargs):
     """Replace weight."""
     verbosity = LOG.getverbosity(kwargs)
+    print(self)
     if isinstance(self,MergedSample):
       for sample in self.samples:
         sample.replaceweight(oldweight,newweight,**kwargs)

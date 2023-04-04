@@ -84,7 +84,7 @@ def plot_dm_graph(setup,year,**kwargs):
     graph.SetTitle("ID Scale Factors vs. pT")
     graph.GetXaxis().SetTitle("pT [GeV]")
     graph.GetYaxis().SetTitle("ID Scale Factors")
-    graph.GetYaxis().SetRangeUser(0.65, 1.1)
+    graph.GetYaxis().SetRangeUser(0.65, 1.0)
 
     # disable the canvas drawing
     ROOT.gROOT.SetBatch(True)
@@ -168,8 +168,8 @@ def main(args):
   tag           = setup["tag"] if "tag" in setup else ""
   year          = args.year
   dm_bins       = args.dm_bins
-  indir         = "plots_%s"%year
-  outdir        = "plots_%s"%year
+  indir         = "plots_%s/opt4/DM_pt"%year
+  outdir        = "plots_%s/opt4/DM_pt"%year
   ensureDirectory(outdir)
   CMSStyle.setCMSEra(year)
   print(dm_bins)

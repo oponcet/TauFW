@@ -63,6 +63,7 @@ def main(args):
         sampleset = getsampleset(channel,era,fname=sname,join=join,split=None,table=False,verb=1)
         
         if channel=='mumu':
+          print(" >>>>>>>> channel mumu")
           
           # RENAME (HTT convention)
           sampleset.rename('DY_M50','ZLL')

@@ -31,7 +31,6 @@ def harvest(setup, year, obs, **kwargs):
     multiDimFit = kwargs.get('multiDimFit')
     verbosity   = kwargs.get('verbosity')
     outtag      = tag+extratag
-    TIDWP       = 'Medium' if 'Medium' in outtag else 'Tight'
     
     # For each region = DM 
     # each variable can have a subset of regions in which it is fitted defined in config file under this variable entry
@@ -44,19 +43,25 @@ def harvest(setup, year, obs, **kwargs):
         # if not given, assume all defined regions should be fitted (be careful with potential overlap!)
         print("region: %s") %(cats)
 
-        signals = []
+        signals = [] # ZTT is the signal
         backgrounds = []
         for proc in setup["processes"]:
-          if("TESvariations" in setup and proc in setup["TESvariations"]["processes"]):
+          if "ZTT" in proc:
             signals.append(proc)
           elif not "data" in proc:
             backgrounds.append(proc)
-        print "Signals: %s"%signals
-        print "Backgrounds: %s"%backgrounds
+        print("Signals: %s"%signals)
+        print("Backgrounds: %s"%backgrounds)
 
-   
-        tesshifts = [ "%.3f"%tes for tes in setup["TESvariations"]["values"] ]
+        if("TESvariations" in setup):
+          print("Take TESvariations as defined in the config file")
+          tesshifts = [ "%.3f"%tes for tes in setup["TESvariations"]["values"] ]
+        else:
+          print("No TESvariations")
+          tesshifts = [ "1.00" ]
 
+
+        # Creation of the CombineHarvester
         harvester = CombineHarvester()
         harvester.AddObservations(['*'], [analysis], [era], [channel], cats)
         harvester.AddProcesses(['*'], [analysis], [era], [channel], backgrounds, cats, False)
@@ -72,34 +77,48 @@ def harvest(setup, year, obs, **kwargs):
             if "scaleFactor" in sysDef:
               scaleFactor = sysDef["scaleFactor"]
             harvester.cp().process(sysDef["processes"]).AddSyst(harvester, sysDef["name"] if "name" in sysDef else sys, sysDef["effect"], SystMap()(scaleFactor))
-            #harvester.cp().signals().AddSyst(harvester, 'tid_SF_$BIN','rateParam', SystMap()(1.00))
             #print sysDef
-         
-        # listbin = region.split("_")
-        # print("listbin : %s") %(listbin)
 
-        # if len(listbin) == 1:
-        #   tid_name = "tid_SF_%s"%(listbin[0])
-        # else:
-        #   tid_name = "tid_SF_%s"%(listbin[1])
-        # print("tid : %s") %(tid_name)
-
+        # Adding id SF as a rate parameter affecting the signal ZTT 
         listbin = region.split("_")
-        if region in setup["tid_SFRegions"]:
-          tid_name = "tid_SF_%s" %(region)
-        else:
-          print("listbin : %s") %(listbin)
-
-          if len(listbin) == 1:
-            tid_name = "tid_SF_%s"%(listbin[0])
+        tid_name = "tid_SF"
+        # Recommended to define tid_SFRegions in the config file 
+        if ("tid_SFRegions" in setup): 
+          if region in setup["tid_SFRegions"]:
+            tid_name = "tid_SF_%s" %(region)
           else:
-            tid_name = "tid_SF_%s"%(listbin[1])
-        print(">>> tid : %s") %(tid_name)
-
-
+              found_match = False
+              for bin in listbin:
+                #print("bin = %s" %(bin))
+                if bin in setup["tid_SFRegions"]:
+                  tid_name = "tid_SF_%s" % bin
+                  found_match = True
+                  break
+              if not found_match:
+                print("ERROR : wrong definition of tid_SFRegions in the config file ")
+        else: 
+          if len(listbin) == 1: # Example : DM
+            tid_name = "tid_SF_%s"%(listbin[0]) # tid_SF_DM
+          else: # Example : DM_pt
+            tid_name = "tid_SF_%s"%(listbin[1]) # tid_SF_pt
         
-
+        print("tid : %s" %(tid_name))
+        # Add SF
         harvester.cp().signals().AddSyst(harvester, tid_name,'rateParam', SystMap()(1.00))
+
+     
+        # Add W+Jets SF as a free parameter 
+        if not "norm_wj" in setup["systematics"]:
+          print("W+Jets SF as a free parameter ")
+          sf_W = "sf_W_%s"%(listbin[0])
+          harvester.cp().process("W").AddSyst(harvester, sf_W,'rateParam', SystMap()(1.00))
+          print(">>>Add sf_W : %s") %(sf_W)
+
+        # Add DY cross section as a free parameter. Don't forgot to add Zmm CR !
+        if not "xsec_dy" in setup["systematics"]:
+          print("DY cross section as a free parameter")
+          harvester.cp().process(['ZTT','ZL','ZJ']).AddSyst(harvester, "xsec_dy" ,'rateParam', SystMap()(1.00))
+
 
         # EXTRACT SHAPES
         print green(">>> extracting shapes...")
@@ -108,29 +127,48 @@ def harvest(setup, year, obs, **kwargs):
         ## For now assume that everything that is varied by TES is signal, and everything else is background
         ## Could be revised if wanting to leave the possibility to do other variations or fit normalisation (e.g. for combined TES & ID SF fit)
         harvester.cp().channel([channel]).backgrounds().ExtractShapes(filename, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
-        harvester.cp().channel([channel]).signals().ExtractShapes(filename, "$BIN/$PROCESS_TES$MASS", "$BIN/$PROCESS_TES$MASS_$SYSTEMATIC")
-        #harvester.cp().channel([channel]).process(sysDef["processes"]).ExtractShapes( filename, "$BIN/$PROCESS_SF", "$BIN/$PROCESS_$SYSTEMATIC_SF") ###change
-
+        
+        # For TES variations 
+        if("TESvariations" in setup):
+          harvester.cp().channel([channel]).signals().ExtractShapes(filename, "$BIN/$PROCESS_TES$MASS", "$BIN/$PROCESS_TES$MASS_$SYSTEMATIC")
+        else:
+          harvester.cp().channel([channel]).signals().ExtractShapes(filename, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
 
 
    
         # ROOVAR
         workspace = RooWorkspace(analysis,analysis)
-        print analysis
+        #print analysis
 
-        if region in setup["tesRegions"]:
-          tesname = "tes_%s" %(region)
+        # Adding TES as a POI the signal ZTT 
+        tes_name = "tes"
+        # Recommended to define tid_SFRegions in the config file 
+        if ("tesRegions" in setup): 
+          if region in setup["tesRegions"]:
+            tes_name = "tes_%s" %(region)
+          else:
+              found_match = False
+              for bin in listbin:
+                #print("bin = %s" %(bin))
+                if bin in setup["tesRegions"]:
+                  tes_name = "tes_%s" % bin
+                  found_match = True
+                  break
+              if not found_match:
+                print("ERROR : wrong definition of tesRegions in the config file ")
+        else: 
+          tes_name = "tes_%s"%(listbin[0])
+        print("tes: %s"%(tes_name))
+
+        if("TESvariations" in setup):
+          #print("TESvariations")
+          tes = RooRealVar(tes_name,tes_name, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
         else:
-          tesname = "tes_%s"%(listbin[0])
-        print("tes: %s") %(tesname)
+          tes = RooRealVar(tes_name,tes_name, 1.000, 1.000)
 
-
-        #tesname = "tes_%s"%(region)
-        # tesname = "tes_%s"%(listbin[0])
-        # print("tes: %s") %(tesname)
-        tes = RooRealVar(tesname,tesname, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
+        tes = RooRealVar(tes_name,tes_name, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))
         tes.setConstant(True)
-    
+
     
         # MORPHING
         print green(">>> morphing...")
@@ -149,16 +187,6 @@ def harvest(setup, year, obs, **kwargs):
 
         harvester.SetAutoMCStats(harvester, 0, 1, 1) # Set the autoMCStats line (with -1 = no bbb uncertainties)
 
-
-        # Rebin histograms for channel using Auto Rebinning
-
-        # rebin = AutoRebin()
-        # rebin.SetBinThreshold(100)
-        # rebin.SetBinUncertFraction(0.2)
-        # rebin.SetRebinMode(1)
-        # rebin.SetPerformRebin(True)
-        # rebin.SetVerbosity(1) 
-        # rebin.Rebin(harvester,harvester)
 
 
         # NUISANCE PARAMETER GROUPS
@@ -179,6 +207,7 @@ def harvest(setup, year, obs, **kwargs):
 
 
         #PRINT
+        #verbosity =1
         if verbosity>0:
             print green("\n>>> print observation...\n")
             harvester.PrintObs()

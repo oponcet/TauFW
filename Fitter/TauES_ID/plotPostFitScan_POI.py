@@ -547,6 +547,9 @@ def main(args):
         [ "xsec_dy", "shape_mTauFakeSF", 
           "shape_dy"
         ],
+        "track":
+        [ "trackedParam_xsec_dy", "trackedParam_sf_W_pt1"
+        ],
       # "tid":
       #   ["trackedParam_tid_SF_pt1","trackedParam_tid_SF_pt2","trackedParam_tid_SF_pt3","trackedParam_tid_SF_pt4","trackedParam_tid_SF_pt5","trackedParam_tid_SF_pt6","trackedParam_tid_SF_pt7"],
       # "tid":
