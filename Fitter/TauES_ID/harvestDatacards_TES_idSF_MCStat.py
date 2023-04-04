@@ -234,9 +234,9 @@ def harvest(setup, year, obs, **kwargs):
           newfilename = datacardtxt.replace('$TAG',outdir).replace('$ANALYSIS',analysis).replace('$CHANNEL',channel).replace('$BINID',DM).replace('$ERA',era)
           if os.path.exists(oldfilename):
             os.rename(oldfilename, newfilename)
-            print '>>> renaming "%s" -> "%s"'%(oldfilename,newfilename)
+            print('>>> renaming "%s" -> "%s"'%(oldfilename,newfilename))
           else:
-            print '>>> Warning! "%s" does not exist!'%(oldfilename)
+            print('>>> Warning! "%s" does not exist!'%(oldfilename))
         
 def scaleProcess(process,scale): 
   """Help function to scale a given process."""
@@ -247,9 +247,9 @@ def setYield(process,file,dirname,scale=1.):
   histname = "%s/%s"%(dirname,process.process()) if dirname else process.process()
   hist = file.Get(histname)
   if not hist:
-    print 'setYield: Warning! Did not find histogram "%s" in "%s"'%(histname,file.GetName())
+    print('setYield: Warning! Did not find histogram "%s" in "%s"'%(histname,file.GetName()))
   if hist.GetXaxis().GetNbins()>1:
-    print 'setYield: Warning! Histogram "%s" has more than one bin!'%(histname)
+    print('setYield: Warning! Histogram "%s" has more than one bin!'%(histname))
   rate = hist.GetBinContent(1)
   process.set_rate(rate*scale)
   
@@ -260,7 +260,7 @@ def ensureDirectory(dirname):
     """Make directory if it does not exist."""
     if not os.path.exists(dirname):
       os.makedirs(dirname)
-      print ">>> made directory " + dirname
+      print(">>> made directory " + dirname)
     return dirname
 
 
@@ -268,7 +268,7 @@ def ensureDirectory(dirname):
 def main(args):
 
     ## Open and import information from config file here to be publicly accessible in all functions
-    print "Using configuration file: %s"%args.config
+    print("Using configuration file: %s"%args.config)
     with open(args.config, 'r') as file:
         setup = yaml.safe_load(file)
 
@@ -282,9 +282,9 @@ def main(args):
         args.extratag += "_MDF"
 
     tag = setup["tag"] if "tag" in setup else ""
-    print "producing datacards for %s"%(args.year)
+    print("producing datacards for %s"%(args.year))
     for obs in observables:
-        print "producing datacards for %s"%(obs)
+        print("producing datacards for %s"%(obs))
         harvest(setup,args.year,obs,tag=tag,extratag=args.extratag,indir=indir,multiDimFit=args.multiDimFit,verbosity=verbosity)
     
 
@@ -304,6 +304,6 @@ if __name__ == '__main__':
   args = parser.parse_args()
 
   main(args)
-  print ">>>\n>>> done harvesting\n"
+  print(">>>\n>>> done harvesting\n")
     
 
