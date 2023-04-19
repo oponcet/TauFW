@@ -112,7 +112,7 @@ def harvest(setup, year, obs, **kwargs):
           print("W+Jets SF as a free parameter ")
           sf_W = "sf_W_%s"%(listbin[0])
           harvester.cp().process("W").AddSyst(harvester, sf_W,'rateParam', SystMap()(1.00))
-          print(">>>Add sf_W : %s") %(sf_W)
+          print(">>>Add sf_W : %s" %(sf_W))
 
         # Add DY cross section as a free parameter. Don't forgot to add Zmm CR !
         if not "xsec_dy" in setup["systematics"]:

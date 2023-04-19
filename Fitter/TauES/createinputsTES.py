@@ -5,7 +5,7 @@
 import sys
 from collections import OrderedDict
 sys.path.append("../Plotter/") # for config.samples
-from config.samples import *
+from config.samples_v10 import *
 from TauFW.Plotter.plot.utils import LOG as PLOG
 from TauFW.Fitter.plot.datacard import createinputs, plotinputs
 import yaml
@@ -38,7 +38,7 @@ def main(args):
       
     # GET SAMPLESET
     sname     = setup["samples"]["filename"]
-    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="config_zpt.json") #config_old.json
+    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="config_UL2018v10.json") #config_old.json
 
     # Potentially split up samples in several processes
     if "split" in setup["samples"]:
@@ -166,7 +166,7 @@ if __name__ == "__main__":
   argv = sys.argv
   description = """Create input histograms for datacards"""
   parser = ArgumentParser(prog="createInputs",description=description,epilog="Good luck!")
-  parser.add_argument('-y', '--era',     dest='eras', nargs='*', choices=['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018'], default=['UL2017'], action='store',
+  parser.add_argument('-y', '--era',     dest='eras', nargs='*', choices=['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','UL2018_v10'], default=['UL2017'], action='store',
                                          help="set era" )
   parser.add_argument('-c', '--config', dest='config', type=str, default='TauES/config/defaultFitSetupTES_mutau.yml', action='store',
                                          help="set config file containing sample & fit setup" )
