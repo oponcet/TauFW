@@ -432,7 +432,7 @@ def stitch(samplelist,*searchterms,**kwargs):
     xsec_incl_NLO = xsec_incl or getxsec_nlo(name,*searchterms) or xsec_incl_LO
     kfactor       = xsec_incl_NLO / xsec_incl_LO
   LOG.verb("  %s k-factor = %.2f = %.2f / %.2f"%(name,kfactor,xsec_incl_NLO,xsec_incl_LO),verbosity,level=2)
-
+  
 
   name  = kwargs.get('name',stitchlist[0].name)
   title = kwargs.get('title',gettitle(name,stitchlist[0].title))
@@ -449,7 +449,11 @@ def stitch(samplelist,*searchterms,**kwargs):
       print "...jet multiplcity: %i"%njets
       sample_njet[njets] = sample
 
+<<<<<<< HEAD
   print "Lumi = %.6g, kfactor = %.6g, xsec = %.6g, sumw = %.6g"%(sample_incl.lumi, kfactor, sample_incl.xsec, sample_incl.sumweights)  
+=======
+  print "Lumi = %.6g, kfactor = %.6g, xsec = %.6g, sumw = %.6g"%(sample_incl.lumi, kfactor, sample_incl.xsec, sample_incl.sumweights)
+>>>>>>> master
   print "Sample_incl.norm = %.6g"%sample_incl.norm
   wIncl = sample_incl.lumi * kfactor * sample_incl.xsec * 1000. / sample_incl.sumweights
   print "Inclusive weight = %.6g"%wIncl
