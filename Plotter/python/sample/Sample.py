@@ -344,6 +344,9 @@ class Sample(object):
       self.file.Close()
       self.file   = ensureTFile(self.filename)
     if not isinstance(self,MergedSample):
+      print("self = ")
+      print(self)
+      print("NOT isinstance(self,MergedSample):")
       norm_old    = self.norm
       sumw_old    = self.sumweights
       nevts_old   = self.nevents
@@ -360,6 +363,9 @@ class Sample(object):
     elif ':' not in self.filename and not os.path.isfile(self.filename):
       LOG.warn('Sample.appendfilename: file %s does not exist!'%(self.filename))
     if isinstance(self,MergedSample):
+      print("self = ")
+      print(self)
+      print("isinstance(self,MergedSample):")
       for sample in self.samples:
         sample.appendfilename(filetag,nametag,titletag,**kwargs)
     for sample in self.splitsamples:

@@ -168,8 +168,8 @@ def main(args):
   tag           = setup["tag"] if "tag" in setup else ""
   year          = args.year
   dm_bins       = args.dm_bins
-  indir         = "plots_%s/opt4/DM_pt"%year
-  outdir        = "plots_%s/opt4/DM_pt"%year
+  indir         = "plots_%s"%year
+  outdir        = "plots_%s"%year
   ensureDirectory(outdir)
   CMSStyle.setCMSEra(year)
   print(dm_bins)
@@ -184,7 +184,7 @@ if __name__ == '__main__':
 
   description = '''This script makes plot of pt-dependants id SF measurments from txt file and config file.'''
   parser = ArgumentParser(prog="plot_it_SF",description=description,epilog="Success!")
-  parser.add_argument('-y', '--year', dest='year', choices=['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018'], type=str, default='UL2018', action='store', help="select year")
+  parser.add_argument('-y', '--year', dest='year', choices=['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','UL2018_v10'], type=str, default='UL2018', action='store', help="select year")
   parser.add_argument('-c', '--config', dest='config', type=str, default='TauES_ID/config/FitSetupTES_mutau_noSF_pt_DM.yml', action='store', help="set config file")
   parser.add_argument('--dm-bins', dest='dm_bins', default=False, action='store_true', help="if true then the mutau channel fits are also split by tau decay-mode")
   args = parser.parse_args()

@@ -77,8 +77,8 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
       # Var('m_ll', "m_mumu", 20,  0,  200, fname="$VAR", cbins={"m_vis>200":(20,  0,  200)}), # alias: m_ll alias of m_vis
       # Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR_log", logy=True, ymin=1e2, cbins={"m_vis>200":(40,200,1000)} ),
       # Var('m_ll', "m_mumu", 40, 70,  110, fname="$VAR_Zmass", veto=["m_vis>200"] ),
-      # Var('m_ll', "m_mumu",  1, 70,  110, fname="$VAR_1bin", veto=["m_vis>200"] ),
-      Var('pt_ll',   "p_{T}(mumu)", 25, 0, 200, ctitle={'mumu':"p_{T}(mumu)"}),
+      Var('m_ll', "m_mumu",  1, 70,  110, fname="$VAR_1bin", veto=["m_vis>200"] ),
+      #Var('pt_ll',   "p_{T}(mumu)", 25, 0, 200, ctitle={'mumu':"p_{T}(mumu)"}),
       # Var('pt_1',  "Muon pt1",    40,  0, 120, ctitle={'mumu':"Leading muon pt"},cbins={"nbtag\w*>":(40,0,200)}),
       # Var('pt_2',  "Muon pt2",   40,  0, 120, ctitle={'mumu':"Subleading muon pt"},cbins={"nbtag\w*>":(40,0,200)}),
       #Var('m_ll', "m_mumu", 52,  0,  300, fname="$VAR_largerange"), # alias: m_ll alias of m_vis
@@ -120,8 +120,8 @@ def main(args):
   
   # LOOP over configs / channels
   for config in configs:
-    if not config.endswith(".yml"): # config = channel name
-      config = "config/setup_%s.yml"%(config) # assume this file name pattern
+    #if not config.endswith(".yml"): # config = channel name
+      #config = "config/setup_%s.yml"%(config) # assume this file name pattern
     print ">>> Using configuration file: %s"%config
     with open(config, 'r') as file:
       setup = yaml.safe_load(file)
@@ -165,7 +165,7 @@ def main(args):
 
 if __name__ == "__main__":
   from argparse import ArgumentParser, RawTextHelpFormatter
-  eras = ['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','UL2018v10']
+  eras = ['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','UL2018_v10']
   description = """Simple plotting script for pico analysis tuples"""
   parser = ArgumentParser(prog="plot",description=description,epilog="Good luck!")
   parser.add_argument('-y', '--era',     dest='eras', nargs='*', choices=eras, default=['2017'],

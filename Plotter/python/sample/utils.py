@@ -64,6 +64,7 @@ def getsampleset(datasample,expsamples,sigsamples=[ ],**kwargs):
   title = 'Observed'
   datakwargs = kwargs.copy()
   datakwargs['weight'] = dataweight
+  print("dataweight = %s" %dataweight)
   if not datasample:
     datasample==None
   elif isinstance(datasample,dict) and channel:
@@ -449,11 +450,7 @@ def stitch(samplelist,*searchterms,**kwargs):
       print "...jet multiplcity: %i"%njets
       sample_njet[njets] = sample
 
-<<<<<<< HEAD
-  print "Lumi = %.6g, kfactor = %.6g, xsec = %.6g, sumw = %.6g"%(sample_incl.lumi, kfactor, sample_incl.xsec, sample_incl.sumweights)  
-=======
   print "Lumi = %.6g, kfactor = %.6g, xsec = %.6g, sumw = %.6g"%(sample_incl.lumi, kfactor, sample_incl.xsec, sample_incl.sumweights)
->>>>>>> master
   print "Sample_incl.norm = %.6g"%sample_incl.norm
   wIncl = sample_incl.lumi * kfactor * sample_incl.xsec * 1000. / sample_incl.sumweights
   print "Inclusive weight = %.6g"%wIncl

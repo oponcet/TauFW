@@ -25,8 +25,8 @@ from argparse import ArgumentParser
 
 ### Fitting function using combine tool
 def combinedfit(setup, setup_mumu, option, **kwargs):
-    tes_range    = kwargs.get('tes_range',    "%s,%s" %(min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))                         )
-    #tes_range    = kwargs.get('tes_range',    "1.000,1.000")                         
+    #tes_range    = kwargs.get('tes_range',    "%s,%s" %(min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))                         )
+    tes_range    = kwargs.get('tes_range',    "1.000,1.000")                         
     tid_SF_range = kwargs.get('tid_SF_range', "0.4,1.6"                                                                                                       )
     extratag     = kwargs.get('extratag',     "_DeepTau"                                                                                                      )
     algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1 --saveFitResult "                                                                   )# --saveWorkspace
@@ -156,7 +156,7 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
             ## Fit of tid_SF in its regions with tes_region and other tid_SF_regions as nuisance parameters    tes_DM0,tes_DM1,tes_DM10,tes_DM11
             elif option == '4': 
                 print(">>>>>>> Fit of tid_SF_"+r)
-                POI_OPTS = "-P tid_SF_%s --redefineSignalPOIs tes_pt1,tes_pt2,tes_pt3,tes_pt4,tes_pt5,tes_pt6,tes_pt7,tes_pt8,tes_pt9 --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters  r=1,rgx{.*tes.*}=1 --freezeParameters r,var{.*tes.*} --floatOtherPOIs=1" %(r, tid_SF_range,tes_range)
+                POI_OPTS = "-P tid_SF_%s --setParameterRanges rgx{.*tid.*}=%s:rgx{.*tes.*}=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1 --freezeParameters r,var{.*tes.*} " %(r, tid_SF_range,tes_range)
                 WORKSPACE = "output_"+era+"/combinecards%s.root"%(setup["tag"])
                 os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s  --trackParameters rgx{.*tid.*},rgx{.*W.*},rgx{.*dy.*} --saveInactivePOI=1" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
                 # POI_OPTS_I = "-P tid_SF_%s --setParameterRanges tid_SF_%s=%s -m 90 --setParameters r=1 --freezeParameters r" %(r,r, tid_SF_range)
@@ -200,12 +200,12 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
     if option == '2' or option == '4' :
       print(">>> Plot parabola")
       os.system("./TauES_ID/plotParabola_POI_region.py -p tid_SF -y %s -e %s -r %s,%s -s -a -c %s"% (era, extratag, min(tes_range), max(tes_range), config))
-      os.system("./TauES_ID/plotPostFitScan_POI.py --poi tid_SF -y %s -e %s -r %s,%s -c %s" %(era,extratag,min(tid_SF_range),max(tid_SF_range), config))
+      #os.system("./TauES_ID/plotPostFitScan_POI.py --poi tid_SF -y %s -e %s -r %s,%s -c %s" %(era,extratag,min(tid_SF_range),max(tid_SF_range), config))
 
     elif option == '1' or option == '5' :
         print(">>> Plot parabola")
         os.system("./TauES_ID/plotParabola_POI_region.py -p tes -y %s -e %s -r %s,%s -s -a -c %s" % (era, extratag, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), config))
-        os.system("./TauES_ID/plotPostFitScan_POI.py --poi tes -y %s -e %s -r %s,%s -c %s" %(era,extratag,min(setup["TESvariations"]["values"]),max(setup["TESvariations"]["values"]), config))
+        #os.system("./TauES_ID/plotPostFitScan_POI.py --poi tes -y %s -e %s -r %s,%s -c %s" %(era,extratag,min(setup["TESvariations"]["values"]),max(setup["TESvariations"]["values"]), config))
 
     else:
         print(" No output plot...")
@@ -248,7 +248,7 @@ if __name__ == '__main__':
 
     argv = sys.argv
     parser = ArgumentParser(prog="makeTESfit", description="execute all steps to run TES fit")
-    parser.add_argument('-y', '--era', dest='era', choices=['2016', '2017', '2018', 'UL2016_preVFP','UL2016_postVFP', 'UL2017', 'UL2018','UL2018v10'], default=['UL2018'], action='store', help="set era")
+    parser.add_argument('-y', '--era', dest='era', choices=['2016', '2017', '2018', 'UL2016_preVFP','UL2016_postVFP', 'UL2017', 'UL2018','UL2018_v10'], default=['UL2018'], action='store', help="set era")
     parser.add_argument('-c', '--config', dest='config', type=str, default='TauES_ID/config/defaultFitSetupTES_mutau.yml', action='store', help="set config file containing sample & fit setup")
     parser.add_argument('-o', '--option', dest='option', choices=['1', '2', '3', '4', '5','6'], default='1', action='store',
                         help="set option : fit of tes_DM(-o 1) ; fit of tid_SF_DM (-o 2) ; combined fit of tes_DM and tid_SF_DM (-o 3) \

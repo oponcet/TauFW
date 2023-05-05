@@ -6,6 +6,7 @@ from TauFW.Plotter.sample.utils import getsampleset as _getsampleset
 
 def getsampleset(channel,era,**kwargs):
   verbosity = LOG.getverbosity(kwargs)
+  verbosity = 2 
   year     = getyear(era) # get integer year
   fname    = kwargs.get('fname', "$PICODIR/$SAMPLE_$CHANNEL$TAG.root" ) # file name pattern of pico files
   split    = kwargs.get('split',    ['DY'] if 'tau' in channel else [ ] ) # split samples (e.g. DY) into genmatch components
@@ -165,6 +166,8 @@ def getsampleset(channel,era,**kwargs):
     LOG.throw(IOError,"Did not recognize era %r!"%(era))
   
   # OBSERVED DATA SAMPLES
+  print(">>>>>>> SingleMuon_Run%d" %year)
+
   if   'tautau' in channel: dataset = "Tau_Run%d?"%year
   elif 'mutau'  in channel: dataset = "SingleMuon_Run%d?"%year
   elif 'etau'   in channel: dataset = "EGamma_Run%d?"%year if year==2018 else "SingleElectron_Run%d?"%year
@@ -186,11 +189,11 @@ def getsampleset(channel,era,**kwargs):
     weight = ""
   #elif channel in ['mutau','etau']:
   if 'mutau' in channel or 'etau' in channel:
-    weight = "np.sign(genweight)*trigweight*puweight*idisoweight_1*idweight_2*ltfweight_2"
+    weight = "genweight/fabs(genweight)*trigweight*puweight*idisoweight_1*idweight_2*ltfweight_2"
   elif channel in ['tautau','ditau']:
-    weight = "genweight*trigweight*puweight*idweight_1*idweight_2*ltfweight_1*ltfweight_2"
+    weight = "genweight/fabs(genweight)*trigweight*puweight*idweight_1*idweight_2*ltfweight_1*ltfweight_2"
   else: # mumu, emu, ...
-    weight = "np.sign(genweight)*trigweight*puweight*idisoweight_1*idisoweight_2"
+    weight = "genweight/fabs(genweight)*trigweight*puweight*idisoweight_1*idisoweight_2"
   for sf in rmsfs: # remove (old) SFs, e.g. for SF measurement
     weight = weight.replace(sf,"").replace("**","*").strip('*')
   for sf in addsfs:  # add extra SFs, e.g. for SF measurement

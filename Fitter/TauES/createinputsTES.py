@@ -38,7 +38,7 @@ def main(args):
       
     # GET SAMPLESET
     sname     = setup["samples"]["filename"]
-    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="config_UL2018v10.json") #config_old.json
+    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="config_UL2018v10.json") #config_old.json ; config_UL2018v10.json
 
     # Potentially split up samples in several processes
     if "split" in setup["samples"]:
@@ -80,6 +80,7 @@ def main(args):
     observables = []
     for obsName in setup["observables"]:
       obs = setup["observables"][obsName]
+      print("obs= %s" %obs)
       if "binVariable" in obs["binning"]: # useful for non constant binning 
         observables.append( Var(obsName, obs["binning"]["binVariable"], **obs["extra"]) )
       else:
