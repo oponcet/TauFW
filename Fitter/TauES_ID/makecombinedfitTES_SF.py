@@ -25,9 +25,9 @@ from argparse import ArgumentParser
 
 ### Fitting function using combine tool
 def combinedfit(setup, setup_mumu, option, **kwargs):
-    #tes_range    = kwargs.get('tes_range',    "%s,%s" %(min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))                         )
-    tes_range    = kwargs.get('tes_range',    "1.000,1.000")                         
-    tid_SF_range = kwargs.get('tid_SF_range', "0.4,1.6"                                                                                                       )
+    tes_range    = kwargs.get('tes_range',    "%s,%s" %(min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))                         )
+    #tes_range    = kwargs.get('tes_range',    "1.000,1.000")                         
+    tid_SF_range = kwargs.get('tid_SF_range', "0.6,1.3"                                                                                                       )
     extratag     = kwargs.get('extratag',     "_DeepTau"                                                                                                      )
     algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1 --saveFitResult "                                                                   )# --saveWorkspace
     npts_fit     = kwargs.get('npts_fit',     "--points=61"                                                                                                  )
@@ -102,6 +102,7 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
             # Global variables
             if int(option) <= 2  and str(config_mumu) != '0':
                 BINLABEL = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV_combined"
+                BINLABELoutput = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV"
             else:
                 BINLABEL = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV"
                 print(BINLABEL)
@@ -114,7 +115,7 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
                 print(">>>>>>>"+POI+" fit")
                 POI_OPTS = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r " % (POI, POI, tes_range, r,tid_SF_range)  # tes_DM
                 os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
-                os.system("combine -M MultiDimFit  %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts,NP))
+                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABELoutput, fit_opts, xrtd_opts, cmin_opts, save_opts,NP))
                 # ##Impact plot
                 # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1 --freezeParameters r "%(POI, POI, tes_range, r,tid_SF_range)
                 # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
@@ -132,7 +133,7 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
                 os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
                 BINLABEL = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV"
                 os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tid.*},rgx{.*W.*},rgx{.*dy.*}" %(WORKSPACE, algo, POI_OPTS, BINLABEL, fit_opts, xrtd_opts, cmin_opts, save_opts))
-                 ##Impact plot
+                ##Impact plot
                 # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1 --freezeParameters r %s"%(POI, POI,tid_SF_range, r,tes_range,r)
                 # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
                 # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s --doFits --parallel 4"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
