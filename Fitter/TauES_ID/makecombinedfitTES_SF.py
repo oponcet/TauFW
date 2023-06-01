@@ -30,7 +30,7 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
     tid_SF_range = kwargs.get('tid_SF_range', "0.6,1.3"                                                                                                       )
     extratag     = kwargs.get('extratag',     "_DeepTau"                                                                                                      )
     algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1 --saveFitResult "                                                                   )# --saveWorkspace
-    npts_fit     = kwargs.get('npts_fit',     "--points=61"                                                                                                  )
+    npts_fit     = kwargs.get('npts_fit',     "--points=31"                                                                                                  )
     fit_opts     = kwargs.get('fit_opts',     "--robustFit=1 --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.001 %s" %(npts_fit))
     xrtd_opts    = kwargs.get('xrtd_opts',    "--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND"                            )
     cmin_opts    = kwargs.get('cmin_opts',    "--cminFallbackAlgo Minuit2,Migrad,0:0.0001 --cminPreScan"                                                 )
@@ -41,7 +41,7 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
 
     print(config_mumu)
     ### DM regions : tes and tid_SF
-    if int(option) < '7':
+    if int(option) < 7:
     # Generating datacards
         print('Generating datacards')
         os.system("./TauES_ID/harvestDatacards_TES_idSF_MCStat.py -y %s -c %s -e %s "%(era,config,extratag)) # Generating the datacards with one statistics uncertianties for all processes
@@ -100,9 +100,9 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
             print("Region : "+r)
 
             # Global variables
+            BINLABELoutput = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV"
             if int(option) <= 2  and str(config_mumu) != '0':
                 BINLABEL = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV_combined"
-                BINLABELoutput = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV"
             else:
                 BINLABEL = "mt_"+v+"-"+r+setup["tag"]+extratag+"-"+era+"-13TeV"
                 print(BINLABEL)
@@ -115,7 +115,7 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
                 print(">>>>>>>"+POI+" fit")
                 POI_OPTS = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r " % (POI, POI, tes_range, r,tid_SF_range)  # tes_DM
                 os.system("text2workspace.py output_%s/ztt_%s.txt" %(era, BINLABEL))
-                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters %s" %(WORKSPACE, algo, POI_OPTS, BINLABELoutput, fit_opts, xrtd_opts, cmin_opts, save_opts,NP))
+                os.system("combine -M MultiDimFit %s %s %s -n .%s %s %s %s %s --trackParameters %s,rgx{.*dy*.},rgx{.*sf*.}" %(WORKSPACE, algo, POI_OPTS, BINLABELoutput, fit_opts, xrtd_opts, cmin_opts, save_opts,NP))
                 # ##Impact plot
                 # POI_OPTS_I = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1 --freezeParameters r "%(POI, POI, tes_range, r,tid_SF_range)
                 # os.system("combineTool.py -M Impacts -n %s -d %s --redefineSignalPOIs %s %s %s %s %s  --doInitialFit"%(BINLABEL, WORKSPACE, POI,fit_opts, POI_OPTS_I, xrtd_opts, cmin_opts))
