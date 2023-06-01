@@ -130,6 +130,7 @@ def harvest(setup, year, obs, **kwargs):
         
         # For TES variations 
         if("TESvariations" in setup):
+          #print green(">>> TESvariations...")
           harvester.cp().channel([channel]).signals().ExtractShapes(filename, "$BIN/$PROCESS_TES$MASS", "$BIN/$PROCESS_TES$MASS_$SYSTEMATIC")
         else:
           harvester.cp().channel([channel]).signals().ExtractShapes(filename, "$BIN/$PROCESS", "$BIN/$PROCESS_$SYSTEMATIC")
@@ -222,7 +223,7 @@ def harvest(setup, year, obs, **kwargs):
         # WRITER
         print green(">>> writing datacards...")
         datacardtxt  = "$TAG/$ANALYSIS_$CHANNEL_%s-%s%s-$ERA.txt"%(obs,region,outtag)
-        datacardroot = "$TAG/$ANALYSIS_$CHANNEL_%s-%s%s.input-$ERA.root"%(obs,region,outtag)
+        datacardroot = "$TAG/$ANALYSIS_$CHANNEL_%s-%s%s-inputs.$ERA.root"%(obs,region,outtag)
         writer = CardWriter(datacardtxt,datacardroot)
         writer.SetVerbosity(verbosity)
         writer.SetWildcardMasses([ ])
