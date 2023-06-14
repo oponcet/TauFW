@@ -49,8 +49,8 @@ def load_sf_measurements(setup,year,**kwargs):
           cols = line.strip().split()
           region.append(str(cols[0]))
           id_SFs.append(float(cols[1]))
-          id_SFs_errhi.append(float(cols[2]))
-          id_SFs_errlo.append(float(cols[3]))
+          id_SFs_errhi.append(float(cols[3]))
+          id_SFs_errlo.append(float(cols[2]))
   #Print the lists
   # print(region)
   # print(id_SFs)
