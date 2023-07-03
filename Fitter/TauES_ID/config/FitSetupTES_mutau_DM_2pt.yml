@@ -11,7 +11,9 @@
 
 channel: mutau
 
-tag: "_mutau_mt65_DM_2pt_Dt2p5_morepts"
+#tag: "_mutau_mt65_DM_2pt_Dt2p5_" #TES range 0.970,1.030 with step 0.002
+#tag: "_mutau_mt65_DM_2pt_Dt2p5_morepts" #TES range 0.950,1.050 with step 0.001
+tag: _mutau_mt65_DM_2pt_Dt2p5_morepts_binning #TES range 0.950,1.050 with step 0.001 with mvis binning=8
 
 baselineCuts: "q_1*q_2<0 && iso_1<0.15 && idDecayModeNewDMs_2 && idDeepTau2018v2p5VSjet_2>=5 && idDeepTau2018v2p5VSe_2>=2 && idDeepTau2018v2p5VSmu_2>=4 && !lepton_vetoes_notau && metfilter && mt_1<65 "
 
@@ -98,7 +100,8 @@ tid_SFRegions:
 
 observables:
     m_vis:
-        binning: [16, 40, 200]
+        #binning: [16, 40, 200] #tag: "_mutau_mt65_DM_2pt_Dt2p5_morepts" 
+        binning: [20, 40, 200] #tag: "_mutau_mt65_DM_2pt_Dt2p5_morepts_binning" 
         title: "m_{vis}"
         extra:
             cut: "40<m_vis && m_vis<200"

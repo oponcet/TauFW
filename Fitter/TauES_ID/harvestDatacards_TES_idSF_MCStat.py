@@ -110,7 +110,7 @@ def harvest(setup, year, obs, **kwargs):
         # Add W+Jets SF as a free parameter 
         if not "norm_wj" in setup["systematics"]:
           print("W+Jets SF as a free parameter ")
-          sf_W = "sf_W_%s"%(listbin[0])
+          sf_W = "sf_W_%s"%(region)
           harvester.cp().process("W").AddSyst(harvester, sf_W,'rateParam', SystMap()(1.00))
           print(">>>Add sf_W : %s" %(sf_W))
 
@@ -208,8 +208,7 @@ def harvest(setup, year, obs, **kwargs):
 
 
         #PRINT
-        #verbosity =1
-        if verbosity>0:
+        if int(verbosity) > 0:
             print green("\n>>> print observation...\n")
             harvester.PrintObs()
             print green("\n>>> print processes...\n")

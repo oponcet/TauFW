@@ -42,7 +42,7 @@ def load_sf_measurements(setup,year,**kwargs):
   id_SFs = []
   id_SFs_errhi = []
   id_SFs_errlo = []
-  inputfilename = "%s/measurement_poi_mt%s_DeepTau.txt" %(indir,tag)
+  inputfilename = "%s/measurement_tid_SF_mt%s_DeepTau_fit_asymm.txt" %(indir,tag)
   with open(inputfilename, 'r') as file:
       next(file)
       for line in file:
@@ -94,6 +94,7 @@ def plot_dm_graph(setup,year,**kwargs):
     canvas = ROOT.TCanvas(canvasname, canvasname, 800, 600)
     graph.Draw("AP")
     canvas.Draw()
+    canvas.SaveAs(canvasname+".png")
     canvas.SaveAs(canvasname+".root")
     canvas.Close()
 
@@ -149,6 +150,7 @@ def plot_dm_graph(setup,year,**kwargs):
       canvas = ROOT.TCanvas(canvasname, canvasname, 800, 600)
       graph.Draw("AP")
       canvas.Draw()
+      canvas.SaveAs(canvasname+".png")
       canvas.SaveAs(canvasname+".root")
       canvas.Close()
 
@@ -183,7 +185,7 @@ def main(args):
 if __name__ == '__main__':
 
   description = '''This script makes plot of pt-dependants id SF measurments from txt file and config file.'''
-  parser = ArgumentParser(prog="plot_it_SF",description=description,epilog="Success!")
+  parser = ArgumentParser(prog="plot_id_SF",description=description,epilog="Success!")
   parser.add_argument('-y', '--year', dest='year', choices=['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','UL2018_v10'], type=str, default='UL2018', action='store', help="select year")
   parser.add_argument('-c', '--config', dest='config', type=str, default='TauES_ID/config/FitSetupTES_mutau_noSF_pt_DM.yml', action='store', help="set config file")
   parser.add_argument('--dm-bins', dest='dm_bins', default=False, action='store_true', help="if true then the mutau channel fits are also split by tau decay-mode")

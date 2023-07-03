@@ -105,14 +105,15 @@ double sigma1(TGraph *g, int right) // find 1sigma left (=0) and rigth (=1)
 
 void plot1D_Scan(Char_t *tag, Char_t *channel, Char_t *observable,Char_t *pt ,Char_t *error_pt)
 {
-  cout << "filename = ./output_UL2018/higgsCombine.mt_" + TString(observable) + "-" + TString(channel) + TString(tag) + "_DeepTau-UL2018-13TeV.MultiDimFit.mH90.root" << endl;
-  TFile *f = new TFile("./output_UL2018/higgsCombine.mt_" + TString(observable) + "-" + TString(channel) + TString(tag) + "_DeepTau-UL2018-13TeV.MultiDimFit.mH90.root");
+
+  cout << "filename = ./output_UL2018_v10/higgsCombine.mt_" + TString(observable) + "-" + TString(channel) + TString(tag) + "_DeepTau-UL2018_v10-13TeV.MultiDimFit.mH90.root" << endl;
+  TFile *f = new TFile("./output_UL2018_v10/higgsCombine.mt_" + TString(observable) + "-" + TString(channel) + TString(tag) + "_DeepTau-UL2018_v10-13TeV.MultiDimFit.mH90.root");
   TTree *tree = (TTree *)f->Get("limit");
 
-  TCanvas *c = new TCanvas("c", "tid_SF", 25, 25, 800, 800);
+  TCanvas *c = new TCanvas("c", "trackedParam_tid_SF", 25, 25, 800, 800);
 
   // Graph
-  int n = tree->Draw("tes_" + TString(channel) + ":2*deltaNLL", "", "gOff");
+  int n = tree->Draw("trackedParam_tid_SF_" + TString(channel) + ":2*deltaNLL", "", "gOff");
   TGraph *graph = new TGraph(n, tree->GetV1(), tree->GetV2());
 
   double *y = graph->GetY();
@@ -160,7 +161,7 @@ void plot1D_Scan(Char_t *tag, Char_t *channel, Char_t *observable,Char_t *pt ,Ch
   str_ymin_x += ymin_x(g);
   str_ymin_x.Resize(4);
   TLatex *l_result = new TLatex(0.2, 0.15, "tid " );
-  l_result->DrawTextNDC(0.5, 0.85, "tes = "+str_ymin_x);
+  l_result->DrawTextNDC(0.5, 0.85, "trackedParam_tid_SF = "+str_ymin_x);
 
 
   // Canvas saved
@@ -187,15 +188,17 @@ void plot1D_Scan(Char_t *tag, Char_t *channel, Char_t *observable,Char_t *pt ,Ch
 
 void plot1D_tid_SF()
 {
-  Char_t tag[3][25] = {"_mtlt65", "_mtlt65_pT","_mtlt65_SF_regionpt_"};
-  Char_t channel[99][15] = {"baseline", "DM0", "DM1", "DM10", "DM11", "DM0_pTlow",
-                            "DM1_pTlow", "DM10_pTlow", "DM11_pTlow", "DM0_pThigh", "DM1_pThigh",
-                            "DM10_pThigh", "DM11_pThigh","pt1","pt2","pt3","pt4","pt5","pt6","pt7"};
+  Char_t tag[4][35] = {"_mtlt65", "_mtlt65_pT","_mtlt65_SF_regionpt_","_mutau_mt65_DM_pt_Dt2p5_v2"};
+  // Char_t channel[99][15] = {"baseline", "DM0", "DM1", "DM10", "DM11", "DM0_pTlow",
+  //                           "DM1_pTlow", "DM10_pTlow", "DM11_pTlow", "DM0_pThigh", "DM1_pThigh",
+  //                           "DM10_pThigh", "DM11_pThigh","pt1","pt2","pt3","pt4","pt5","pt6","pt7"};
+  Char_t channel[99][15] = { "DM0_pt1","DM11_pt2", "DM1", "DM10", "DM11"};
   Char_t observable[2][10] = {"m_vis", "m_2"};
 
   cout << "channel : " <<  channel[15] << endl;
 
   Char_t pt[7][7] = {"22.5", "27.5", "32.5", "37.5", "45", "60", "135"};
+  
   Char_t error_pt[7][7] = {"2.5", "2.5", "2.5", "2.5", "5", "10", "65"};
 
   // int j=0;
@@ -204,9 +207,12 @@ void plot1D_tid_SF()
   //   j+=1;
   // }
   
-for(int i = 1; i<5; i++){
-    plot1D_Scan(tag[2], channel[i], observable[0],pt[1], error_pt[1]);
-  }
+// for(int i = 1; i<5; i++){
+//     plot1D_Scan(tag[2], channel[i], observable[0],pt[1], error_pt[1]);
+//   }
   
+
+       plot1D_Scan(tag[3], channel[1], observable[0],pt[1], error_pt[1]);
+
 }
 

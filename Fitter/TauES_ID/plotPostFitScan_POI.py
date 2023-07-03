@@ -131,6 +131,7 @@ def plotCorrelation(channel,var,region,year,*parameters,**kwargs):
     frame.Draw('SAMEAXIS')
     
     canvasname = "%s/postfit-correlation_%s_%s%s%s"%(outdir,var,region,tag,plotlabel)
+    canvas.SaveAs(canvasname+".png")
     canvas.SaveAs(canvasname+".root")
     if args.pdf: canvas.SaveAs(canvasname+".pdf")
     canvas.Close()
@@ -351,6 +352,7 @@ def plotPostFitValues(channel,var,region,year,*parameters,**kwargs):
     gPad.Modified()
     frame.Draw('SAMEAXIS')
     
+    canvas.SaveAs(canvasname+".png")
     canvas.SaveAs(canvasname+".root")
     if args.pdf: canvas.SaveAs(canvasname+".pdf")
     canvas.Close()
@@ -538,24 +540,39 @@ def main(args):
                  "trackedParam_tid_SF_DM0","trackedParam_tid_SF_DM10", "xsec_dy", "norm_wj",
                   "shape_jTauFake", "rate_jTauFake", "xsec_tt", "trackedParam_tes_DM0","trackedParam_tes_DM1","trackedParam_tes_DM10","trackedParam_tes_DM11" ]
     compare   = {
+      # "norm":
+      #   [ "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "rate_jTauFake_DM0", "rate_jTauFake_DM1","rate_jTauFake_DM10","rate_jTauFake_DM11"
+      #   ],
       "norm":
-        [ "xsec_dy", "xsec_tt", "xsec_st",
-          "norm_wj", "norm_qcd",
+        [ "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "rate_jTauFake_DM0_pt1","rate_jTauFake_DM0_pt2","rate_jTauFake_DM0_pt3", "rate_jTauFake_DM1_pt1","rate_jTauFake_DM1_pt2","rate_jTauFake_DM1_pt3", "rate_jTauFake_DM10_pt1","rate_jTauFake_DM10_pt2","rate_jTauFake_DM10_pt3", "rate_jTauFake_DM11_pt1","rate_jTauFake_DM11_pt2","rate_jTauFake_DM11_pt3"
         ],
       "shapes":
-        [ "xsec_dy", "shape_mTauFakeSF", 
+        [  "shape_mTauFakeSF", 
           "shape_dy"
         ],
-        # "track":
-        # [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0"
+        # "rateParam":
+        # [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1", "trackedParam_sf_W_DM0_pt2", "trackedParam_sf_W_DM1_pt1", "trackedParam_sf_W_DM1_pt2", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2", "trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2"
         # ],
+        # "rateParam":
+        # [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0", "trackedParam_sf_W_DM1", "trackedParam_sf_W_DM10", "trackedParam_sf_W_DM11"
+        # ],
+         "rateParam":
+        [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2","trackedParam_sf_W_DM0_pt3", "trackedParam_sf_W_DM1_pt1","trackedParam_sf_W_DM1_pt2","trackedParam_sf_W_DM1_pt3", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2","trackedParam_sf_W_DM10_pt3","trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2","trackedParam_sf_W_DM11_pt3"
+        ],
       # "tid":
       #   ["trackedParam_tid_SF_pt1","trackedParam_tid_SF_pt2","trackedParam_tid_SF_pt3","trackedParam_tid_SF_pt4","trackedParam_tid_SF_pt5","trackedParam_tid_SF_pt6","trackedParam_tid_SF_pt7"],
-      "tid":
-        ["trackedParam_tid_SF_DM0","trackedParam_tid_SF_DM1","trackedParam_tid_SF_DM10","trackedParam_tid_SF_DM11"],
+      # "tid":
+      #   ["trackedParam_tid_SF_DM0","trackedParam_tid_SF_DM1","trackedParam_tid_SF_DM10","trackedParam_tid_SF_DM11"],
+      # "tid":
+      #   ["trackedParam_tid_SF_DM0_pt1","trackedParam_tid_SF_DM0_pt2", "trackedParam_tid_SF_DM1_pt1","trackedParam_tid_SF_DM1_pt2","trackedParam_tid_SF_DM10_pt1","trackedParam_tid_SF_DM10_pt2","trackedParam_tid_SF_DM11_pt1","trackedParam_tid_SF_DM11_pt2"],
+    #  "tid":
+    #     ["trackedParam_tid_SF_DM0", "trackedParam_tid_SF_DM1","trackedParam_tid_SF_DM10","trackedParam_tid_SF_DM11"],
      
       # "tes":
       #   [ "tes_DM0","tes_DM1","tes_DM10","tes_DM11"]
+
+       "tes":
+        [ "tes_DM0_pt1","tes_DM0_pt2","tes_DM0_pt3","tes_DM1_pt1","tes_DM1_pt2","tes_DM1_pt3","tes_DM10_pt1","tes_DM10_pt2","tes_DM10_pt3","tes_DM11_pt1","tes_DM11_pt2","tes_DM11_pt3"]
     }
     
     fulllist  = [

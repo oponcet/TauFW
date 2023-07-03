@@ -122,7 +122,6 @@ def harvest(setup, year, obs, **kwargs):
 
 
         #PRINT
-        verbosity =1
         if verbosity>0:
             print green("\n>>> print observation...\n")
             harvester.PrintObs()

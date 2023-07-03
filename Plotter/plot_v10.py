@@ -38,7 +38,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
   # VARIABLES
   variables = [
     # Var('pt_1',  "Muon pt",    40,  0, 120, ctitle={'etau':"Electron pt",'tautau':"Leading tau_h pt",'mumu':"Leading muon pt",'emu':"Electron pt"},cbins={"nbtag\w*>":(40,0,200)}),
-    # Var('pt_2',  "tau_h pt",   40,  0, 120, ctitle={'tautau':"Subleading tau_h pt",'mumu':"Subleading muon pt",'emu':"Muon pt"},cbins={"nbtag\w*>":(40,0,200)}),
+    Var('pt_2',  "tau_h pt",   40,  0, 200, ctitle={'tautau':"Subleading tau_h pt",'mumu':"Subleading muon pt",'emu':"Muon pt"},cbins={"nbtag\w*>":(40,0,200)}),
     # Var('eta_1', "Muon eta",   30, -3,   3, ctitle={'etau':"Electron eta",'tautau':"Leading tau_h eta",'mumu':"Leading muon eta",'emu':"Electron eta"},ymargin=1.7,pos='T',ncols=2),
     # Var('eta_2', "tau_h eta",  30, -3,   3, ctitle={'etau':"Electron eta",'tautau':"Subleading tau_h eta",'mumu':"Subleading muon eta",'emu':"Muon eta"},ymargin=1.7,pos='T',ncols=2),
     # Var('mt_1',  "mt(mu,MET)", 40,  0, 200, ctitle={'etau':"mt(mu,MET)",'tautau':"mt(tau,MET)",'emu':"mt(e,MET)"},cbins={"nbtag\w*>":(50,0,250)}),
@@ -104,7 +104,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
   
   # PLOT
   outdir = ensuredir(repkey(outdir,CHANNEL=channel,ERA=era))
-  exts   = ['png','pdf'] if pdf else ['png'] # extensions
+  exts   = ['png','pdf'] if pdf else ['root'] # extensions
   for selection in selections:
     print ">>> Selection %r: %r"%(selection.title,selection.selection)
     stacks = sampleset.getstack(variables,selection,method='QCD_OSSS',scale=1, parallel=parallel)
@@ -279,6 +279,27 @@ def main(args):
            varfilter=varfilter,selfilter=selfilter,fraction=fraction,pdf=pdf)
       sampleset.close()
   
+    # # On-the-fly reweighting of specific processes -- do after splitting and renaming! 
+    #   if "scaleFactors" in setup:
+    #     print("scaleFactors")
+    #     for SF in setup["scaleFactors"]:
+    #       print(SF)
+    #       SFset = setup["scaleFactors"][SF]
+    #       if not era in SFset["values"]: continue
+    #       print "Reweighting with SF -- %s -- for the following processes: %s"%(SF, SFset["processes"])
+    #       for proc in SFset["processes"]:
+    #         print(SFset["processes"])
+    #         weight = "( q_1*q_2<0 ? ( "
+    #         for cond in SFset["values"][era]:
+    #           weight += cond+" ? "+str(SFset["values"][era][cond])+" : ("
+    #         weight += "1.0)"
+    #         for i in range(len(SFset["values"][era])-1):
+    #           weight += " )"
+    #         weight +=  ") : 1.0 )"
+    #         print "Applying weight: %s"%weight
+    #         sampleset.get(proc, unique=True,split=True).addextraweight(weight)
+     
+
 
 if __name__ == "__main__":
   from argparse import ArgumentParser, RawTextHelpFormatter
