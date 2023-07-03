@@ -53,7 +53,7 @@ void plot2D_Scan(Char_t *tag, Char_t *channel, Char_t *observable)
 
   // Graph
   
-  tree->Draw("2*deltaNLL:tid_SF_" + TString(channel) +":tes_" + TString(channel) +">>h(51 ,0.97,1.03,51,0.5,1.5)","2*deltaNLL<10","prof colz"); //(tid_SF = y , tes_ = x)
+  tree->Draw("2*deltaNLL:tid_SF_" + TString(channel) +":tes_" + TString(channel) +">>h(51 ,0.97,1.03,51,0.4,1.6)","2*deltaNLL<10","prof colz"); //(tid_SF = y , tes_ = x)
   //tree->Draw("2*deltaNLL:tid_SF_" + TString(channel) +":tes_DM11>>h(10 ,0.97,1.03,15,0.7,1.2)","2*deltaNLL<10","prof colz"); //(tid_SF = y , tes_ = x)
 
   int n = tree->Draw("tid_SF_" + TString(channel) +":tes_" + TString(channel) ,"quantileExpected == -1","P same");
