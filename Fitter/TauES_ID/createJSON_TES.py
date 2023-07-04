@@ -1,8 +1,8 @@
   
 #! /usr/bin/env python
 # Author: P.Mastrapasqua, O. Poncet (May 2023)
-# Usage: python TauES_ID/createJSON_idSF.py -y UL2018 -c ./TauES_ID/config/FitSetup_mutau_9pt_40-200.yml
-'''This script makes pt-dependants id SF json/root files from config file.'''
+# Usage: python TauES_ID/createJSON_TES.py -y UL2018 -c ./TauES_ID/config/FitSetup_mutau_9pt_40-200.yml
+'''This script makes pt-dependants TES json/root files from config file.'''
 import ROOT
 import os, sys,yaml
 from array import array
@@ -61,7 +61,7 @@ def load_sf_measurements(setup,year,**kwargs):
   tes_errhi = []
   tes_errlo = []
   #inputfilename = "%s/measurement_poi_mt_v10_2p5%s_DeepTau.txt" %(indir,tag)
-  inputfilename = "./plots_UL2018_v10/_mutau_mt65_DM_pt_Dt2p5_v2/measurement_poi_mt_mutau_mt65_DM_pt_Dt2p5_v2_DeepTau.txt"
+  inputfilename = "./plots_UL2018_v10/_mutau_mt65_DM_Dt2p5_rangev1/measurement_poi_mt_mutau_mt65_DM_Dt2p5_rangev1_DeepTau_fit_asymm.txt"
   with open(inputfilename, 'r') as file:
       next(file)
       for line in file:
