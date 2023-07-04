@@ -1,7 +1,13 @@
-  
 #! /usr/bin/env python
-# Author: OPoncet (February 2023)
-'''This script makes plot of pt-dependants id SF measurments from txt file and config file.'''
+"""
+Date : February 2023 
+Author : @oponcet 
+Description : 
+This script makes plot of pt-dependants summary plots of the results of the POI (tes or tid_SF) with DM inclusif 
+bins or not (with --dm-bins option). This script use the txt output file of plotParabola_POI_region.py to produce the plots.
+The valuesof the mean of the pt bin and its std dev need to be change in the fit. This values can be obtained using
+./Plotter/get_ptmean.py (need pt plots of the distribution).
+"""
 import ROOT
 import os, sys,yaml
 from array import array

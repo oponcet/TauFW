@@ -1,8 +1,17 @@
 #! /usr/bin/env python
-# Author: Izaak Neutelings (January 2018)
-# Modification by Saskia Falke and Oceane Poncet (June 2022)
-# Add tid SF as nuisance parameter that affect the norm = rateParameter
-# Use sum of the of the background processes for the bin-by-bin nuisance parameters
+"""
+Date : May 2022 
+Author : @oponcet and Saskia Falke 
+Based ond code of Izaak Neutelings (January 2018)
+Description : 
+Script to generate datacards for the mutau channel and for each regions defined in the config file. 
+The tes is defined as a POI for each "tesRegions" defined in the config file. Horizontal morphing is used
+to interpolate between the template genrated in "TESvariations" in config file. 
+The tid SF is defined as rateParameter for each "tid_SFRegions" defined in the config file.
+The autoMCstat function is used to have bin-by-bin uncertainties for the sum of all backgrounds
+"""
+
+
 
 import ROOT; ROOT.PyConfig.IgnoreCommandLineOptions = True
 import os, sys, re

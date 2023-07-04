@@ -1,5 +1,6 @@
+#! /usr/bin/env python
 """
-Date : May 2022 
+Date : July 2023 
 Author : @oponcet 
 Description :
  - Scan of tes and tid SF is implemented as a rateParamer wich is profiled. Ex usage : Scan by DM (option 1)
@@ -9,6 +10,7 @@ Description :
  - Scan of tes, tid SF and tes of other regions are profiled POIs. Ex usage : Fit tes by DM and tid SF by pt (option 5)
  - 2D scan of tes and tid SF and tes of other regions are profiled POIs. Ex usage : Fit tes by DM and tid SF by pt (option 6) 
 """
+
 from distutils import filelist
 from distutils.command.config import config
 import sys

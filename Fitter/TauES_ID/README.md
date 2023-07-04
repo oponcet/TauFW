@@ -1,31 +1,42 @@
-# TauFW Fitter
+# TauFW Fitter TauES_ID 
 
 ## Installation
 
 See [the README.md in the parent directory](../../../#taufw).
 
+## Creating NTuples:  
+The first step is to produce the NTuples via PicoProducer tool. See [the README.md in the parent directory](../../../PicoProducer).
 ## Creating inputs:
+Inputs are root file used for the creation of the datacards wich is done with `harvestDatacards_TES_idSF_MCStat.py` or `harvestDatacards_zmm.py`. This root file are saved in `Fitter/input` folder and named `ztt*.input*tag*.root`. They contain one TDirectory by `"regions"` defined in config file. For each region, there is a list of TH1D corresponding to each process defined in the config file (ex: ZTT). For each shape systematics there is also two additionnal TH1D correspongind to the up and down variation of the process (ex: ZTT_shapedy_Up). For TES there is a list of additionnal TH1D corresponding to the variations (defined by `"TESvariations"` in the config file) of the process by TES. 
+
+Exemple of command :
+
+ ```sh
+  python TauES/createinputsTES.py -y UL2018 -c TauES_ID/config/FitSetupTES_mutau_DMt.yml 
+  ```
 
 See [the README.md in the TauES directory ](../TauES)
 
 ## Config file : 
+This section provides an overview and explanation of the configuration file for the default tes and tid SF fit in the mutau channel. The config file contains various settings and parameters used in the analysis. For further details and explanations of each parameter, please refer to the specific sections within the config file itself.
 
-* important information about samples, processes, systematics, variations etc. given in config file in yaml format
-* examples of yaml files are given in `TauES_ID/config/defaultFitSetupTES_mutau.yml`
-  -- explanations are given as comments within the file
-* this file is currently being used in TauES/createInputsTES.py, TauES_ID/harvestDatacards_TES_idSF_MCStat.py, makecombinedfitTES_SF.py, plotParabola_POI.py and ../Plotter/plot.py
-  -- it can (and will) be used in further scipts / routines in the future
-* each config file defines the setup for one specific channel
-  -- combinations of channels can be done at datacard level, e.g. to include a mumu-CR
-* you can easily make changes on cuts, observables, regions, etc. through the config file
-* important information to define in the config file to use makecombinedfitTES_SF.py :
-  - 'regions': one datacard file is created for each region. A region contains a definition and a title.
-  - 'plottingOrder': used by plotParabola_POI.py to make the summary plot of the POI measurements.
-  - 'tesRegions': tes are scanned in this regions. Title are defined. 
-  - 'tid_SFRegions': tid SF are scanned in this regions.  Title are defined.
-  - 'observables ': observable to fit : usally m_vis.
-    - 'fitRegions': for each observable, fit regions are defined.
-    - 'scanRegions': for each observable, the region to scan the poi. 
+The main information such as the channel, baseline cuts, and tag are provided at the beginning of the config file. Additional sub-options, like weight replacement for systematic uncertainties, are optional.
+- `"channel"`: Specifies the channel for the analysis, which is "mutau" or "mumu" in this case.
+- `"tag"`: "_mutau_mt65_DM_Dt2p5_rangev1": Allows differentiation between different scenarios or versions.
+- `"baselineCuts"`: Defines the baseline selection cuts for events. It includes various criteria for event selection such as charge correlation, isolation, identification, and additional requirements like lepton vetoes and met filters.
+- `"regions"`: Defines different regions of interest in the analysis. Each region has a specific definition (using cuts or conditions) and a title for identification purposes. One datacard file is created for each region.
+- `"plottingOrder"`: Determines the order in which the defined regions will be plotted. Used by plotParabola_POI.py to make the summary plot of the POI measurements.
+- `"tesRegions"`: Specifies the TES (Tau Energy Scale) regions for the scans. Title are defined.
+- `"tid_SFRegions"`: Specifies the TID (Tau ID) scale factor regions for the scans. Title are defined.
+- `"observables"`: Defines the observables to be fitted and plotted in the analysis. Each observable has its own binning and title.
+  - `"fitRegions"`: for each observable, fit regions are defined.
+  - `"scanRegions"`: for each observable, the region to scan the poi. 
+- `"TESvariations"`: Specifies the different TES variations considered in the analysis. It includes a list of TES values for which the analysis will be performed.
+- `"fitSpecs"`: Defines specifications for bin-by-bin (BBB) systematics. It specifies whether to perform BBB systematics for both signal and background samples.
+- `"samples"` : Specifies the samples to be used in the analysis and their association with different processes. It includes information about the file name format, sample joining, sample splitting, renaming, and removing or adding specific weights or scale factors.
+- `"processes"` : Lists the processes taken into account in the fit.
+- `"systematics"` : Each systematic uncertainty has an effect type (shape or lnN), associated processes, and a scaling factor if applicable.
+- `"scaleFactors"`: Provides additional scale factors per year for specific processes. These scale factors can correct for cross-sections, reconstruction scale factors, and other factors.
 
 
 ## Running the fit :
@@ -46,9 +57,9 @@ Datacards are generated in `makecombinedfitTES_SF.py`:
 2. `generate_datacards_mumu(era, config_mumu, extratag)`: function that generates datacards for the mumu channel (Control Region). This function call `harvestDatacards_zmm.py`.
 
 The input to Combine tool is a datacards file (ztt root and txt files). The datacards are generated for each `"region"` defined in the config file.
-It define the following informations:
-- tes is defined as a POI `"tesRegions"`defined in the config file. Horizontale morphing is used to interpolate between the template genrated in `"TESvariations"` in config file. 
-- tid SF is defined as rateParameter for each `"tid_SFRegions"`defined in the config file.
+It defines the following informations:
+- The tes is defined as a POI  for each `"tesRegions"`defined in the config file. Horizontal morphing is used to interpolate between the templates genrated for `"TESvariations"` (defined in config file). 
+- The tid SF is defined as rateParameter for each `"tid_SFRegions"`defined in the config file.
 - If `-cmm Zmmconfigfile.yml` command is used, so if CR is used, dy_xsec is also implemented as rateParameter.
 - If "norm_wj" is not specified in config file, a rateParameter "sf_W" is defined for the W+Jet normalisation. 
 - The `autoMCstat` function is used to have bin-by-bin uncertainties for the sum of all backgrounds.
@@ -76,3 +87,38 @@ The results of the fit are saved in a root file (ex: `higgsCombine*root` in outp
 - Postfit plots showing the correlation between parameters can be produced via `plotScan(setup,setup_mumu, era=era, config=config, config_mumu=config_mumu, option=option)` that called `plotPostFitScan_POI.py`. The parameter to be plot need to be change in `plotPostFitScan_POI.py` code.
 - Summary plot of the results of the POI (tes or tid_SF) in function of pt (DM inclusif or not with `--dm-bins` option) via `plotpt_poi.py`. This script use the txt output file of `plotParabola_POI_region.py`to produce the plots. The values of the mean of the pt bin and its std dev need to be change in the fit. This values can be obtained using `./Plotter/get_ptmean.py` (need pt plots of the distribution).
 - 2D contours of the 2D scan (usefull for option 3 and 6) via `plot2D_tid_SF.C`. Need to change input file.
+
+
+
+## Example of recipes : 
+
+### Fit of TES and ID SF by DM 
+
+1. Create the NTuples : See [the README.md in the parent directory](../../../PicoProducer).
+
+2. Use `/config/Default_FitSetupTES_mutau_DM.yml`
+
+3. Check the NTuples via control plots. 
+ ```sh
+  python plot_v10.py -y UL2018_v10 -c ./../Fitter/TauES_ID/config/Default_FitSetupTES_mutau_DM.yml 
+  ```
+  Control plot of the differents varaibles are saved in `/plots` folder. See [the README.md in the parent directory](../../../Plotter) for more informations.
+
+4. Create the inputs :
+ ```sh
+  python TauES/createinputsTES.py -y UL2018_v10 -c TauES_ID/config/Default_FitSetupTES_mutau_DM.yml 
+  ```
+Input are saved in `input/ztt_mt_tes_m_vis.inputs-UL2018_v10-13TeV_mutau_mt65_DM_Dt2p5_default`.
+
+5. Run the TES scans with Zmm CR : 
+```sh
+python TauES_ID/makecombinedfitTES_SF.py -y UL2018_v10 -o 1 -c TauES_ID/config/Default_FitSetupTES_mutau_DM.yml -cmm TauES/config/FitSetup_mumu.yml
+ ```
+The TES NLL parabolae and summary plots are automatically generated. 
+
+6. Run the id SF scans with Zmm CR : 
+```sh
+python TauES_ID/makecombinedfitTES_SF.py -y UL2018_v10 -o 2 -c TauES_ID/config/Default_FitSetupTES_mutau_DM.yml -cmm TauES/config/FitSetup_mumu.yml
+ ```
+The id SF NLL parabolae and summary plots are automatically generated. 
+

@@ -1,9 +1,11 @@
 #! /usr/bin/env python
-# Author: Izaak Neutelings (January 2018)
-# Modification by Saskia Falke and Oceane Poncet (June 2022)
-# Add tid SF as nuisance parameter that affect the norm = rateParameter
-# Use sum of the of the background processes for the bin-by-bin nuisance parameters
-
+"""
+Date : June 2022 
+Author : @oponcet and Saskia Falke 
+Based ond code of Izaak Neutelings (January 2018)
+Description : 
+Script to generate datacards for the mumu channel and for each regions defined in the config file. 
+"""
 import ROOT; ROOT.PyConfig.IgnoreCommandLineOptions = True
 import os, sys, re
 import yaml

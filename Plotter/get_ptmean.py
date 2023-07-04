@@ -1,6 +1,10 @@
 #! /usr/bin/env python
-# Author: OPoncet (June 2023)
-'''This script makes plot of pt-dependants id SF measurments from txt file and config file.'''
+"""
+Date : June 2023 
+Author : @oponcet 
+Description : 
+This script get the mean value and the stddev of the pt region using the pt plots produced by plot_v10.py.
+"""
 import ROOT
 import os, sys,yaml
 from array import array
