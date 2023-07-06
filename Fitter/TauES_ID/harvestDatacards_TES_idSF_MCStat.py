@@ -72,6 +72,11 @@ def harvest(setup, year, obs, **kwargs):
 
         # Creation of the CombineHarvester
         harvester = CombineHarvester()
+
+        # Change flag causing bug : 
+        harvester.SetFlag("workspaces-use-clone", True)
+
+        # Add Observation and process
         harvester.AddObservations(['*'], [analysis], [era], [channel], cats)
         harvester.AddProcesses(['*'], [analysis], [era], [channel], backgrounds, cats, False)
         # CAVEAT: Assume we always want to fit TES as POI; if running for mumu channel, everything will be bkg
