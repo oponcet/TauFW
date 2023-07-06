@@ -57,6 +57,10 @@ def harvest(setup, year, obs, **kwargs):
 
    
         harvester = CombineHarvester()
+
+        # Change flag causing bug : 
+        harvester.SetFlag("workspaces-use-clone", True)
+
         harvester.AddObservations(['*'], [analysis], [era], [channel], cats)
         harvester.AddProcesses(['*'], [analysis], [era], [channel], backgrounds, cats, False)
         harvester.AddProcesses(['*'], [analysis], [era], [channel], signals, cats, True)
