@@ -127,7 +127,7 @@ def plotParabola(setup,var,region,year,**kwargs):
     poi_bbb, poi_stat = -1., -1.
     for i, (tag_bd, title_bd, filename_bd) in enumerate(breakdown):
       print '>>>   file "%s" (breakdown)'%(filename_bd)
-      graph_bd, poi_bd = createParabola(filename_bd)
+      graph_bd, poi_bd = createParabola(filename_bd, poi, region)
       graph_bd.SetMarkerColor(colors_bd[i])
       graph_bd.SetLineColor(colors_bd[i])
       graph_bd.SetLineWidth(2)
@@ -497,7 +497,7 @@ def createParabolaFromLists(list_poi,list_dnll,fit=False):
       graph.SetPointError(i,0.0,0.0,error,error)
     return graph
     
-def createParabola(filename):
+def createParabola(filename, poi, region):
     """Create TGraph of DeltaNLL parabola vs. poi from MultiDimFit file."""
     file = ensureTFile(filename)
     tree = file.Get('limit')
@@ -505,8 +505,8 @@ def createParabola(filename):
     for i, event in enumerate(tree):
       if i==0: continue
       #poi.append(tree.poi)
-      poiname = "poi_%s"%region #combine DM 
-      poi.append(getattr(tree,poiname)) #combine DM
+      poi_name = "%s_%s"%(poi,region) #combine DM 
+      poi.append(getattr(tree,poi_name)) #combine DM
       nll.append(2*tree.deltaNLL)
     file.Close()
     minnll = min(nll)
@@ -545,7 +545,7 @@ def measurepoi(filename,poi,region,unc=False,fit=False,asymmetric=True,**kwargs)
 
     """Create TGraph of DeltaNLL parabola vs. poi from MultiDimFit file."""
     if fit:
-       return measurepoi_fit(filename,poi=poi,asymmetric=asymmetric,unc=unc)
+       return measurepoi_fit(filename,poi=poi,region=region,asymmetric=asymmetric,unc=unc)
     file = ensureTFile(filename)
     tree = file.Get('limit')
     poi_list, nll = [ ], [ ]
@@ -590,7 +590,7 @@ def measurepoi(filename,poi,region,unc=False,fit=False,asymmetric=True,**kwargs)
     
 
 
-def measurepoi_fit(filename,poi,asymmetric=True,unc=False):
+def measurepoi_fit(filename,poi,region,asymmetric=True,unc=False):
     """Create TGraph of DeltaNLL parabola vs. poi from MultiDimFit file."""
     file = ensureTFile(filename)
     tree = file.Get('limit')
