@@ -5,6 +5,7 @@
 *.pcm
 *~
 *.root
+*.vscode
 core.*
 __init__.py
 */compare

@@ -33,7 +33,7 @@ def combinedfit(setup, setup_mumu, option, **kwargs):
     extratag     = kwargs.get('extratag',     "_DeepTau"                                                                                                      )
     algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1 --saveFitResult "     )
     #algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1 --saveFitResult "     )
-    npts_fit     = kwargs.get('npts_fit',     "--points=101"                                                                                                  ) #"--points=2601"
+    npts_fit     = kwargs.get('npts_fit',     "--points=151"                                                                                                  ) #"--points=2601"
     fit_opts     = kwargs.get('fit_opts',     "--robustFit=1 --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.001 %s" %(npts_fit))
     xrtd_opts    = kwargs.get('xrtd_opts',    "--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NEVER_GIVE_UP --X-rtd FITTER_BOUND"                            )
     cmin_opts    = kwargs.get('cmin_opts',    "--cminFallbackAlgo Minuit2,Migrad,0:0.0001 --cminPreScan"                                                 )

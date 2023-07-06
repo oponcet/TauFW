@@ -69,7 +69,7 @@ def merge_datacards_ZmmCR(setup, setup_mumu, era,extratag,region):
 def run_combined_fit(setup, setup_mumu, option, **kwargs):
     #tes_range    = kwargs.get('tes_range',    "1.000,1.000")
     tes_range    = kwargs.get('tes_range',    "%s,%s" %(min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))                         )
-    tid_SF_range = kwargs.get('tid_SF_range', "0.6,1.4")
+    tid_SF_range = kwargs.get('tid_SF_range', "0.5,1.5")
     extratag     = kwargs.get('extratag',     "_DeepTau")
     algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1 --saveFitResult ")
     npts_fit     = kwargs.get('npts_fit',     "--points=51")
@@ -85,7 +85,7 @@ def run_combined_fit(setup, setup_mumu, option, **kwargs):
     if int(option) > 3:
         # merge datacards regions
         datacardfile = merge_datacards_regions(setup,setup_mumu, config_mumu, era, extratag)
-        print("datacard file for combined fit = %s") %(datacardfile)
+        print("datacard file for combined fit = %s" %(datacardfile)) 
         # Create workspace 
         os.system("text2workspace.py output_%s/%s.txt" %(era, datacardfile))
         workspace = "output_%s/%s.root" %(era, datacardfile)
@@ -102,15 +102,15 @@ def run_combined_fit(setup, setup_mumu, option, **kwargs):
         # For fit by region create the datacards and the workspace here
         if int(option) <= 3 :
             # For CR Zmumu 
-            print("config_mumu = %s") %(config_mumu)
+            print("config_mumu = %s"  %(config_mumu))
             if str(config_mumu) != 'None':
                 # merge datacards regions and CR
                 datacardfile = merge_datacards_ZmmCR(setup, setup_mumu, era, extratag, r)
-                print("datacard file for fit by region with additionnal CR = %s") %(datacardfile)
+                print("datacard file for fit by region with additionnal CR = %s" %(datacardfile)) 
 
             else:
                 datacardfile = "ztt_mt_m_vis-"+r+setup["tag"]+extratag+"-"+era+"-13TeV"
-                print("datacard file for fit by region = %s") %(datacardfile)
+                print("datacard file for fit by region = %s" %(datacardfile)) 
             # Create workspace 
             os.system("text2workspace.py output_%s/%s.txt" %(era, datacardfile))
             workspace = "output_%s/%s.root" %(era, datacardfile)
@@ -250,4 +250,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     main(args)
-    print ">>>\n>>> done\n"
+    print(">>>\n>>> done\n")

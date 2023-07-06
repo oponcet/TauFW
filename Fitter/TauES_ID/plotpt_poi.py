@@ -32,7 +32,6 @@ def load_pt_values(setup,**kwargs):
         else:
           title = setup["tid_SFRegions"][ptregion]["title"]
         
-
         str_pt_lo = title.split("<")[0].split(" ")[-1]
         str_pt_hi = title.split("<")[-1].split(" ")[0]
         pt_hi = float(str_pt_hi)
@@ -233,8 +232,6 @@ def main(args):
   print(dm_bins)
 
   plot_dm_graph(setup,year,dm_bins=dm_bins,indir=indir,outdir=outdir,tag=tag, poi=poi)
-
-
 
 
 
