@@ -38,7 +38,7 @@ def main(args):
       
     # GET SAMPLESET
     sname     = setup["samples"]["filename"]
-    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="myconfig.json") #config_old.json ; config_UL2018v10.json
+    sampleset = getsampleset(channel,era,fname=sname,join=setup["samples"]["join"],split=[],table=False,rmsf=setup["samples"].get("removeSFs",[]),addsf=setup["samples"].get("addSFs",[]),configfile="config.json") #config_old.json ; config_UL2018v10.json
 
     # Potentially split up samples in several processes
     if "split" in setup["samples"]:

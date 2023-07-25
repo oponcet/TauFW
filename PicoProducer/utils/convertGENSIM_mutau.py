@@ -73,7 +73,7 @@ def convertGENSIM(infiles,outfilename,maxevts=-1,dtier='GENSIM'):
   tree.addBranch('weight',           'f')
   
   # PREPARE HIST
-  print ">>> Creating histograms..."
+  print">>> Creating histograms..."
   h_nmoth           = TH1F('h_nmoth',          ";Number of Z bosons;Events",5,0,5)
   h_ntau_all        = TH1F('h_ntau_all',       ";Number of gen. #tau leptons (incl. copies);Events",16,0,16)
   h_ntau_all2       = TH1F('h_ntau_all2',      ";Number of gen. #tau leptons (incl. copies);Events",16,0,16)

@@ -38,10 +38,10 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
       self.muSFs   = MuonSFs(era=self.era,verb=self.verbosity) # muon id/iso/trigger SFs
 
       #Uncomment the following if you want to apply tau SFs and ES
-      #self.tesTool = TauESTool(tauSFVersion[self.year]) # real tau energy scale corrections
+      self.tesTool = TauESTool(self.year,'DeepTau2017v2p5VSjet',"./../Fitter/plots_UL2018_v10/_mutau_mt65_DM_Dt2p5_rangev1/tes_mutau_mt65_DM_Dt2p5_rangev1.root") # real tau energy scale corrections
     # #self.fesTool = TauFESTool(tauSFVersion[self.year]) # e -> tau fake negligible
       #self.tauSFsT    = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSjet','Tight')
-      #self.tauSFsM    = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSjet','Medium')
+      self.tauSFsM    = TauIDSFTool(self.year,'DeepTau2017v2p5VSjet','Medium', True, './../Fitter/plots_UL2018_v10/_mutau_mt65_DM_Dt2p5_rangev1/opt2/tid_SF_mutau_mt65_DM_Dt2p5_rangev1.root')
       #self.tauSFsT_dm = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSjet','Tight', dm=True)
       #self.etfSFs  = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSe',  'VLoose')
       #self.mtfSFs  = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSmu', 'Tight')
