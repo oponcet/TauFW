@@ -8,7 +8,7 @@ echo "Running job on machine `uname -a`, host $HOSTNAME"
 function peval { echo ">>> $@"; eval "$@"; }
 
 # SETTING
-TASKCMD="python TauES/createinputsTES.py -y UL2018 -c TauES_ID/config/FitSetupTES_mutau_noSF_pt_DM_WP.yml"
+TASKCMD="$@"
 WORKDIR="$PWD"
 printf '=%.0s' `seq 60`; echo
 echo "\$PWD=$PWD"
@@ -26,13 +26,10 @@ if [ ! -z "$CMSSW_BASE" -a -d "$CMSSW_BASE/src" ]; then
   peval "cd $CMSSW_BASE/src"
   peval 'eval `scramv1 runtime -sh`'
   peval "cd $WORKDIR"
-  peval "cp -r $CMSSW_BASE/src $WORKDIR"
-  peval "cd $CMSSW_BASE/src/TauFW/Fitter"
 fi
 
 # MAIN FUNCTIONALITY
-
-#TASKCMD="python TauFW/Fitter/TauES/createinputsTES.py -y UL2018 -c TauFW/Fitter/TauES_ID/config/testeur.yml"
+#TASKCMD=$(cat $JOBLIST | sed "${TASKID}q;d")
 echo "\$PWD=$PWD"
 peval "$TASKCMD"
 
