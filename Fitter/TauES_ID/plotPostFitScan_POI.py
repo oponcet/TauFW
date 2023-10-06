@@ -6,7 +6,7 @@ import numpy, copy
 from array import array
 from argparse import ArgumentParser
 from plotParabola_POI_region import measurepoi, ensureDirectory, ensureTFile
-from ROOT import gROOT, gPad, gStyle, Double, TFile, TCanvas, TLegend, TLatex, TF1, TH2F, TGraph, TLine, TColor,\
+from ROOT import gROOT, gPad, gStyle, TFile, TCanvas, TLegend, TLatex, TF1, TH2F, TGraph, TLine, TColor,\
                  kBlack, kBlue, kRed, kGreen, kYellow, kOrange, kMagenta, kTeal, kAzure, kBlackBody, kTemperatureMap
 from TauFW.Plotter.sample.utils import CMSStyle
 from math import sqrt, log, ceil, floor
@@ -550,15 +550,15 @@ def main(args):
         [  "shape_mTauFakeSF", 
           "shape_dy"
         ],
-        # "rateParam":
-        # [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1", "trackedParam_sf_W_DM0_pt2", "trackedParam_sf_W_DM1_pt1", "trackedParam_sf_W_DM1_pt2", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2", "trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2"
-        # ],
+        "rateParam":
+        [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1", "trackedParam_sf_W_DM0_pt2", "trackedParam_sf_W_DM1_pt1", "trackedParam_sf_W_DM1_pt2", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2", "trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2"
+        ],
         # "rateParam":
         # [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0", "trackedParam_sf_W_DM1", "trackedParam_sf_W_DM10", "trackedParam_sf_W_DM11"
         # ],
-         "rateParam":
-        [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2","trackedParam_sf_W_DM0_pt3", "trackedParam_sf_W_DM1_pt1","trackedParam_sf_W_DM1_pt2","trackedParam_sf_W_DM1_pt3", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2","trackedParam_sf_W_DM10_pt3","trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2","trackedParam_sf_W_DM11_pt3"
-        ],
+        #  "rateParam":
+        # [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2","trackedParam_sf_W_DM0_pt3", "trackedParam_sf_W_DM1_pt1","trackedParam_sf_W_DM1_pt2","trackedParam_sf_W_DM1_pt3", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2","trackedParam_sf_W_DM10_pt3","trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2","trackedParam_sf_W_DM11_pt3"
+        # ],
       # "tid":
       #   ["trackedParam_tid_SF_pt1","trackedParam_tid_SF_pt2","trackedParam_tid_SF_pt3","trackedParam_tid_SF_pt4","trackedParam_tid_SF_pt5","trackedParam_tid_SF_pt6","trackedParam_tid_SF_pt7"],
       # "tid":

@@ -56,6 +56,8 @@ regions:
 
 #tid SF
 plottingOrder: ["DM0_pt1","DM0_pt2", "DM1_pt1","DM1_pt2" ,"DM10_pt1","DM10_pt2","DM11_pt1","DM11_pt2"]
+#plottingOrder: ["DM0_pt2"]
+
 
 # Observable: to be fitted and plotted
 # binning: as defined in TH1 (nbins, xmin, xmax)
@@ -107,6 +109,8 @@ observables:
             cut: "20<m_vis && m_vis<200"
         fitRegions: ["DM0_pt1","DM0_pt2", "DM1_pt1","DM1_pt2" ,"DM10_pt1","DM10_pt2","DM11_pt1","DM11_pt2"] #option 4
         scanRegions: ["DM0_pt1","DM0_pt2", "DM1_pt1","DM1_pt2" ,"DM10_pt1","DM10_pt2","DM11_pt1","DM11_pt2"] #option 4
+        # fitRegions: ["DM0_pt2"] #option 4
+        # scanRegions: ["DM0_pt2"] #option 4
         #scanRegions: ["DM0", "DM1", "DM10", "DM11"] #option 5
 
 
@@ -186,7 +190,7 @@ systematics:
         altWeights: ["(zptweight+0.1*(zptweight-1))", "(zptweight-0.1*(zptweight-1))"]
     lumi:
         effect: "lnN"
-        processes: ["ZTT", "ZL", "ZJ", "TTT", "TTL", "TTJ", "W", "ST", "VV"] #processes: ["ZTT", "ZL", "ZJ", "TTT", "TTL", "TTJ", "W", "ST", "VV"]
+        processes: ["TTT", "TTL", "TTJ", "ST", "VV"] #processes: ["ZTT", "ZL", "ZJ", "TTT", "TTL", "TTJ", "W", "ST", "VV"]
         scaleFactor: 1.025
     eff_m:
         effect: "lnN"
@@ -218,7 +222,7 @@ systematics:
         scaleFactor: 1.10 # mettre 20 % ?s
     rate_jTauFake_$BIN:
         effect: "lnN"
-        processes: ["W","QCD","ZJ","TTJ","STJ"]
+        processes: ["QCD","ZJ","TTJ","STJ"] #"W"
         scaleFactor: 1.15
 
 # Additional scale factors per year for specific processes (correction of xsec, reco SFs, etc.)

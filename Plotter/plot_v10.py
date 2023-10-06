@@ -12,9 +12,10 @@ from TauFW.Plotter.plot.Plot import Plot, deletehist
 import yaml
 
 
-def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era="",
+def plot(sampleset,setup,parallel=False,tag="",extratext="",outdir="plots",era="",
          varfilter=None,selfilter=None,fraction=False,pdf=False):
   """Test plotting of SampleSet class for data/MC comparison."""
+  # parallel = false, if true segmenatation fault
   LOG.header("plot")
   
   channel  = setup["channel"]
@@ -104,7 +105,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
   
   # PLOT
   outdir = ensuredir(repkey(outdir,CHANNEL=channel,ERA=era))
-  exts   = ['png','pdf'] if pdf else ['root'] # extensions
+  exts   = ['png','pdf'] if pdf else ['png'] # extensions
   for selection in selections:
     print(">>> Selection %r: %r"%(selection.title,selection.selection))
     stacks = sampleset.getstack(variables,selection,method='QCD_OSSS',scale=1, parallel=parallel)
@@ -249,7 +250,8 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
 def main(args):
   configs   = args.configs
   eras      = args.eras
-  parallel  = args.parallel
+  #parallel  = args.parallel
+  parallel  = False
   varfilter = args.varfilter
   selfilter = args.selfilter
   notauidsf = args.notauidsf
@@ -271,10 +273,12 @@ def main(args):
     
     for era in eras:
       setera(era) # set era for plot style and lumi-xsec normalization
-      addsfs = [ ] #"getTauIDSF(dm_2,genmatch_2)"]
+      addsfs = ['idweight_dm_2'] #"getTauIDSF(dm_2,genmatch_2)"]
+      #addsfs = [] #"getTauIDSF(dm_2,genmatch_2)"]
+      rmsfs  = [ ] if (setup['channel']=='mumu' or not notauidsf) else ['idweight_2','ltfweight_2'] # remove tau ID SFs
       rmsfs  = [ ] if (setup['channel']=='mumu' or not notauidsf) else ['idweight_2','ltfweight_2'] # remove tau ID SFs
       split  = ['DY'] if 'tau' in setup['channel'] else [ ] # split these backgrounds into tau components
-      sampleset = getsampleset(setup['channel'],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split,configfile ="config_def.json")
+      sampleset = getsampleset(setup['channel'],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split,configfile ="config.json")
       plot(sampleset,setup,parallel=parallel,tag=tag,extratext=extratext,outdir=outdir,era=era,
            varfilter=varfilter,selfilter=selfilter,fraction=fraction,pdf=pdf)
       sampleset.close()

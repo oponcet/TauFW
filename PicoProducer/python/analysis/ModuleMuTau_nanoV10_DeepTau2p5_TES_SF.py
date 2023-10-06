@@ -38,11 +38,13 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
       self.muSFs   = MuonSFs(era=self.era,verb=self.verbosity) # muon id/iso/trigger SFs
 
       #Uncomment the following if you want to apply tau SFs and ES
-      #self.tesTool = TauESTool(tauSFVersion[self.year]) # real tau energy scale corrections
+      #self.tesTool = TauESTool(self.era,'DeepTau2018v2p5VSjet',True, '') # real tau energy scale corrections
+      self.tesTool = TauESTool('UL2018_v10','DeepTau2018v2p5VSjet','/afs/cern.ch/user/o/oponcet/private/TauPOG/CMSSW_11_3_4/src/TauPOG/TauIDSFs/data', True, True) # real tau energy scale corrections
     # #self.fesTool = TauFESTool(tauSFVersion[self.year]) # e -> tau fake negligible
       #self.tauSFsT    = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSjet','Tight')
-      self.tauSFsM    = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSjet','Medium')
-      #self.tauSFsT_dm = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSjet','Tight', dm=True)
+      #self.tauSFsM    = TauIDSFTool(self.era, 'DeepTau2018v2p5VSjet', 'Medium', False, True, False, False, '', True)
+      self.tauSFsM    = TauIDSFTool('UL2018_v10', 'DeepTau2018v2p5VSjet', 'Medium', False ,True, False, False,'/afs/cern.ch/user/o/oponcet/private/TauPOG/CMSSW_11_3_4/src/TauPOG/TauIDSFs/data') # ./../../TauPOG/TauIDSFs/data/
+      #self.tauSFsT_dm = TauIDSFTool(self.era,'DeepTau2018v2p5VSjet','Medium', True, 'data/tes_id/_mutau_mt65_DM_pt_Dt2p5_v2/')
       #self.etfSFs  = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSe',  'VLoose')
       #self.mtfSFs  = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSmu', 'Tight')
     
@@ -57,16 +59,23 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
     self.out.cutflow.addcut('lepvetoes',     "lep vetoes"              )
     self.out.cutflow.addcut('weight',       "no cut, weighted", 15       )
     self.out.cutflow.addcut('weight_no0PU', "no cut, weighted, PU>0", 16 ) # use for normalization
-    
+    ## Important cutflow entries to make stitching with exclusive mutauh sample
+    self.out.cutflow.addcut('weight_mutaufilter', "no cut, mutaufilter", 17 )    
+    self.out.cutflow.addcut('weight_mutaufilter_NUP0orp4', "no cut, weighted, mutau, 0 or >4 jets", 18 )
+    self.out.cutflow.addcut('weight_mutaufilter_NUP1', "no cut, weighted, mutau, 1 jet", 19 )
+    self.out.cutflow.addcut('weight_mutaufilter_NUP2', "no cut, weighted, mutau, 2 jets", 20 )
+    self.out.cutflow.addcut('weight_mutaufilter_NUP3', "no cut, weighted, mutau, 3 jets", 21 )
+    self.out.cutflow.addcut('weight_mutaufilter_NUP4', "no cut, weighted, mutau, 4 jets", 22 )
+
   
   def beginJob(self):
     """Before processing any events or files."""
     super(ModuleMuTau_nanoV10_DeepTau2p5,self).beginJob()
-    print ">>> %-12s = %s"%('tauwp',      self.tauwp)
-    print ">>> %-12s = %s"%('muonCutPt',  self.muonCutPt)
-    print ">>> %-12s = %s"%('muonCutEta', self.muonCutEta)
-    print ">>> %-12s = %s"%('tauCutPt',   self.tauCutPt)
-    print ">>> %-12s = %s"%('tauCutEta',  self.tauCutEta)
+    print(">>> %-12s = %s"%('tauwp',      self.tauwp))
+    print(">>> %-12s = %s"%('muonCutPt',  self.muonCutPt))
+    print(">>> %-12s = %s"%('muonCutEta', self.muonCutEta))
+    print(">>> %-12s = %s"%('tauCutPt',   self.tauCutPt))
+    print(">>> %-12s = %s"%('tauCutEta',  self.tauCutEta))
     pass
     
   
@@ -77,20 +86,8 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
     
     
     ##### NO CUT #####################################
-    self.out.cutflow.fill('none')
-    if self.isdata:
-      self.out.cutflow.fill('weight',1.)
-      if event.PV_npvs>0:
-        self.out.cutflow.fill('weight_no0PU',1.)
-      else:
-        return False
-    else:
-      self.out.cutflow.fill('weight',event.genWeight)
-      self.out.pileup.Fill(event.Pileup_nTrueInt)
-      if event.Pileup_nTrueInt>0:
-        self.out.cutflow.fill('weight_no0PU',event.genWeight)
-      else:
-        return False
+    if not self.fillhists(event):
+      return False
     
     
     ##### TRIGGER ####################################
@@ -130,13 +127,20 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
         genmatch = tau.genPartFlav
         if genmatch==5: # real tau
           if self.tes!=None: # user-defined energy scale (for TES studies)
-            tes = self.tes
+            #tes = self.tes
+            tes = self.tesTool.getTESvsPTDM(tau.decayMode,tau.pt,genmatch=5, unc=None)
           else: # (apply by default)
-            tes = self.tesTool.getTES(tau.pt,tau.decayMode,unc=self.tessys)
+            tes = self.tesTool.getTESvsPTDM(tau.decayMode,tau.pt,genmatch=5, unc=None)
+          print("tau.decayMode = ",tau.decayMode)
+          print("tau.pt = ",tau.pt)
+          print("tes = ", tes)
           if tes!=1:
             tau.pt   *= tes
             tau.mass *= tes
             tau.es    = tes
+          print("tau.pt = ", tau.pt)
+          print("tau.mass = ", tau.mass)
+          print("tau.es = ", tau.es)
         elif self.ltf and 0<genmatch<5: # lepton -> tau fake
           tau.pt   *= self.ltf
           tau.mass *= self.ltf
@@ -275,7 +279,7 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
     
     # WEIGHTS
     if self.ismc:
-      self.fillCommonCorrBraches(event,jets,met,njets_vars,met_vars)
+      self.fillCommonCorrBranches(event,jets,met,njets_vars,met_vars)
       #if muon.pfRelIso04_all<0.50 and tau.idDeepTau2017v2p1VSjet>=2:
       if muon.pfRelIso04_all<0.50 and tau.idDeepTau2018v2p5VSjet>=2:
          self.btagTool.fillEffMaps(jets,usejec=self.dojec)
@@ -300,10 +304,16 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
       
       # TAU WEIGHTS
       #Uncomment the following if you apply tau SFs
-      #if tau.genPartFlav==5: # real tau
+      if tau.genPartFlav==5: # real tau
       #  self.out.idweight_2[0]        = self.tauSFsT.getSFvsPT(tau.pt)
       #  self.out.idweight_medium_2[0] = self.tauSFsM.getSFvsPT(tau.pt)
-      #  self.out.idweight_dm_2[0]     = self.tauSFsT_dm.getSFvsDM(tau.pt,tau.decayMode)
+        self.out.idweight_dm_2[0]     = self.tauSFsM.getSFvsPTDM(tau.decayMode,tau.pt)
+        print("tau.decayMode = ",tau.decayMode)
+        print("tau.pt = ",tau.pt)
+        print("SF = ",self.out.idweight_dm_2[0])
+        self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0]*self.out.idweight_dm_2[0]
+      else:
+        self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0]
       #  if self.dosys:
       #    self.out.idweightUp_2[0]    = self.tauSFsT.getSFvsPT(tau.pt,unc='Up')
       #    self.out.idweightDown_2[0]  = self.tauSFsT.getSFvsPT(tau.pt,unc='Down')
@@ -319,7 +329,8 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
       #  if self.dosys:
       #    self.out.ltfweightUp_2[0]   = self.mtfSFs.getSFvsEta(tau.eta,tau.genPartFlav,unc='Up')
       #    self.out.ltfweightDown_2[0] = self.mtfSFs.getSFvsEta(tau.eta,tau.genPartFlav,unc='Down')
-      self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0] #*self.out.idisoweight_2[0]
+      #self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0] #*self.out.idisoweight_2[0]
+      #self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0]*self.out.idweight_dm_2[0]
     elif self.isembed:
       ###self.applyCommonEmbdedCorrections(event,jets,jetIds50,met,njets_vars,met_vars)
       self.out.genweight[0]           = event.genWeight

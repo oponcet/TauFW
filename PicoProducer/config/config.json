@@ -3,7 +3,7 @@
       "skim": "skimjob.py", 
       "skim-jec": "skimjob.py --jec-sys", 
       "gen": "GenDumper", 
-      "mutau_tes_id": "ModuleMuTau_nanoV10_DeepTau2p5"
+      "mutau": "ModuleMuTau_nanoV10_DeepTau2p5"
     }, 
     "eras": {
       "2016": "examples/samples_2016.py", 
@@ -16,9 +16,9 @@
     "filelistdir": "samples/files/$ERA/$SAMPLE.txt", 
     "jobdir": "output/$ERA/$CHANNEL/$SAMPLE", 
     "basedir": "/afs/cern.ch/user/o/oponcet/private/TauPOG/CMSSW_11_3_4/src/TauFW/PicoProducer", 
-    "outdir": "/eos/user/o/oponcet/TauPOG/output/$ERA/$CHANNEL/$SAMPLE", 
-    "nanodir": "/eos/user/o/oponcet/TauPOG/samples/nano/$ERA/$DAS", 
-    "picodir": "/eos/user/o/oponcet/TauPOG/analysis/$ERA/$GROUP", 
+    "outdir": "/eos/user/o/oponcet/TauPOG/output/tes_id/$ERA/$CHANNEL/$SAMPLE", 
+    "nanodir": "/eos/user/o/oponcet/TauPOG/samples/tes_id/nano/$ERA/$DAS",  
+    "picodir": "/eos/user/o/oponcet/TauPOG/analysis/tes_id/$ERA/$GROUP", 
     "tmpskimdir": "", 
     "batch": "HTCondor", 
     "maxevtsperjob": 500000, 

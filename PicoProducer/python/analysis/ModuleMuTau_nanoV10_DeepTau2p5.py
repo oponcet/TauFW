@@ -38,11 +38,13 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
       self.muSFs   = MuonSFs(era=self.era,verb=self.verbosity) # muon id/iso/trigger SFs
 
       #Uncomment the following if you want to apply tau SFs and ES
-      self.tesTool = TauESTool(self.year,'DeepTau2017v2p5VSjet',"./../Fitter/plots_UL2018_v10/_mutau_mt65_DM_Dt2p5_rangev1/tes_mutau_mt65_DM_Dt2p5_rangev1.root") # real tau energy scale corrections
+      #self.tesTool = TauESTool(self.era,'DeepTau2018v2p5VSjet',True, '') # real tau energy scale corrections
+      #self.tesTool = TauESTool('UL2018_v10','DeepTau2018v2p5VSjet','/afs/cern.ch/user/o/oponcet/private/TauPOG/CMSSW_11_3_4/src/TauPOG/TauIDSFs/data', True, True) # real tau energy scale corrections
     # #self.fesTool = TauFESTool(tauSFVersion[self.year]) # e -> tau fake negligible
       #self.tauSFsT    = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSjet','Tight')
-      self.tauSFsM    = TauIDSFTool(self.year,'DeepTau2017v2p5VSjet','Medium', True, './../Fitter/plots_UL2018_v10/_mutau_mt65_DM_Dt2p5_rangev1/opt2/tid_SF_mutau_mt65_DM_Dt2p5_rangev1.root')
-      #self.tauSFsT_dm = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSjet','Tight', dm=True)
+      #self.tauSFsM    = TauIDSFTool(self.era, 'DeepTau2018v2p5VSjet', 'Medium', False, True, False, False, '', True)
+      #self.tauSFsM    = TauIDSFTool('UL2018_v10', 'DeepTau2018v2p5VSjet', 'Medium', False ,True, False, False,'/afs/cern.ch/user/o/oponcet/private/TauPOG/CMSSW_11_3_4/src/TauPOG/TauIDSFs/data') # ./../../TauPOG/TauIDSFs/data/
+      #self.tauSFsT_dm = TauIDSFTool(self.era,'DeepTau2018v2p5VSjet','Medium', True, 'data/tes_id/_mutau_mt65_DM_pt_Dt2p5_v2/')
       #self.etfSFs  = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSe',  'VLoose')
       #self.mtfSFs  = TauIDSFTool(tauSFVersion[self.year],'DeepTau2017v2p1VSmu', 'Tight')
     
@@ -124,14 +126,21 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
         tau.es   = 1 # store energy scale for propagating to MET
         genmatch = tau.genPartFlav
         if genmatch==5: # real tau
-          if self.tes!=None: # user-defined energy scale (for TES studies)
-            tes = self.tes
-          else: # (apply by default)
-            tes = self.tesTool.getTES(tau.pt,tau.decayMode,unc=self.tessys)
+          # if self.tes!=None: # user-defined energy scale (for TES studies)
+          tes = self.tes
+          #   tes = self.tesTool.getTESvsPTDM(tau.decayMode,tau.pt,genmatch=5, unc=None)
+          # else: # (apply by default)
+          #   tes = self.tesTool.getTESvsPTDM(tau.decayMode,tau.pt,genmatch=5, unc=None)
+          # print("tau.decayMode = ",tau.decayMode)
+          # print("tau.pt = ",tau.pt)
+          # print("tes = ", tes)
           if tes!=1:
             tau.pt   *= tes
             tau.mass *= tes
             tau.es    = tes
+          # print("tau.pt = ", tau.pt)
+          # print("tau.mass = ", tau.mass)
+          # print("tau.es = ", tau.es)
         elif self.ltf and 0<genmatch<5: # lepton -> tau fake
           tau.pt   *= self.ltf
           tau.mass *= self.ltf
@@ -295,10 +304,16 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
       
       # TAU WEIGHTS
       #Uncomment the following if you apply tau SFs
-      #if tau.genPartFlav==5: # real tau
+      # if tau.genPartFlav==5: # real tau
       #  self.out.idweight_2[0]        = self.tauSFsT.getSFvsPT(tau.pt)
       #  self.out.idweight_medium_2[0] = self.tauSFsM.getSFvsPT(tau.pt)
-      #  self.out.idweight_dm_2[0]     = self.tauSFsT_dm.getSFvsDM(tau.pt,tau.decayMode)
+      #   self.out.idweight_dm_2[0]     = self.tauSFsM.getSFvsPTDM(tau.decayMode,tau.pt)
+      #   print("tau.decayMode = ",tau.decayMode)
+      #   print("tau.pt = ",tau.pt)
+      #   print("SF = ",self.out.idweight_dm_2[0])
+      #   self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0]*self.out.idweight_dm_2[0]
+      # else:
+      #   self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0]
       #  if self.dosys:
       #    self.out.idweightUp_2[0]    = self.tauSFsT.getSFvsPT(tau.pt,unc='Up')
       #    self.out.idweightDown_2[0]  = self.tauSFsT.getSFvsPT(tau.pt,unc='Down')
@@ -314,7 +329,8 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
       #  if self.dosys:
       #    self.out.ltfweightUp_2[0]   = self.mtfSFs.getSFvsEta(tau.eta,tau.genPartFlav,unc='Up')
       #    self.out.ltfweightDown_2[0] = self.mtfSFs.getSFvsEta(tau.eta,tau.genPartFlav,unc='Down')
-      self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0] #*self.out.idisoweight_2[0]
+      #self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0] #*self.out.idisoweight_2[0]
+      #self.out.weight[0]              = self.out.genweight[0]*self.out.puweight[0]*self.out.trigweight[0]*self.out.idisoweight_1[0]*self.out.idweight_dm_2[0]
     elif self.isembed:
       ###self.applyCommonEmbdedCorrections(event,jets,jetIds50,met,njets_vars,met_vars)
       self.out.genweight[0]           = event.genWeight

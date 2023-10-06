@@ -17,7 +17,7 @@ samples  = [
     "/DY1JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8",
     store=storage,url=url,files=filelist,opts="useT1=True,zpt=True"),
   M('DY','DY2JetsToLL_M-50',
-    "DY2JetsToLL_M-50-madgraphMLM",
+    "/DY2JetsToLL_M-50-madgraphMLM",
     store=storage,url=url,files=filelist,opts="useT1=True,zpt=True"),
   M('DY','DY3JetsToLL_M-50',
     "/DY3JetsToLL_M-50_MatchEWPDG20_TuneCP5_13TeV-madgraphMLM-pythia8",
