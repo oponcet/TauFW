@@ -6,8 +6,10 @@ See [the README.md in the parent directory](../../../#taufw).
 
 ## Creating NTuples 
 The first step is to produce the NTuples via PicoProducer tool. See [the README.md in the parent directory](../../../PicoProducer).
+
 ## Creating inputs
-Inputs are root file used for the creation of the datacards. The script to create them is `harvestDatacards_TES_idSF_MCStat.py` for mutau or `harvestDatacards_zmm.py` for mumu CR. These root files are saved in `Fitter/input` folder and named `ztt*.input*tag*.root`. They contain one TDirectory for each `"regions"` defined in the config file (.yml). For each region, there is a list of TH1D corresponding to each `"process"` defined in the config file (ex: ZTT). For each shape systematics, there is also two additionnal TH1D corresponding to the Up and Down variation of the process (ex: ZTT_shapedy_Up). For the TES there is a list of additional TH1D corresponding to the variations (defined by `"TESvariations"` in the config file) of the process by TES correction. 
+Inputs are root file used for the creation of the datacards is `Fitter/TauES/createinputsTES.py`.
+These root files are saved in `Fitter/input` folder and named `ztt*.input*tag*.root`. They contain one TDirectory for each `"regions"` defined in the config file (.yml). For each region, there is a list of TH1D corresponding to each `"process"` defined in the config file (ex: ZTT). For each shape systematics, there is also two additionnal TH1D corresponding to the Up and Down variation of the process (ex: ZTT_shapedy_Up). For the TES there is a list of additional TH1D corresponding to the variations (defined by `"TESvariations"` in the config file) of the process by TES correction. 
 
 Exemple of command :
 
