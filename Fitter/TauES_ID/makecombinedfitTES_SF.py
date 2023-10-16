@@ -142,7 +142,7 @@ def run_combined_fit(setup, setup_mumu, option, **kwargs):
             POI = "tid_SF_%s" % (r)
             NP = "rgx{.*tid.*}" 
             print(">>>>>>> Scan of "+POI)
-            POI_OPTS = "-P %s --redefineSignalPOIs tes_%s,%s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tid.*}=1,rgx{.*tes.*}=1 --freezeParameters r --floatOtherPOIs=1" % (POI,r,POI, POI, tid_SF_range, r,tes_range)  # tes_DM
+            POI_OPTS = "-P %s --redefineSignalPOIs tes_%s,%s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tid.*}=1,rgx{.*tes.*}=1 --freezeParameters r,tes --floatOtherPOIs=1" % (POI,r,POI, POI, tid_SF_range, r,tes_range)  # tes_DM
             MultiDimFit_opts = " %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tid.*},rgx{.*W.*},rgx{.*dy.*} --saveInactivePOI=1 " %(workspace, algo, POI_OPTS, BINLABELoutput, fit_opts, xrtd_opts, cmin_opts, save_opts)
             os.system("combine -M MultiDimFit %s " %(MultiDimFit_opts))
 

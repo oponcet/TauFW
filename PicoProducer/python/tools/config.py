@@ -72,7 +72,7 @@ def getdefaultconfig(verb=0):
 def getconfig(verb=0,refresh=False,**kwargs):
   """Get configuration from JSON file."""
   global basedir, CONFIG
-  configfile = kwargs.get( 'configfile', "config.json")
+  configfile = kwargs.get( 'configfile', "config_def.json")
   cfgdefaults = getdefaultconfig(verb=verb)
   if CONFIG and not refresh:
     return CONFIG
@@ -140,7 +140,7 @@ def setdefaultconfig(verb=0):
   global basedir, CONFIG
   cfgdefaults = getdefaultconfig(verb=verb)
   cfgdir  = ensuredir(basedir,"config")
-  cfgname = os.path.join(cfgdir,"config.json")
+  cfgname = os.path.join(cfgdir,"config_def.json")
   cfgdict = cfgdefaults.copy()
   if os.path.isfile(cfgname):
     LOG.warning("Config file '%s' already exists. Overwriting with defaults..."%(cfgname))
