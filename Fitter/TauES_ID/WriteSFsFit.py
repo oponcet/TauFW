@@ -6,7 +6,7 @@ from `combine` represent the sigma variation of the parameters. This script read
 corresponding 1-sigma variation and calculates the parameter values after the fit. For rate parameters, the values are preserved 
 as it is. The results are saved in a text file with associated processes affected by the systematics. These results can be 
 utilized in the `./Plotter/plot_postfit.py` script to generate postfit plots.
-"""
+
 
 Function:
 calculate_SFpostfit(config, year, output_file)
@@ -49,6 +49,7 @@ def calculate_SFpostfit(config, year, output_file):
     for key in additional_params:
         param_SF_postfit_dict[key] = {}
         for region in setup["plottingOrder"]:
+            print(region)
             param_values = {}
             # Read values from txt file
             with open('./postfit_%s/FitparameterValues_%s_DeepTau_%s-13TeV_%s.txt' % (year,tag, year,region), 'r') as txt_file:
@@ -62,7 +63,8 @@ def calculate_SFpostfit(config, year, output_file):
                         param_value = float(match.group(2))
                         # Replace regions according to mapping
                         print(region)
-                        actual_region = region_mapping.get(region, region)
+                        actual_region = region
+                        #actual_region = region_mapping.get(region, region)
                         param_SF_postfit_dict[key][actual_region] = param_value
 
     for sys in setup["systematics"]:
@@ -89,12 +91,16 @@ def calculate_SFpostfit(config, year, output_file):
 
                 param_name_modified = param_name.replace("$BIN", region)
                 param_SF = setup["systematics"][sys]["scaleFactor"]
+                print(param_name_modified)
+                print(param_values)
                 if param_name_modified in param_values:
                     param_SF_postfit_val = param_values[param_name_modified] * (param_SF - 1) + 1
                     # Replace regions according to mapping
-                    actual_region = region_mapping.get(region, region)
+                    actual_region = region
+                    #actual_region = region_mapping.get(region, region)
                     # Store param_SF_postfit values for each parameter and region
                     param_SF_postfit_dict[param_name][actual_region] = param_SF_postfit_val
+                    print("parameter: %s , value : %s" %(param_name_modified,param_SF_postfit_val))
 
     # Write param_SF_postfit_dict to a file
     with open(output_file, 'w') as outfile:
@@ -119,9 +125,9 @@ def calculate_SFpostfit(config, year, output_file):
 
 
 
-year = "2022_postEE" #2022_preEE
+year = "2022_preEE" #2022_preEE
 
-config = "./TauES_ID/config/Default_FitSetupTES_mutau_DM_mt40_mvisrange.yml"
+config = "./TauES_ID/config/Default_FitSetupTES_mutau_DM_mt40_JetM_muVT.yml"
 # Load config file
 with open(config, 'r') as config_file:
     setup = yaml.safe_load(config_file)

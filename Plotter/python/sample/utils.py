@@ -467,24 +467,24 @@ def stitch(samplelist,*searchterms,**kwargs):
   print("cme = %s and in else " %(cme))
   print("kfactor step 2 = %s" %(kfactor))
 
-  if sample_mutau:
-    cutflow_incl = sample_incl.getcutflow()
-    effMuTau_incl = cutflow_incl.GetBinContent(18) / cutflow_incl.GetBinContent(17) * nanoEff_DYll
-    effMuTauNjet_incl = dict()
-    effMuTauNjet_incl[0] = cutflow_incl.GetBinContent(19) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[0]
-    effMuTauNjet_incl[1] = cutflow_incl.GetBinContent(20) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[1]
-    effMuTauNjet_incl[2] = cutflow_incl.GetBinContent(21) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[2]
-    effMuTauNjet_incl[3] = cutflow_incl.GetBinContent(22) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[3]
-    effMuTauNjet_incl[4] = cutflow_incl.GetBinContent(23) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[4]
+  # if sample_mutau:
+  #   cutflow_incl = sample_incl.getcutflow()
+  #   effMuTau_incl = cutflow_incl.GetBinContent(18) / cutflow_incl.GetBinContent(17) * nanoEff_DYll
+  #   effMuTauNjet_incl = dict()
+  #   effMuTauNjet_incl[0] = cutflow_incl.GetBinContent(19) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[0]
+  #   effMuTauNjet_incl[1] = cutflow_incl.GetBinContent(20) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[1]
+  #   effMuTauNjet_incl[2] = cutflow_incl.GetBinContent(21) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[2]
+  #   effMuTauNjet_incl[3] = cutflow_incl.GetBinContent(22) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[3]
+  #   effMuTauNjet_incl[4] = cutflow_incl.GetBinContent(23) / cutflow_incl.GetBinContent(17) * nanoEff_DYll_nj[4]
 
-    cutflow_mutau = sample_mutau.getcutflow()
-    effMuTau_excl = cutflow_mutau.GetBinContent(18) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau
-    effMuTauNjet_excl = dict()
-    effMuTauNjet_excl[0] = cutflow_mutau.GetBinContent(19) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[0]
-    effMuTauNjet_excl[1] = cutflow_mutau.GetBinContent(20) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[1]
-    effMuTauNjet_excl[2] = cutflow_mutau.GetBinContent(21) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[2]
-    effMuTauNjet_excl[3] = cutflow_mutau.GetBinContent(22) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[3]
-    effMuTauNjet_excl[4] = cutflow_mutau.GetBinContent(23) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[4]
+  #   cutflow_mutau = sample_mutau.getcutflow()
+  #   effMuTau_excl = cutflow_mutau.GetBinContent(18) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau
+  #   effMuTauNjet_excl = dict()
+  #   effMuTauNjet_excl[0] = cutflow_mutau.GetBinContent(19) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[0]
+  #   effMuTauNjet_excl[1] = cutflow_mutau.GetBinContent(20) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[1]
+  #   effMuTauNjet_excl[2] = cutflow_mutau.GetBinContent(21) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[2]
+  #   effMuTauNjet_excl[3] = cutflow_mutau.GetBinContent(22) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[3]
+  #   effMuTauNjet_excl[4] = cutflow_mutau.GetBinContent(23) / cutflow_mutau.GetBinContent(17) * nanoEff_mutau_nj[4]
 
   sample_njet = dict()
   for sample in stitchlist:
@@ -552,6 +552,8 @@ def stitch(samplelist,*searchterms,**kwargs):
   conditionalWeight_incl = "("+conditionalWeight_incl+")"
   sample_incl.norm = 1.0
   sample_incl.addweight(conditionalWeight_incl)
+  print("sample_incl",sample_incl,"weight = ",sample_incl.weight)
+
 
   conditionalWeight_mutau = ""
   if sample_mutau:
@@ -564,7 +566,9 @@ def stitch(samplelist,*searchterms,**kwargs):
     conditionalWeight_mutau = "("+conditionalWeight_mutau+")"
     sample_mutau.norm = 1.0
     sample_mutau.addweight(conditionalWeight_mutau)
+    print("sample_mutau",sample_mutau,"weight = ",sample_mutau.weight)
 
+  print(">>>>>>>>>>>>>>>>>>>>>>>>> \n")
   for njets in sample_njet:
     conditionalWeight_njet = ""
     if sample_mutau:
@@ -572,10 +576,12 @@ def stitch(samplelist,*searchterms,**kwargs):
     else:
       conditionalWeight_njet = "(%.6g)"%wIncl_njet[njets]
     conditionalWeight_njet = "("+conditionalWeight_njet+")"
-    print("conditionalWeight_njet = ", conditionalWeight_njet)
+    print("sample",sample_njet[njets],"for njet = ",njets,"conditionalWeight_njet = ", conditionalWeight_njet)
     sample_njet[njets].norm = 1.0
     sample_njet[njets].addweight(conditionalWeight_njet)
     print("sample_njet[njets].weight = ",sample_njet[njets].weight)
+    print("sample_njet[njets]",sample_njet[njets]," weight = ",sample_njet[njets].weight)
+
 
   # JOIN
   join(samplelist,*searchterms,name=name,title=title,verbosity=5)

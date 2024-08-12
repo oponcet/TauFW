@@ -8,8 +8,7 @@
 
 
 # Typically, each channel will have its own config file; combination can be done at datacard level
-
-channel: mutau
+channel: utau
 
 # Tag can be used to differentiate between scenarios
 

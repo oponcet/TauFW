@@ -67,15 +67,15 @@ def merge_datacards_ZmmCR(setup, setup_mumu, era,extratag,region):
     return outCRfile
     
 def run_combined_fit(setup, setup_mumu, option, **kwargs):
-    #tes_range    = kwargs.get('tes_range',    "1.000,1.000")
+    # tes_range    = kwargs.get('tes_range',    "0.930,1.300")
     tes_range    = kwargs.get('tes_range',    "%s,%s" %(min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))                         )
-    tid_SF_range = kwargs.get('tid_SF_range', "0.60,1.0")
+    tid_SF_range = kwargs.get('tid_SF_range', "0.7,1.3") #"0.7,1.1"
     extratag     = kwargs.get('extratag',     "_DeepTau")
     algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1  ")
-    npts_fit     = kwargs.get('npts_fit',     "--points=96") ## 66
-    fit_opts     = kwargs.get('fit_opts',     "--robustFit=1 --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.001 %s" %(npts_fit))
+    npts_fit     = kwargs.get('npts_fit',     "--points=61") ## 66 and 96
+    fit_opts     = kwargs.get('fit_opts',     "--robustFit=1 --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.00001 %s" %(npts_fit))
     xrtd_opts    = kwargs.get('xrtd_opts',    "--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NE")
-    cmin_opts    = kwargs.get('cmin_opts',    "--cminFallbackAlgo Minuit2,Migrad,0:0.0001 --cminPreScan"                                                 )
+    cmin_opts    = kwargs.get('cmin_opts',    "--cminFallbackAlgo Minuit2,Migrad,0:0.0001 --cminPreScan"                                            ) #--cminPreScan
     save_opts    = kwargs.get('save_opts',    "--saveNLL --saveSpecifiedNuis all --saveFitResult"                                                                           )
     era          = kwargs.get('era',          "")
     config_mumu  = kwargs.get('config_mumu',  "")
@@ -124,18 +124,31 @@ def run_combined_fit(setup, setup_mumu, option, **kwargs):
             NP = "rgx{.*tid.*}"
             print(">>>>>>> "+POI+" fit")
             #POI_OPTS = "-P %s --setParameterRanges %s=%s:tid_SF_%s=%s --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r,tid_SF_%s  --redefineSignalPOIs tid_SF_%s" % (POI, POI, tes_range, r,tid_SF_range,r,r)  # tes_DM
-            if POI == "tes_DM10":
-                tes_range = "0.950,1.030"
-            POI_OPTS = "--saveWorkspace -P %s --setParameterRanges %s=%s:tid_SF_%s=%s:sf_W_%s=0.0,10.0 --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r  --redefineSignalPOIs tid_SF_%s --floatOtherPOIs=1" % (POI, POI, tes_range, r,tid_SF_range,r,r)  # tes_DM
+            POI_OPTS = "--saveWorkspace -P %s --setParameterRanges %s=%s:tid_SF_%s=%s:sf_W_%s=0.0,10.0 --setParameters r=1,rgx{.*tes.*}=1,%s=1 --freezeParameters r  --redefineSignalPOIs %s,tid_SF_%s --floatOtherPOIs=1 " % (POI, POI, tes_range, r,r,tid_SF_range,POI,POI,r)  # tes_DM --redefineSignalPOIs tid_SF_%s,%s :sf_W_%s=0.0,10.0
             MultiDimFit_opts = " -m 90  %s %s %s -n .%s %s %s %s %s --trackParameters %s,rgx{.**.},rgx{.*sf_W_*.} --saveInactivePOI=1" %(workspace, algo, POI_OPTS, BINLABELoutput, fit_opts, xrtd_opts, cmin_opts, save_opts,NP)
-            #MutliFitout = "higgsCombine.%s.MultiDimFit.mH90.root" %(BINLABELoutput)
+            os.system("combine -M MultiDimFit  %s " %(MultiDimFit_opts))
+
+            # MultiDimFit_opts = " -m 90  %s %s %s -n .syst-%s %s %s %s %s --trackParameters %s,rgx{.**.},rgx{.*sf_W_*.} --saveInactivePOI=1" %(workspace, algo, POI_OPTS, BINLABELoutput, fit_opts, xrtd_opts, cmin_opts, save_opts,NP)
+            # #MutliFitout = "higgsCombine.%s.MultiDimFit.mH90.root" %(BINLABELoutput)
             
-            # POI_OPTS_F = " --snapshotName %s --saveNLL --setParameterRanges %s=%s:tid_SF_%s=%s --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r  --redefineSignalPOIs tes_%s " % ( "MultiDimFit",POI, tes_range, r,tid_SF_range,r)  # tes_DM
-            # FitDiagnostics_opts = " -m 90  %s %s -n .%s %s %s " %(MutliFitout, POI_OPTS_F, BINLABELoutput, xrtd_opts, cmin_opts)
-            # Fit with combine
-            print("MultidimFit %s : " %(r))
-            os.system("combine -M MultiDimFit  %s" %(MultiDimFit_opts))
-           
+            # # POI_OPTS_F = " --snapshotName %s --saveNLL --setParameterRanges %s=%s:tid_SF_%s=%s --setParameters r=1,rgx{.*tes.*}=1,rgx{.*tid.*}=1 --freezeParameters r  --redefineSignalPOIs tes_%s " % ( "MultiDimFit",POI, tes_range, r,tid_SF_range,r)  # tes_DM
+            # # FitDiagnostics_opts = " -m 90  %s %s -n .%s %s %s " %(MutliFitout, POI_OPTS_F, BINLABELoutput, xrtd_opts, cmin_opts)
+            # # Fit with combine
+            # print("MultidimFit %s : " %(r))
+            # # os.system("combine -M MultiDimFit  %s" %(MultiDimFit_opts))
+            
+            # os.system("combine -M MultiDimFit  %s " %(MultiDimFit_opts))
+            # POI_OPTS = "-P %s --setParameters r=1 --freezeParameters r,allConstrainedNuisances,var{.**.} --redefineSignalPOIs tid_SF_%s,%s --floatOtherPOIs=1 --snapshotName MultiDimFit --setParameterRanges %s=%s:tid_SF_%s=%s" % (POI,r,POI,POI,tes_range,r,tid_SF_range)  # tes_DM
+            # MutliFitout = "higgsCombine.%s.MultiDimFit.mH90.root" %(BINLABELoutput)
+            # print("MultiFitout : " , MutliFitout)
+            # MultiDimFit_opts = " -m 90  %s %s %s -n .statonly-%s %s %s %s %s --trackParameters %s,rgx{.**.},rgx{.*sf_W_*.} --saveInactivePOI=1" %(MutliFitout, algo, POI_OPTS, BINLABELoutput, fit_opts, xrtd_opts, cmin_opts, save_opts,NP)
+            # print("\033[92m>>>>>>>> MultiDimFit stat only %s : \033[0m" %(r))
+            # os.system("combine -M MultiDimFit -v 2 %s " %(MultiDimFit_opts))
+            # MutliFitout_statonly = "higgsCombine.statonly-%s.MultiDimFit.mH90.root" %(BINLABELoutput)
+
+            # os.system('plot1DScan.py %s --POI %s --main-label "With systematics" --main-color 1 --others %s:"Stat-only":2 -o test --breakdown syst,stat' %(MutliFitout,POI,MutliFitout_statonly))
+
+
             # print("MultidimFit %s : " %(r))
             # MultiDimFit_opts = " -m 90  %s %s -n .%s %s %s %s %s --trackParameters %s,rgx{.**.},rgx{.*sf_W_*.} --saveInactivePOI=1" %(workspace, POI_OPTS, BINLABELoutput, fit_opts, xrtd_opts, cmin_opts, save_opts,NP)
             # os.system("combine -M MultiDimFit %s " %(FitDiagnostics_opts))
@@ -144,13 +157,16 @@ def run_combined_fit(setup, setup_mumu, option, **kwargs):
             # print("FitDiagnostics %s : " %(r))
             # os.system("combine -M FitDiagnostics  %s --plots  " %(FitDiagnostics_opts))
 
-            # ##Impact plot
-            # POI_OPTS_I = "--redefineSignalPOIs %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1,tes_%s=1,tid_SF_%s=1 --freezeParameters r " % (POI, POI, tes_range, r,tid_SF_range,r,r)
-            # os.system("combineTool.py -M Impacts -n %s -d %s %s  --doInitialFit"%(BINLABELoutput, workspace, POI_OPTS_I))
+            # list_param = "--named tes_DM0,tes_DM1,tes_DM10,tes_DM11,trackedParam_xsec_dy,trackedParam_sf_W_DM0,trackedParam_sf_W_DM1,trackedParam_sf_W_DM10,trackedParam_sf_W_DM11,trackedParam_tid_SF_DM0,tid_SF_DM1,trackedParam_tid_SF_DM10,trackedParam_tid_SF_DM11,shape_mTauFake_DM0,shape_mTauFake_DM1,shape_mTauFake_DM10,shape_mTauFake_DM11,shape_jTauFake_DM0,shape_jTauFake_DM1,shape_jTauFake_DM10,shape_jTauFake_DM11,shape_dy,xsec_tt,xsec_st,norm_qcd,lumi,xsec_vv,norm_qcd,eff_m,rate_jTauFake_DM0,rate_jTauFake_DM1,rate_jTauFake_DM10,rate_jTauFake_DM11,muonFakerate_DM0,muonFakerate_DM1,muonFakerate_DM10,muonFakerate_DM11"
+            # list_param = "--named tes_DM0_pt1,tes_DM0_pt2,tes_DM0_pt3,tes_DM0_pt4,tes_DM1_pt1,tes_DM1_pt2,tes_DM1_pt3,tes_DM1_pt4,tes_DM10_pt1,tes_DM10_pt2,tes_DM10_pt3,tes_DM10_pt4,tes_DM11_pt1,tes_DM11_pt2,tes_DM11_pt3,tes_DM11_pt4,trackedParam_xsec_dy,trackedParam_sf_W_DM0_pt1,trackedParam_sf_W_DM0_pt2,trackedParam_sf_W_DM0_pt3,trackedParam_sf_W_DM0_pt4,trackedParam_sf_W_DM1_pt1,trackedParam_sf_W_DM1_pt2,trackedParam_sf_W_DM1_pt3,trackedParam_sf_W_DM1_pt4,trackedParam_sf_W_DM1_pt1,trackedParam_sf_W_DM1_pt2,trackedParam_sf_W_DM1_pt3,trackedParam_sf_W_DM1_pt4,trackedParam_sf_W_DM11_pt1,trackedParam_sf_W_DM11_pt2,trackedParam_sf_W_DM11_pt3,trackedParam_sf_W_DM11_pt4,trackedParam_tid_SF_DM0_pt1,trackedParam_tid_SF_DM0_pt2,trackedParam_tid_SF_DM0_pt3,trackedParam_tid_SF_DM0_pt4,trackedParam_tid_SF_DM1_pt1,trackedParam_tid_SF_DM1_pt2,trackedParam_tid_SF_DM1_pt3,trackedParam_tid_SF_DM1_pt4,trackedParam_tid_SF_DM10_pt1,trackedParam_tid_SF_DM10_pt2,trackedParam_tid_SF_DM10_pt3,trackedParam_tid_SF_DM10_pt4,trackedParam_tid_SF_DM11_pt1,trackedParam_tid_SF_DM11_pt2,trackedParam_tid_SF_DM11_pt3,trackedParam_tid_SF_DM11_pt4,shape_mTauFake_DM0_pt1,shape_mTauFake_DM0_pt2,shape_mTauFake_DM0_pt3,shape_mTauFake_DM0_pt4,shape_mTauFake_DM1_pt1,shape_mTauFake_DM1_pt2,shape_mTauFake_DM1_pt3,shape_mTauFake_DM1_pt4,shape_mTauFake_DM10_pt1,shape_mTauFake_DM10_pt2,shape_mTauFake_DM10_pt3,shape_mTauFake_DM10_pt4,shape_mTauFake_DM11_pt1,shape_mTauFake_DM11_pt2,shape_mTauFake_DM11_pt3,shape_mTauFake_DM11_pt4,shape_jTauFake_DM0_pt1,shape_jTauFake_DM0_pt2,shape_jTauFake_DM0_pt3,shape_jTauFake_DM0_pt4,shape_jTauFake_DM1_pt1,shape_jTauFake_DM1_pt2,shape_jTauFake_DM1_pt3,shape_jTauFake_DM1_pt4,shape_jTauFake_DM10_pt1,shape_jTauFake_DM10_pt2,shape_jTauFake_DM10_pt3,shape_jTauFake_DM10_pt4,shape_jTauFake_DM11_pt1,shape_jTauFake_DM11_pt2,shape_jTauFake_DM11_pt3,shape_jTauFake_DM11_pt4,shape_dy,xsec_tt,xsec_st,norm_qcd,lumi,xsec_vv,norm_qcd,eff_m,rate_jTauFake_DM0_pt1,rate_jTauFake_DM0_pt2,rate_jTauFake_DM0_pt3,rate_jTauFake_DM0_pt4,rate_jTauFake_DM1_pt1,rate_jTauFake_DM1_pt2,rate_jTauFake_DM1_pt3,rate_jTauFake_DM1_pt4,rate_jTauFake_DM10_pt1,rate_jTauFake_DM10_pt2,rate_jTauFake_DM10_pt3,rate_jTauFake_DM10_pt4,rate_jTauFake_DM11_pt1,rate_jTauFake_DM11_pt2,rate_jTauFake_DM11_pt3,rate_jTauFake_DM11_pt4,muonFakerate_DM0_pt1,muonFakerate_DM0_pt2,muonFakerate_DM0_pt3,muonFakerate_DM0_pt4,muonFakerate_DM1_pt1,muonFakerate_DM1_pt2,muonFakerate_DM1_pt3,muonFakerate_DM1_pt4,muonFakerate_DM10_pt1,muonFakerate_DM10_pt2,muonFakerate_DM10_pt3,muonFakerate_DM10_pt4,muonFakerate_DM11_pt1,muonFakerate_DM11_pt2,muonFakerate_DM11_pt3,muonFakerate_DM11_pt4"
+            ##Impact plot
+            # POI_OPTS_I = "--redefineSignalPOIs %s --setParameterRanges %s=%s:tid_SF_%s=%s -m 90 --setParameters r=1,tes_%s=1,tid_SF_%s=1 --freezeParameters r --robustFit 1 --excluded r " % (POI, POI, tes_range, r,tid_SF_range,r,r)
+            # os.system("combineTool.py -M Impacts -n %s -d %s %s  --doInitialFit "%(BINLABELoutput, workspace, POI_OPTS_I))
             # os.system("combineTool.py -M Impacts -n %s -d %s %s  --doFits --parallel 4"%(BINLABELoutput, workspace, POI_OPTS_I))
             # os.system("combineTool.py -M Impacts  -n %s -d %s  %s -o postfit/impacts_%s.json"%(BINLABELoutput, workspace, POI_OPTS_I, BINLABELoutput))
             # os.system("plotImpacts.py -i postfit/impacts_%s.json -o postfit/impacts_%s.json"%(BINLABELoutput,BINLABELoutput))
             # os.system("convert -density 160 -trim postfit/impacts_%s.json.pdf[0] -quality 100 postfit/impacts_%s.png"%(BINLABELoutput,BINLABELoutput))
+           
             # Postifit shape:
             # outf_postfit = "PostFitShape_%s_%s_%s.root" %(era,setup["tag"],r)
             # outf_fit = "fitDiagnostics.mt_m_vis-%s%s_DeepTau-%s-13TeV.root" %(r,setup["tag"],era)
@@ -161,10 +177,10 @@ def run_combined_fit(setup, setup_mumu, option, **kwargs):
         # Fit of tid_SF_DM by DM with tes as a nuisance parameter
         elif option == '2':
             POI = "tid_SF_%s" % (r)
-            NP = "rgx{.*tid.*}" 
+            # NP = "rgx{.*tes.*}" 
             print(">>>>>>> Scan of "+POI)
             #POI_OPTS = "-P %s  --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tid.*}=1,rgx{.*tes.*}=1 --freezeParameters r,tes_%s --redefineSignalPOIs tes_%s --floatOtherPOIs 1" % (POI, POI, tid_SF_range,r,tes_range,r,r)  # tes_DM
-            POI_OPTS = "-P %s --redefineSignalPOIs tes_%s --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tid.*}=1,rgx{.*tes.*}=1 --freezeParameters r --floatOtherPOIs=1" % (POI,r, POI, tid_SF_range, r,tes_range)  # tes_DM
+            POI_OPTS = "-P %s  --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tid.*}=1,rgx{.*tes.*}=1 --freezeParameters r --redefineSignalPOIs tes_%s,%s --floatOtherPOIs=1" % (POI,POI, tid_SF_range, r,tes_range,r,POI)  # tes_DM
             MultiDimFit_opts = " %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tid.*},rgx{.*W.*},rgx{.*dy.*} --saveInactivePOI=1 " %(workspace, algo, POI_OPTS, BINLABELoutput,fit_opts, xrtd_opts, cmin_opts, save_opts)
             os.system("combine -M MultiDimFit %s " %(MultiDimFit_opts))
 
@@ -227,7 +243,7 @@ def plotScan(setup, setup_mumu, option, **kwargs):
 
     elif option == '1' or option == '5' :
         print(">>> Plot parabola")
-        os.system("./TauES_ID/plotParabola_POI_region.py -p tes -y %s -e %s -r %s,%s -s -a -c %s" % (era, extratag, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), config))
+        os.system("./TauES_ID/plotParabola_POI_region.py -p tes -y %s -e %s -r %s,%s -s -a -c %s " % (era, extratag, min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]), config)) # -b
         os.system("./TauES_ID/plotPostFitScan_POI.py --poi tes -y %s -e %s -r %s,%s -c %s" %(era,extratag,min(setup["TESvariations"]["values"]),max(setup["TESvariations"]["values"]), config))
 
     else:

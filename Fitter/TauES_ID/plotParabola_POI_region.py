@@ -52,6 +52,7 @@ def plotParabola(setup,var,region,year,**kwargs):
 
 
     filename     = '%s/higgsCombine.%s_%s-%s%s-%s.MultiDimFit.mH90.root'%(indir,channel,var,'MDF' if MDFslices else region,tag,era)
+    print("breakdown = ", breakdown)
     for i, (bdtag,bdtitle) in enumerate(breakdown):
       breakdown[i] = (bdtag, bdtitle,filename.replace("higgsCombine.","higgsCombine.%s-"%bdtag))
     print '>>>   file "%s"'%(filename)
@@ -119,15 +120,17 @@ def plotParabola(setup,var,region,year,**kwargs):
     poi_errUp   = round((tmin_right-poi_val)*10000)/10000
     shift       = (list_poi[min_index]-1)*100
     
+
     
     # GRAPHS
     graph       = createParabolaFromLists(list_poi,list_dnll,fit=fit)
     graphs_bd   = [ ]
-    colors_bd   = [kRed, kBlue, kGreen]
+    colors_bd   = [kBlue, kGreen,kRed]
     poi_bbb, poi_stat = -1., -1.
     for i, (tag_bd, title_bd, filename_bd) in enumerate(breakdown):
       print '>>>   file "%s" (breakdown)'%(filename_bd)
-      graph_bd, poi_bd = createParabola(filename_bd, poi, region)
+      print("poi = ", poi)
+      graph_bd, poi_bd, poi_bd_errDown, poi_bd_errUp = createParabola(filename_bd, poi, region)
       graph_bd.SetMarkerColor(colors_bd[i])
       graph_bd.SetLineColor(colors_bd[i])
       graph_bd.SetLineWidth(2)
@@ -254,6 +257,14 @@ def plotParabola(setup,var,region,year,**kwargs):
     
     print ">>> poi %7.3f - %-5.3f + %-5.3f"%(poi_val,poi_errDown,poi_errUp)
     print ">>> shift  %7.3f - %-5.3f + %-5.3f %%"%(shift,poi_errDown*100,poi_errUp*100)
+
+    if breakdown: 
+      poi_errDown_syst = sqrt(abs(poi_errDown**2 - poi_bd_errDown**2))
+      poi_errUp_syst = sqrt(abs(poi_errUp**2 - poi_bd_errUp**2))
+
+      print ">>> poi %7.3f - %-5.3f (%-5.3f (syst) + %-5.3f (stat)) + %-5.3f (-%5.3f (syst) + %-5.3f (stat))"%(poi_val,poi_errDown,poi_errDown_syst,poi_bd_errDown,poi_errUp,poi_errUp_syst,poi_bd_errUp)
+
+
     if fit:
       print ">>> poi %7.3f - %-5.3f + %-5.3f   (parabola)"%(poif,poif_errDown,poif_errUp)
       print ">>> shift  %7.3f - %-5.3f + %-5.3f %% (parabola)"%(poif-1,poif_errDown*100,poif_errUp*100)
@@ -274,7 +285,11 @@ def plotParabola(setup,var,region,year,**kwargs):
       text.DrawLatex(xtext,ytext-3.5*lineheight, "%7.3f_{-%5.3f}^{+%5.3f}"%(poif,poif_errDown,poif_errUp))
     for i, (graph_bd, poi_bd) in enumerate(breakdown):
       text.SetTextColor(graph_bd.GetLineColor())
-      text.DrawLatex(xtext,ytext-(i+3.5)*lineheight, "%7.3f"%(poi_bd))
+      # text.DrawLatex(xtext,ytext-(i+3.5)*lineheight, "%7.3f"%(poi_bd))
+      text.DrawLatex(xtext,ytext-(i+3.5)*lineheight, "%7.3f_{-%5.3f}^{+%5.3f}"%(poi_bd,poi_bd_errDown,poi_bd_errUp))
+    if breakdown:
+      text.SetTextColor(kBlack)
+      text.DrawLatex(xtext,ytext-(3.5+len(breakdown))*lineheight, "%7.3f_{-%-5.3f (%-5.3f (syst) + %-5.3f (stat))}^{+%-5.3f (%-5.3f (syst) + %-5.3f (stat))}"%(poi_val,poi_errDown,poi_errDown_syst,poi_bd_errDown,poi_errUp,poi_errUp_syst,poi_bd_errUp))
     
     CMSStyle.setCMSLumiStyle(canvas,0)
     #canvas.SetTicks(1,1)
@@ -283,6 +298,7 @@ def plotParabola(setup,var,region,year,**kwargs):
     canvas.Update()
     canvas.SaveAs(canvasname+".png")
     canvas.SaveAs(canvasname+".pdf")
+    canvas.SaveAs(canvasname+".root")
     canvas.Close()
     
     return poi_val, poi_errDown, poi_errUp, poif, poif_errDown, poif_errUp
@@ -516,23 +532,60 @@ def createParabolaFromLists(list_poi,list_dnll,fit=False):
       graph.SetPointError(i,0.0,0.0,error,error)
     return graph
     
-def createParabola(filename, poi, region):
+def createParabola(filename, poi, region): ###flag breakdown
     """Create TGraph of DeltaNLL parabola vs. poi from MultiDimFit file."""
     file = ensureTFile(filename)
     tree = file.Get('limit')
-    poi, nll = [ ], [ ]
+    poi_values, nll = [ ], [ ]
     for i, event in enumerate(tree):
       if i==0: continue
       #poi.append(tree.poi)
       poi_name = "%s_%s"%(poi,region) #combine DM 
-      poi.append(getattr(tree,poi_name)) #combine DM
+      poi_values.append(getattr(tree,poi_name)) #combine DM
       nll.append(2*tree.deltaNLL)
     file.Close()
     minnll = min(nll)
-    minpoi = poi[nll.index(minnll)]
+    minpoi = poi_values[nll.index(minnll)]
     dnll   = map(lambda x: x-minnll, nll) # DeltaNLL
-    graph  = TGraph(len(poi), array('d',poi), array('d',dnll))
-    return graph, minpoi
+    graph  = TGraph(len(poi_values), array('d',poi_values), array('d',dnll))
+
+
+    # nllmin    = min(list_nll)
+    list_dnll = map(lambda n: n-minnll, nll) # DeltaNLL 
+    # MINIMUM
+    dnllmin         = min(list_dnll) # should be 0.0 by definition
+    min_index       = list_dnll.index(dnllmin)
+    list_dnll_left  = list_dnll[:min_index]
+    list_poi_left   = poi_values[:min_index]
+    list_dnll_right = list_dnll[min_index:]
+    list_poi_right  = poi_values[min_index:]
+    #print ">>> min   = %d , min_index = %d"%(dnllmin, min_index)
+    if len(list_dnll_left)==0 or len(list_dnll_right)==0 : 
+      print "ERROR! Parabola does not have minimum within given range !!!"
+      exit(1)
+    tmin_left = -1
+    tmin_right = -1
+    
+    # FIND crossings of 1 sigma line
+    # |-----<---min---------|
+    for i, val in reversed(list(enumerate(list_dnll_left))):
+      if val > (dnllmin+1):
+          tmin_left = list_poi_left[i]
+          break
+    # |---------min--->-----|
+    for i, val in enumerate(list_dnll_right):
+      if val > (dnllmin+1):
+          tmin_right = list_poi_right[i]
+          break
+    
+    poi_val         = round(poi_values[min_index],4)
+    poi_errDown = round((poi_val-tmin_left)*10000)/10000
+    poi_errUp   = round((tmin_right-poi_val)*10000)/10000
+    shift       = (poi_values[min_index]-1)*100
+    
+
+
+    return graph, poi_val, poi_errDown, poi_errUp
     
 def findMultiDimSlices(channel,var,**kwargs):
     """Find minimum of multidimensional parabola in MultiDimFit file and return
@@ -1134,12 +1187,15 @@ def main(args):
       
                 # PARABOLA
                 if breakdown:
-                    breakdown1 = [ ('stat', "stat. only,\nexcl. b.b.b."), ('sys', "stat. only\nincl. b.b.b.") ]
-                    breakdown2 = [ ('jtf', "j #rightarrow #tau_{h} fake"), ('ltf', "l #rightarrow #tau_{h} fake"), ('zpt', "Z pT rew.") ]
-                    breakdown3 = [ ('eff', "#mu, #tau_{h} eff."), ('norm', "xsecs, norms"), ('lumi', "lumi") ]
-                    poi_val,poiDown,poiUp,poif,poifDown,poifUp = plotParabola(setup,var,region,year,indir=indir,breakdown=breakdown1,tag=tag,fit=fit,asymm=asymmetric, poi=poi)
-                    poi_val,poiDown,poiUp,poif,poifDown,poifUp = plotParabola(setup,var,region,year,indir=indir,breakdown=breakdown2,tag=tag,plottag='_shapes',fit=fit,asymm=asymmetric,poi=poi)
-                    poi_val,poiDown,poiUp,poif,poifDown,poifUp = plotParabola(setup,var,region,year,indir=indir,breakdown=breakdown3,tag=tag,plottag='_norms',fit=fit,asymm=asymmetric,poi=poi)
+                    # breakdown1 = [ ('stat', "stat. only,\nexcl. b.b.b."), ('sys', "stat. only\nincl. b.b.b.") ]
+                    # breakdown2 = [ ('jtf', "j #rightarrow #tau_{h} fake"), ('ltf', "l #rightarrow #tau_{h} fake"), ('zpt', "Z pT rew.") ]
+                    # breakdown3 = [ ('eff', "#mu, #tau_{h} eff."), ('norm', "xsecs, norms"), ('lumi', "lumi") ]
+                    breakdown4 = [('statonly', "stat. only")]
+                    # poi_val,poiDown,poiUp,poif,poifDown,poifUp = plotParabola(setup,var,region,year,indir=indir,breakdown=breakdown1,tag=tag,fit=fit,asymm=asymmetric, poi=poi)
+                    # poi_val,poiDown,poiUp,poif,poifDown,poifUp = plotParabola(setup,var,region,year,indir=indir,breakdown=breakdown2,tag=tag,plottag='_shapes',fit=fit,asymm=asymmetric,poi=poi)
+                    # poi_val,poiDown,poiUp,poif,poifDown,poifUp = plotParabola(setup,var,region,year,indir=indir,breakdown=breakdown3,tag=tag,plottag='_norms',fit=fit,asymm=asymmetric,poi=poi)
+                    poi_val,poiDown,poiUp,poif,poifDown,poifUp = plotParabola(setup,var,region,year,indir=indir,breakdown=breakdown4,tag=tag,fit=fit,asymm=asymmetric, poi=poi)
+
                 else:
                     poi_val,poiDown,poiUp,poif,poifDown,poifUp = plotParabola(setup,var,region,year,indir=indir,tag=tag,fit=fit,asymm=asymmetric,MDFslices=slices,poi=poi)
               
