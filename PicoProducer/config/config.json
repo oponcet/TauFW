@@ -1,6 +1,6 @@
 {
   "channels": {
-    "skim": "skimjob.py",
+    "skim": "skimjob.py", 
     "skim-jec": "skimjob.py --jec-sys",
     "gen": "GenDumper",
     "mutau": "Run3_DEV.puppiMET.ModuleMuTau jec=False",
@@ -142,26 +142,11 @@
     "mutau_TES1p030": "Run3_DEV.ModuleMuTau tes=1.030"
   },
   "eras": {
-    "2016": "examples/samples_2016.py",
-    "2017": "examples/samples_2017.py",
-    "2018": "examples/samples_2018.py",
-    "UL2018": "samples_UL2018.py",
-    "UL2018_v10": "samples_UL2018v10.py",
-    "2022_postEE": "samples_2022_postEE.py",
-    "2022_preEE": "samples_2022_preEE.py"
-  },
-  "nfilesperjob": 1,
-  "filelistdir": "samples/files/$ERA/$SAMPLE.txt",
-  "jobdir": "output/$ERA/$CHANNEL/$SAMPLE",
-  "basedir": "/afs/cern.ch/user/o/oponcet/private/TauPOG_run3/CMSSW_12_4_8/src/TauFW/PicoProducer",
-  "outdir": "/eos/user/o/oponcet/TauPOG/Run3_v4/output/$ERA/$CHANNEL/$SAMPLE", 
-  "nanodir": "/eos/user/o/oponcet/TauPOG/Run3_v4/samples/nano/$ERA/$DAS", 
-  "picodir": "/eos/user/o/oponcet/TauPOG/Run3_v4/analysis/$ERA/$GROUP", 
-  "tmpskimdir": "",
-  "batch": "HTCondor",
-  "queue": "",
-  "maxevtsperjob": -1,
-  "maxopenfiles": 500,
-  "haddcmd": "",
-  "ncores": 4
+    "2016": "examples/samples_2016.py", 
+    "2017": "examples/samples_2017.py", 
+    "2018": "examples/samples_2018.py"
+  }, 
+  "nfilesperjob": 1, 
+  "filelistdir": "samples/files/$ERA/$SAMPLE.txt", 
+  "jobdir": "output/$ERA/$CHANNEL/$SAMPLE"
 }

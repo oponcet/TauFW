@@ -6,38 +6,46 @@ from argparse import ArgumentParser, Namespace
 from ROOT import TFile
 from TauFW.PicoProducer.storage.utils import getsamples
 from TauFW.PicoProducer.analysis.utils import getTotalWeight,  getNevt
+from IPython import embed
 
-
-
+#python3 ./scripts/modify_cutflow_hist_v2.py --pico_dir /nfs/user/pmastra/TestRun3/Run3_ACardini/CMSSW_12_4_8/src/TauFW/PicoProducer/ --veto 'Muon'  --sumw_file /nfs/user/pmastra/TestRun3/Run3_ACardini/CMSSW_12_4_8/src/TauFW/PicoProducer/samples/nanoaod_sumw_2022_postEE.json -m --bin 17 -c mumu
  
 def get_nanoaod_info(args):
     """
-    Get the sum of event weights (sumw) from NanoAOD and generate a JSON file to store them
+    Analyzes NanoAOD samples and extracts total number of events
+    and the number of files for each sample. Generates a JSON file containing the results.
 
-    This function takes a set of arguments, including the era, channel, and tag identifiers,
-    and a list of sample names to extract the sumw for. It retrieves the list of NanoAOD samples 
-    from storage, iterates through their files, and sums the event weights for each file. The calculated
-    sumw values are stored in a dictionary and saved as a JSON file.
 
-    Args:
-        args (Namespace): A namespace containing the following attributes:
-            - vetoes (list): List of sample name substrings to exclude (optional).
-            - era (str): Era identifier.
-            - channel (str): Channel identifier.
-            - tag (str): Tag identifier.
-            - sumw_file (str): Path to the output JSON file for storing sumw values.
+    Parameters:
+    - args (Namespace): Command-line arguments and configurations.
+     Args:
+    - use_taufw_samples (bool): Flag indicating whether to use TauFW samples.
+    - era (str): Data-taking era (e.g., "2016", "2017", "2018").
+    - channel (str): Physics analysis channel (e.g., "mutau") that is passed to getsamples function.
+    - tag (str): Version tag for the samples.
+    - dtype (str): Data type ("mc" for Monte Carlo, "data" for real data).
+    - veto (bool): Veto flag for samples.
+    - sample_path (str): Path to the directory containing sample files.
+    - samples (list): List of sample names to analyze (empty for all samples).
+    - sumw_file (str): Output file path for the JSON file containing analysis results.
 
-    Returns:
-        None
-
-    Prints:
-        - Sample names being processed.
-        - Sumw values for each file of each sample.
-        - Information about writing the sumw dictionary to the JSON file.
-
-    Example usage:
-       $  python3 modify_cutflow_hist.py --get_w --veto 'SingleMuon' 'DY*' --sumw_file $CMSSW_BASE/nanoaod_sumw.json
-
+    Sample Usage:
+    ```python
+    # Example usage of the function
+    args = Namespace(
+        use_taufw_samples=True,
+        era="2016",
+        channel="mutau",
+        tag="v2",
+        dtype="mc",
+        veto=False,
+        sample_path="/path/to/samples/",
+        samples=["SingleMuonRun2022F", "EGammaRun2022G"],
+        sumw_file="output/sumw_info.json"
+    )
+    get_nanoaod_info(args)
+    ```
+   
     """
     n_evt = {}
     n_files = {}
@@ -97,72 +105,84 @@ def get_nanoaod_info(args):
         print("Writing sumw dict to %s"%(args.sumw_file))
         outfile.write(json_dict) #Dump json dict to file
             
-def check_sample_name(sample_name_full, keys):
-    sample_name = sample_name_full.split("_mutau")[0].split("_mumu")[0]
-    print("sample_name_full = ", sample_name_full)
-    print("sample_name cut = ", sample_name)
-    print("sample_name = ", sample_name)
-    print("keys = ", keys)
-    if sample_name in keys:
-        return sample_name
-    return None
+def check_sample_name(full_filename, args):
+    filename = os.path.splitext(os.path.basename(full_filename))[0]
+    sample_name = filename.split('_' + args.channel)[0]
+    
+    faled_check = (args.samples and sample_name not in args.samples) or \
+        ( args.veto and (sample_name in args.veto) ) or \
+            (all(['data' not in the_dtype for the_dtype in args.dtype]) and 'Run' in sample_name) or \
+                (all(['mc' not in the_dtype for the_dtype in args.dtype]) and 'Run' not in sample_name)
+    
+    return sample_name if not faled_check else None 
+   
+
 
 def modify_cutflow_hist(args):
     """
-    Modify the cutflow histogram in ROOT files based on normalization factors.
+    Modifies the contents of a cutflow histogram in ROOT files based on NanoAOD event information
+    stored in a JSON file. It can print the number of events before its update with the values form JSON.
 
-    This function takes a set of arguments, including the location of a JSON file
-    containing normalization factors and a list of ROOT files with cutflow histograms.
-    It updates the cutflow histogram in each ROOT file with the corresponding
-    normalization factor from the JSON file.
+    Parameters:
+    - args (Namespace): Command-line arguments and configurations.
+     Args:
+    - sumw_file (str): Path to the JSON file containing NanoAOD event information.
+    - bin (int): Bin index in the cutflow histogram to be modified.
+    - pico_dir (str): Directory containing Pico Framework ROOT files.
+    - era (str): Data-taking era (e.g., "2016", "2017", "2018").
+    - channel (str): Physics analysis channel (e.g., "muon", "electron").
+    - tag (str): Version tag for the samples.
+    - modify_cutflow (bool): Flag indicating whether to modify the cutflow histogram.
 
-    Args:
-        args (Namespace): A namespace containing the following attributes:
-            - sumw_file (str): Path to the JSON file containing normalization factors.
-            - bin (int): Bin index to update in the cutflow histogram.
-            - pico_dir (str): Directory containing ROOT files (optional).
-            - era (str): Era identifier.
-            - channel (str): Channel identifier.
-            - tag (str): Tag identifier.
-            - vetoes (list): List of sample name substrings to exclude (optional).
-            - modify_cutflow (bool): True to modify the cutflow histogram, False to read it and compare with the info from JSON.
-    Example usage:
-       $ python3 modify_cutflow_hist.py --veto 'SingleMuon' 'DY*' --sumw_file $CMSSW_BASE/nanoaod_sumw.json 
-       $ python3 modify_cutflow_hist.py -m --veto 'SingleMuon' 'DY*' --sumw_file $CMSSW_BASE/nanoaod_sumw.json
 
+    Sample Usage:
+    ```python
+    # Example usage of the function
+    args = Namespace(
+        sumw_file="input/sumw_info.json",
+        bin=3,
+        pico_dir="/path/to/pico/files",
+        era="2022_postEE",
+        channel="mutau",
+        tag="v2",
+        modify_cutflow=True
+    )
+    modify_cutflow_hist(args)
+    ```
     """
-    if len(args.sumw_file)>=1:
+    if len(args.sumw_file)>1:
         sumw_file = args.sumw_file
     else:
-        print(f'Unable to find file with weights:{args.sumw_file}')
+        print(f'Unable to find json file: {args.sumw_file}')
         exit()
     print('Opening file: %s'%(sumw_file))
-    bin_id = int(args.bin)
+    bin_ids = args.bins
+
     with open(sumw_file, "r") as tf:
-        norm_dict = json.load(tf)    
-        #print("norm_dict = ", norm_dict)    
-        samples = glob.glob(f'{args.pico_dir}/{args.era}/*/*{args.channel}{args.tag}.root')
-        print('Samples: ' + str(map(os.path.basename, samples)))
+        json_content = json.load(tf)
+        n_evt = json_content['n_evt']      
+        filenames = glob.glob(f'{args.pico_dir}/*/*{args.channel}{args.tag}.root')
+        print(f'Samples: {filenames}')
         print("\n%40s:\t%15s%15s%15s"%('sample_name', 'cutflow_norm', 'nanoaod_norm', 'difference'))
-        for sample in samples:
-            sample_name = os.path.splitext(os.path.basename(sample))[0]
-            print(sample_name)
-            if (not len(args.samples)) or any([True for sample2choose in args.samples if sample2choose in sample]): 
-                root_file = TFile(sample, 'UPDATE' if args.modify_cutflow else 'READ' )
+        for fname in filenames:
+            sample = check_sample_name(fname, args)
+            
+            if sample:
+                root_file = TFile(fname, 'UPDATE' if args.modify_cutflow else 'READ' )
                 cutflow_hist = root_file.Get('cutflow')
-                print("norm_dict.keys() = ", norm_dict.keys()) 
-                sample_name = check_sample_name(sample_name, norm_dict.keys())
-                if sample_name:
-                    cf_n   = int(cutflow_whist.GetBinContent(bin_id))
-                    nano_n = int(norm_dict[sample_name])
+                cf_n   = int(cutflow_hist.GetBinContent(bin_id))
+                if sample in n_evt.keys():
+                    nano_n = int(n_evt[sample])
                     diff = cf_n - nano_n
-                    print("%40s:\t%15d%15d%15d"%(sample_name, cf_n, nano_n, diff))
+                    print("%40s:\t%15d%15d%15d"%(sample, cf_n, nano_n, diff))
                     if args.modify_cutflow:
-                        cutflow_hist.SetBinContent(bin_id, float(norm_dict[sample_name]))
+                        cutflow_hist.SetBinContent(bin_id, float(n_evt[sample]))
                         cutflow_hist.Write()
                 else:
-                    print('ERROR: Did not found normalization factor for %s sample in dict: ' %(sample_name)+ str(norm_dict.keys()))   
+                    print('Warning: Did not found normalization factor for %s sample in dict: ' %(fname)+ str(n_evt.keys()))   
                 root_file.Close()
+                
+                
 
 def main():
     """
@@ -182,18 +202,12 @@ def main():
     CMSSW_BASE = os.environ['CMSSW_BASE']
     parser = ArgumentParser(prog='modify_cutflow_hist.py',description=description,epilog="Good luck!")
     parser = ArgumentParser(add_help=True)
-
-    
-  
-   
-
-   
    
     parser.add_argument('-o','--sumw_file',     dest='sumw_file', default="nanoaod_sumw.json",
                                                 help="path to the json file containing sumw dict")
     parser.add_argument('--samples',            dest='samples', default=[], nargs='+',
                                                 help='String to filter files by name')
-    parser.add_argument('--sample_path',        dest='sample_path', default='/eos/cms/store/group/phys_tau/irandreo/Run3_22/',
+    parser.add_argument('--sample_path',        dest='sample_path', default='/eos/cms/store/group/phys_tau/irandreo/Run3_22_postEE_new/',
                                                 help="Path to the ")
     parser.add_argument('--pico_dir',           dest='pico_dir', default=f'{CMSSW_BASE}/src/TauFW/PicoProducer/analysis', nargs='?',
                                                 help='path to directory containing pico samples')
@@ -203,7 +217,7 @@ def main():
                                                 help='String to filter files by name')
     parser.add_argument('-e','--era',           dest='era', default='2022_postEE', nargs='?',
                                                 help="year or era to specify the sample list")
-    parser.add_argument('-c','--channel',       dest='channel', default='', nargs='?',
+    parser.add_argument('-c','--channel',       dest='channel', default='mutau', nargs='?',
                                                 help="skimming or anallysis channel to run")
     parser.add_argument('--use_taufw_samples',  dest='use_taufw_samples', action='store_true',
                                             help="Use getsamples function form TauFW")
@@ -218,6 +232,10 @@ def main():
     cmd_args = sys.argv[1:]
     args = parser.parse_args(cmd_args)
     if hasattr(args,'tag') and len(args.tag)>=1 and args.tag[0]!='_': args.tag = '_'+args.tag
+
+    if not len(args.bins) == len(args.selections):
+        print("Number of bins does not correspond to number of selections for which to change the normalisation -- please check!")
+        exit()
     
     if args.get_nanoaod_w:
         print('Acquring weights from nanoaod...')

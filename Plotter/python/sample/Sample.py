@@ -29,7 +29,6 @@ class Sample(object):
   def __init__(self, name, *args, **kwargs):
     import TauFW.Plotter.sample.utils as GLOB
     LOG.setverbosity(kwargs)
-    #LOG.setverbosity(3)
     title    = ""
     filename = ""
     xsec     = -1.0
@@ -52,7 +51,7 @@ class Sample(object):
     self.title        = title or gettitle(name,name)    # title for histogram entries
     self.filename     = filename                        # file name with tree
     self.xsec         = xsec                            # cross section in units of pb
-    self.fnameshort   = os.path.basename(self.filename) # short file name for printing
+    self.fnameshort   = '/'.join(self.filename.split('/')[-3:]) # short file name for printing
     self._file        = None                            # TFile file
     self._tree        = None                            # TTree tree
     self.samples      = [self]                          # same as MergedSample
@@ -354,8 +353,8 @@ class Sample(object):
   
   def setfilename(self,filename):
     """Set filename."""
-    self.filename = filename
-    self.fnameshort  = '/'.join(self.filename.split('/')[-3:])
+    self.filename   = filename
+    self.fnameshort = '/'.join(self.filename.split('/')[-3:])
     return self.filename
   
   def reload(self,**kwargs):
@@ -543,10 +542,8 @@ class Sample(object):
       for sample in self.samples:
         sample.addweight(weight)
     else:
-      print('Sample.addweight: before: %s, weight=%r, extraweight=%r'%(self,self.weight,self.extraweight))
       LOG.verb('Sample.addweight: before: %s, weight=%r, extraweight=%r'%(self,self.weight,self.extraweight),level=3)
       self.weight = joinweights(self.weight, weight)
-      print('Sample.addweight: after: %s, weight=%r, extraweight=%r'%(self,self.weight,self.extraweight))
       LOG.verb('                  after:  %s, weight=%r, extraweight=%r'%(self,self.weight,self.extraweight),level=3)
     for sample in self.splitsamples:
         sample.addweight(weight)

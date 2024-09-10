@@ -15,38 +15,60 @@ from TauFW.Plotter.plot.Plot import Plot, deletehist
 import TauFW.Plotter.sample.SampleStyle as STYLE
 import yaml
 
-def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era="",
+def plot(sampleset,setup,region,parallel=True,tag="",extratext="",outdir="plots",era="",
          varfilter=None,selfilter=None,fraction=False,pdf=False):
   """Test plotting of SampleSet class for data/MC comparison."""
   LOG.header("plot")
   
+  # Define the channel : mutau only supported for now 
   channel  = setup["channel"]
-
-
   
-  if 'baselineCuts' in setup: # baseline pre-selections
-    baseline = setup['baselineCuts']
-  else:
-    raise IOError("No baseline selection for this channel defined!")
-  
-  selections = [ # plot these selections
-    Sel('baseline',baseline)
-  ]
-  if 'regions' in setup: # add extra regions on top of baseline
-    for region in setup['regions']:
-      if region == 'DM0':
-        channel = "mutau_TES0p914"
-      # if region == 'DM1':
-      #   channel = "mutau_TES0p981"
-      # if region == 'DM10':
-      #   channel = "mutau_TES0p994"
-      # if region == 'DM11':
-      #   channel = "mutau_TES1p012"
-      print(channel)
+  selections = [ ]
+
+  # Check region and use the right TES value from 
+  print("Region = %s" %(region))
+  if region in setup['regions']: # add extra regions on top of baseline
+      print(region)
+      if region == 'DM0' :
+        #channel = "mutau_TES0p914"
+        #channel = "mutau_TES0p930"
+        channel = "mutau_TES0p932"
+        #channel = "mutau_DM0_mt65"
+      # elif region == 'DM0_pt1' :
+      #   #channel = "mutau_TES0p914"
+      #   #channel = "mutau_TES0p930"
+      #   channel = "mutau_TES0p892"
+      # elif region == 'DM0_pt2' :
+      #   #channel = "mutau_TES0p914"
+      #   #channel = "mutau_TES0p930"
+      #   channel = "mutau_TES0p952"
+      elif region == 'DM1':
+        #channel = "mutau_TES0p980"
+        channel = "mutau_TES0p984"
+        #channel = "mutau_TES0p901"
+        #channel = "mutau_DM1_mt65"
+      elif region == 'DM10':
+        #channel = "mutau_TES0p998"
+        #channel = "mutau_TES0p972" 
+        #channel = "mutau_TES1p012"
+        channel = "mutau_TES1p002"
+        #channel = "mutau_DM10_mt65"
+      elif region == 'DM11':
+        #channel = "mutau_TES1p012"
+        #channel = "mutau_TES1p008"
+        #channel = "mutau_TES1p018"
+        channel = "mutau_TES1p006"
+        #channel = "mutau_DM11_mt65"
+      else :
+        channel = setup["channel"]
+
+      print("Channel = %s" %(channel))
       skwargs = setup['regions'][region].copy() # extra key-word options
       assert 'definition' in skwargs
       selstr = setup['baselineCuts']+" && "+skwargs.pop('definition')
       selections.append(Sel(region,selstr,**skwargs))
+
+  # Define selection     
   selections = filtervars(selections,selfilter) # filter variable list with -S/--sel flag
   
   # VARIABLES
@@ -63,7 +85,7 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
     Var('npv',    40,  0,  80),
     Var('njets',   8,  0,   8),
     Var('nbtag', "Number of b jets (Medium, pt > 30 GeV)", 8, 0, 8),
-    #Var('met',    50,  0, 150,cbins={"nbtag\w*>":(50,0,250)}),
+    Var('met',    50,  0, 150,cbins={"nbtag\w*>":(50,0,250)}),
    #Var('genmet', 50,  0, 150, fname="$VAR_log", logyrange=4, data=False, logy=True, ncols=2, pos='TT'),
     Var('pt_ll',   "p_{T}(mutau_h)", 25, 0, 200, ctitle={'etau':"p_{T}(etau_h)",'tautau':"p_{T}(tau_htau_h)",'emu':"p_{T}(emu)"}),
     Var('dR_ll',   "DR(mutau_h)",    30, 0, 6.0, ctitle={'etau':"DR(etau_h)",'tautau':"DR(tau_htau_h)",'emu':"DR(emu)"}),
@@ -87,34 +109,20 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
       # Var('rawDeepTau2017v2p1VSjet_2', "rawDeepTau2017v2p1VSjet", 125, 0.88, 1, ymin = 1e2, fname="$VAR_zoom3",ncols=2,pos='L;y=0.85'),
       # Var('rawDeepTau2017v2p1VSe_2',   "rawDeepTau2017v2p1VSe",   90, 0.10, 1, ymin = 1e2, fname="$VAR_zoom",ncols=2,logy=True,logyrange=4,pos='L;y=0.85'),
       # Var('rawDeepTau2017v2p1VSmu_2',  "rawDeepTau2017v2p1VSmu",  50, 0.80, 1, ymin = 1e1, fname="$VAR_zoom",ncols=2,logy=True,logyrange=5,pos='L;y=0.85'),
-
-      # #Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 50, 0.00, 1, ymin = 1e3, ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5,cbins={"VSjet_2>":(60,0.4,1)}),
-      Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 20, 0.95, 1, ymin = 1e2, fname="$VAR_zoom",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 21, 0.96, 1, ymin = 1e2, fname="$VAR_zoom0",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 42, 0.96, 1, ymin = 1e2, fname="$VAR_zoom1",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 84, 0.96, 1, ymin = 1e2, fname="$VAR_zoom2",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 250, 0.96, 1, ymin = 1e2, fname="$VAR_zoom3",ncols=2,pos='L;y=0.85'),
-
-      Var('rawDeepTau2018v2p5VSe_2',   "rawDeepTau2018v2p5VSe",   80, 0.20, 1, ymin = 1e2, fname="$VAR_zoom",ncols=2,logy=True,logyrange=4,pos='L;y=0.85'),
-      Var('rawDeepTau2018v2p5VSmu_2',  "rawDeepTau2018v2p5VSmu",  25, 0.90, 1, ymin = 1e1, fname="$VAR_zoom",ncols=2,logy=True,logyrange=5,pos='L;y=0.85'),
-
-      
-      # Var('rawDeepTau2017v2p1VSjet_2', "rawDeepTau2017v2p1VSjet", 50, 0.00, 1, ymin = 1e1, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
-      # #Var('rawDeepTau2017v2p1VSe_2',   "rawDeepTau2017v2p1VSe",   50, 0.00, 1, ymin = 1e3, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
-      # #Var('rawDeepTau2017v2p1VSmu_2',  "rawDeepTau2017v2p1VSmu",  50, 0.00, 1, ymin = 1e3, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
-
+      # # #Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 50, 0.00, 1, ymin = 1e3, ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5,cbins={"VSjet_2>":(60,0.4,1)}),
+      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 20, 0.95, 1, ymin = 1e2, fname="$VAR_zoom",ncols=2,pos='L;y=0.85'),
+      # # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 21, 0.96, 1, ymin = 1e2, fname="$VAR_zoom0",ncols=2,pos='L;y=0.85'),
+      # # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 42, 0.96, 1, ymin = 1e2, fname="$VAR_zoom1",ncols=2,pos='L;y=0.85'),
+      # # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 84, 0.96, 1, ymin = 1e2, fname="$VAR_zoom2",ncols=2,pos='L;y=0.85'),
+      # # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 250, 0.96, 1, ymin = 1e2, fname="$VAR_zoom3",ncols=2,pos='L;y=0.85'),
+      # Var('rawDeepTau2018v2p5VSe_2',   "rawDeepTau2018v2p5VSe",   80, 0.20, 1, ymin = 1e2, fname="$VAR_zoom",ncols=2,logy=True,logyrange=4,pos='L;y=0.85'),
+      # Var('rawDeepTau2018v2p5VSmu_2',  "rawDeepTau2018v2p5VSmu",  25, 0.90, 1, ymin = 1e1, fname="$VAR_zoom",ncols=2,logy=True,logyrange=5,pos='L;y=0.85'),
       # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 50, 0.00, 1, ymin = 1e1, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
       #Var('rawDeepTau2018v2p5VSe_2',   "rawDeepTau2018v2p5VSe",   50, 0.00, 1, ymin = 1e3, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
       #Var('rawDeepTau2018v2p5VSmu_2',  "rawDeepTau2018v2p5VSmu",  50, 0.00, 1, ymin = 1e3, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
 
     ]
-  elif 'mumu' in channel:
-    variables += [
-      # Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR", cbins={"m_vis>200":(40,200,1000)}), # alias: m_ll alias of m_vis
-      # Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR_log", logy=True, ymin=1e2, cbins={"m_vis>200":(40,200,1000)} ),
-      Var('m_ll', "m_mumu", 40, 70,  110, fname="$VAR_Zmass", veto=["m_vis>200"] ),
-      # Var('m_ll', "m_mumu",  1, 70,  110, fname="$VAR_1bin", veto=["m_vis>200"] ),
-    ]
+
   variables  = filtervars(variables,varfilter)  # filter variable list with -V/--var flag
   
   # PLOT
@@ -122,14 +130,76 @@ def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era=""
   exts   = ['png','pdf'] if pdf else ['png'] # extensions
   for selection in selections:
     print(">>> Selection %r: %r"%(selection.title,selection.selection))
+    
+    # Mapping for region replacement
+    region_mapping = {'DM0': 'dm_2==0', 'DM1': 'dm_2==1', 'DM10': 'dm_2==10', 'DM11': 'dm_2==11'}
+    region_cut = region_mapping.get(region, region)
+
+
+    # Extract relevant parameters for modifying the sample
+    sampleAppend = ""
+    
+    if region == "DM0":
+      dy_shape_val =  0.355279177427
+    elif region == "DM1":
+      dy_shape_val = -0.714294493198
+    elif region == "DM10":
+      dy_shape_val =  0.264388531446
+    elif region == "DM11":
+      dy_shape_val = -0.808251798153
+    else:
+      dy_shape_val = 1
+
+    dy_weight_ZTT = "(genmatch_2==5 ? 1+((zptweight+0.1*(zptweight-1))*%s ): 1)" %(dy_shape_val)
+    dy_weight_ZL = "(genmatch_2>0 && genmatch_2<5 ? 1+((zptweight+0.1*(zptweight-1))*%s): 1)" %(dy_shape_val)
+    dy_weight_ZJ = "(genmatch_2==0 ? 1+((zptweight+0.1*(zptweight-1))*%s ): 1)" %(dy_shape_val)
+
+    # Create a new sample set with systematic variations
+    # sampleset.gethists(obsset,selection,method=method,split=True,
+    #                            parallel=parallel,filter=filters,veto=vetoes,replaceweight=weightReplaced)
+
+
     stacks = sampleset.getstack(variables,selection,method='QCD_OSSS',scale=1, parallel=parallel)
+
+    # sampleset.get("ZTT", unique=True,split=True,method='QCD_OSSS').setextraweight(dy_weight_ZTT)
+    # sampleset.get("ZL", unique=True,split=True,method='QCD_OSSS').setextraweight(dy_weight_ZL)
+    # sampleset.get("ZJ", unique=True,split=True,method='QCD_OSSS').setextraweight(dy_weight_ZJ)
+
+
+    print("sampleset = %s" %(sampleset))
+
+    # Applying SFs on specific processes -- do after splitting and renaming! 
+    if "scaleFactors" in setup:
+        #print("scaleFactors")
+        for SF in setup["scaleFactors"]:
+            #print("Scale Factor =" , SF)
+            SFset = setup["scaleFactors"][SF]
+            print("Reweighting with SF -- %s -- for the following processes: %s"%(SF, SFset["processes"]))
+            for proc in SFset["processes"]:
+                #print("proc : %s" %(proc))
+                for cond in SFset["values"]:
+                  #print("cond = ", cond)
+                  #print("region_cut = ", region_cut)
+                  if cond == region_cut : 
+                    weight = SFset["values"][cond]
+                    print("Applying weight: %s to process %s" %(weight,proc))
+                    for stack, variable in stacks.items():
+                      for h in stack.hists:
+                        if proc in h.GetName().split('_')[1]:
+                          #print("hist name =" , h.GetName()) 
+                          #print("hist name split('_')[1] =" , h.GetName().split('_')[1]) 
+                          h.Scale(weight) 
+
+    print("stacks = %s" %(stacks))
+    
+
     fname  = "%s/$VAR_%s-%s-%s$TAG"%(outdir,channel.replace('mu','m').replace('tau','t'),selection.filename,era)
     text   = "%s: %s"%(channel.replace('mu',"#mu").replace('tau',"#tau_{h}"),selection.title)
     if extratext:
       text += ("" if '\n' in extratext[:3] else ", ") + extratext
     #for stack, variable in stacks.iteritems():
     for stack, variable in stacks.items(): # python 3
-      #position = "" #variable.position or 'topright'
+      position = "" #variable.position or 'topright'
       stack.draw(fraction=fraction)
       stack.drawlegend() #position)
       stack.drawtext(text)
@@ -167,74 +237,24 @@ def main(args):
         addsfs = [ ] #"getTauIDSF(dm_2,genmatch_2)"]
 
         rmsfs  = [ ] if (setup['channel']=='mumu' or not notauidsf) else ['idweight_2','ltfweight_2'] # remove tau ID SFs
-        #split  = ['DY'] if 'tau' in setup['channel'] else [ ] # split these backgrounds into tau components
         
-        # if "split" in setup["samples"]:
-        #   split = setup["samples"]["split"]
-        # else: 
-        #   split  = ['DY'] if 'tau' in setup['channel'] else [ ] # split these backgrounds into tau components
-        
-        
-        #split  = ['DY_M50','ST','TT'] 
+      
         split  = ['DY','ST','TT'] 
-
-       
 
         sampleset = getsampleset(setup['channel'],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split)
        
         print("split = ", split)
         print(">>>>>>>sampleset")
-        print(sampleset)
 
-        # # Potentially split up samples in several processes
-        # if "split" in setup["samples"]:
-        #     for splitSample in setup["samples"]["split"]:
-        #         print("Splitting sample %s into %s"%(splitSample,setup["samples"]["split"][splitSample]))
-        #         #sampleset.split(splitSample, setup["samples"]["split"][splitSample])
-        #         sampleset.split(splitSample, setup["samples"]["split"][splitSample])
-   
         split_list = [["ZTT","genmatch_2==5"], ["ZL","genmatch_2>0 && genmatch_2<5"], ["ZJ","genmatch_2==0"], 
                   ["TTT","genmatch_2==5"], ["TTL","genmatch_2>0 && genmatch_2<5"], ["TTJ","genmatch_2==0"], 
                   ["ST","genmatch_2==5 && genmatch_2<5"],["STJ","genmatch_2<5"]]
 
         sampleset.split(split_list)
 
-        # On-the-fly reweighting of specific processes -- do after splitting and renaming! 
-        if "scaleFactors" in setup:
-            print("scaleFactors")
-            for SF in setup["scaleFactors"]:
-                print("SF =" , SF)
-                SFset = setup["scaleFactors"][SF]
-                print("Reweighting with SF -- %s -- for the following processes: %s"%(SF, SFset["processes"]))
-                for proc in SFset["processes"]:
-                    print("proc : %s" %(proc))
-                    j = 0
-                    weight = ""
-                    for cond in SFset["values"]:
-                      if j != 0:
-                         weight += "*"
-                      weight += " ( "
-                      select = ""
-                      j+=1
-                      if any(proc in sublist for sublist in split_list):
-                        for sublist in split_list:
-                            #print("sublist : %s" %(sublist))
-                            if proc == sublist[0]:
-                                select += " && " + sublist[1]    
-                      print("select = ", select)
-                      weight += cond+select+" ? "+str(SFset["values"][cond])+" : (" 
-                      weight += "1.0)"
-                      # for i in range(len(SFset["values"])-1):
-                      #     weight += " )"
-                      weight +=  " ) "
-                    print("Applying weight: %s" %weight)
-                    # print("samples.get.split(split) = ", sampleset.get(proc, unique=True,split=True)).type()
-                    # print("samples.get.split(split) = ", sampleset.get(proc, unique=True,split=True)).split(split_list)
-                    sampleset.get(proc, unique=True,split=True).addweight(weight)
-
-
-        plot(sampleset,setup,parallel=parallel,tag=tag,extratext=extratext,outdir=outdir,era=era,
-                varfilter=varfilter,selfilter=selfilter,fraction=fraction,pdf=pdf)
+        for region in setup["regions"] : 
+          plot(sampleset,setup,region,parallel=parallel,tag=tag,extratext=extratext,outdir=outdir,era=era,
+                  varfilter=varfilter,selfilter=selfilter,fraction=fraction,pdf=pdf)
         sampleset.close()
     
 
