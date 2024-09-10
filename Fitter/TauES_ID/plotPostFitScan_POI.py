@@ -415,7 +415,7 @@ def plotPostFitValues(channel,var,region,year,paramfull_list,*parameters,**kwarg
           iPOI = ipar
           print("iPOI= ",iPOI)
 
-
+    print("parameter = ", parameter)
     for ipar in range(N):
       if parlist[ipar].title == parameter:
         print("tes = ", tes)
@@ -639,63 +639,88 @@ def main(args):
                  "trackedParam_tid_SF_DM0","trackedParam_tid_SF_DM10", "xsec_dy", "norm_wj",
                   "shape_jTauFake", "rate_jTauFake", "xsec_tt", "trackedParam_tes_DM0","trackedParam_tes_DM1","trackedParam_tes_DM10","trackedParam_tes_DM11" ]
     compare   = {
-      "norm":
-          [ "eff_m", "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "rate_jTauFake_DM0", "rate_jTauFake_DM1","rate_jTauFake_DM10","rate_jTauFake_DM11","muonFakerate_DM0","muonFakerate_DM1","muonFakerate_DM10","muonFakerate_DM11"
-        ],
+
+      # ### DM ONLY 
       # "norm":
-      #   [ "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "rate_jTauFake_DM0_pt1","rate_jTauFake_DM0_pt2","rate_jTauFake_DM0_pt3", "rate_jTauFake_DM1_pt1","rate_jTauFake_DM1_pt2","rate_jTauFake_DM1_pt3", "rate_jTauFake_DM10_pt1","rate_jTauFake_DM10_pt2","rate_jTauFake_DM10_pt3", "rate_jTauFake_DM11_pt1","rate_jTauFake_DM11_pt2","rate_jTauFake_DM11_pt3"
+      #   [ "eff_m", "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "rate_jTauFake_DM0", "rate_jTauFake_DM1","rate_jTauFake_DM10","rate_jTauFake_DM11"],
+      # "shapes":
+      # [  "shape_mTauFake_DM0","shape_mTauFake_DM1","shape_mTauFake_DM10","shape_mTauFake_DM11" ,"shape_dy","shape_jTauFake_DM0","shape_jTauFake_DM1","shape_jTauFake_DM10","shape_jTauFake_DM11","shape_mTauFakeSF"
+      # ],
+      # "rateParam":
+      #   [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0", "trackedParam_sf_W_DM1", "trackedParam_sf_W_DM10", "trackedParam_sf_W_DM11"
       #   ],
+      # "tid":
+      #   ["trackedParam_tid_SF_DM0","trackedParam_tid_SF_DM1","trackedParam_tid_SF_DM10","trackedParam_tid_SF_DM11"],
+      # "tes":
+      #   [ "tes_DM0","tes_DM1","tes_DM10","tes_DM11"] 
+######################
+      ### DM 2 pt 
+      # "norm":
+      # [ "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "rate_jTauFake_DM0_pt1","rate_jTauFake_DM0_pt2", "rate_jTauFake_DM1_pt1","rate_jTauFake_DM1_pt2" "rate_jTauFake_DM10_pt1","rate_jTauFake_DM10_pt2", "rate_jTauFake_DM11_pt1","rate_jTauFake_DM11_pt2"
+      # ], 
+      # "shapes":
+      # ["shape_mTauFake_DM0_pt1","shape_mTauFake_DM0_pt2","shape_mTauFake_DM0_pt3", "shape_mTauFake_DM0_pt4",
+      # "shape_mTauFake_DM1_pt1","shape_mTauFake_DM1_pt2","shape_mTauFake_DM1_pt3", "shape_mTauFake_DM1_pt4",
+      # "shape_mTauFake_DM10_pt1","shape_mTauFake_DM10_pt2","shape_mTauFake_DM10_pt3", "shape_mTauFake_DM10_pt4",
+      # "shape_mTauFake_DM11_pt1","shape_mTauFake_DM11_pt2","shape_mTauFake_DM11_pt3", "shape_mTauFake_DM11_pt4",
+      # "shape_jTauFake_DM0_pt1","shape_jTauFake_DM0_pt2","shape_jTauFake_DM0_pt3", "shape_jTauFake_DM0_pt4",
+      # "shape_jTauFake_DM1_pt1","shape_jTauFake_DM1_pt2","shape_jTauFake_DM1_pt3", "shape_jTauFake_DM1_pt4",
+      # "shape_jTauFake_DM10_pt1","shape_jTauFake_DM10_pt2","shape_jTauFake_DM10_pt3", "shape_jTauFake_DM10_pt4",
+      # "shape_jTauFake_DM11_pt1","shape_jTauFake_DM11_pt2","shape_jTauFake_DM11_pt3", "shape_jTauFake_DM11_pt4",
+      # "shape_dy"
+      # ],
+      # "rateParam":
+      # [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2", "trackedParam_sf_W_DM1_pt1","trackedParam_sf_W_DM1_pt2", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2","trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2"
+      # ],
+      # "tid":
+      # ["trackedParam_tid_SF_DM0_pt1", "trackedParam_tid_SF_DM0_pt2",
+      # "trackedParam_tid_SF_DM1_pt1","trackedParam_tid_SF_DM1_pt2",
+      # "trackedParam_tid_SF_DM10_pt1","trackedParam_tid_SF_DM10_pt2",
+      # "trackedParam_tid_SF_DM11_pt1","trackedParam_tid_SF_DM11_pt2"
+      # ],
+      # "tes":
+      # ["tes_DM0_pt1","tes_DM0_pt2","tes_DM1_pt1","tes_DM1_pt2","tes_DM10_pt1","tes_DM10_pt2","tes_DM11_pt1","tes_DM11_pt2"]
+
+
+  ######################
+    ### DM 4pt
       "norm":
-        [ "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd"
+        [ "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", 
+         "rate_jTauFake_DM0_pt1","rate_jTauFake_DM0_pt2","rate_jTauFake_DM0_pt3","rate_jTauFake_DM0_pt4",
+         "rate_jTauFake_DM1_pt1","rate_jTauFake_DM1_pt2","rate_jTauFake_DM1_pt3","rate_jTauFake_DM1_pt4",
+         "rate_jTauFake_DM10_pt1","rate_jTauFake_DM10_pt2","rate_jTauFake_DM10_pt3","rate_jTauFake_DM10_pt4",
+         "rate_jTauFake_DM11_pt1","rate_jTauFake_DM11_pt2","rate_jTauFake_DM11_pt3", "rate_jTauFake_DM11_pt4"
         ],
-      # "shapes":
-      #   [  "shape_mTauFake_DM0","shape_mTauFake_DM1","shape_mTauFake_DM10","shape_mTauFake_DM11" ,"shape_dy","shape_jTauFake_DM0","shape_jTauFake_DM1","shape_jTauFake_DM10","shape_jTauFake_DM11"
-      #   ],
-      # "shapes":
-      #   ["shape_mTauFake_DM0_pt1","shape_mTauFake_DM0_pt2","shape_mTauFake_DM0_pt3", "shape_mTauFake_DM0_pt4",
-      #    "shape_mTauFake_DM1_pt1","shape_mTauFake_DM1_pt2","shape_mTauFake_DM1_pt3", "shape_mTauFake_DM1_pt4",
-      #    "shape_mTauFake_DM10_pt1","shape_mTauFake_DM10_pt2","shape_mTauFake_DM10_pt3", "shape_mTauFake_DM10_pt4",
-      #    "shape_mTauFake_DM11_pt1","shape_mTauFake_DM11_pt2","shape_mTauFake_DM11_pt3", "shape_mTauFake_DM11_pt4",
-      #    "shape_jTauFake_DM0_pt1","shape_jTauFake_DM0_pt2","shape_jTauFake_DM0_pt3", "shape_jTauFake_DM0_pt4",
-      #    "shape_jTauFake_DM1_pt1","shape_jTauFake_DM1_pt2","shape_jTauFake_DM1_pt3", "shape_jTauFake_DM1_pt4",
-      #    "shape_jTauFake_DM10_pt1","shape_jTauFake_DM10_pt2","shape_jTauFake_DM10_pt3", "shape_jTauFake_DM10_pt4",
-      #    "shape_jTauFake_DM11_pt1","shape_jTauFake_DM11_pt2","shape_jTauFake_DM11_pt3", "shape_jTauFake_DM11_pt4",
-      #    "shape_dy"
-      #   ],
-        # "rateParam":
-        # [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1", "trackedParam_sf_W_DM0_pt2", "trackedParam_sf_W_DM1_pt1", "trackedParam_sf_W_DM1_pt2", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2", "trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2"
-        # ],
-      # "rateParam":
-      #   [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0", "trackedParam_sf_W_DM1", "trackedParam_sf_W_DM10", "trackedParam_sf_W_DM11","trackedParam_muonFakerate"
-      #   ],
+      "shapes":
+        ["shape_mTauFake_DM0_pt1","shape_mTauFake_DM0_pt2","shape_mTauFake_DM0_pt3", "shape_mTauFake_DM0_pt4",
+         "shape_mTauFake_DM1_pt1","shape_mTauFake_DM1_pt2","shape_mTauFake_DM1_pt3", "shape_mTauFake_DM1_pt4",
+         "shape_mTauFake_DM10_pt1","shape_mTauFake_DM10_pt2","shape_mTauFake_DM10_pt3", "shape_mTauFake_DM10_pt4",
+         "shape_mTauFake_DM11_pt1","shape_mTauFake_DM11_pt2","shape_mTauFake_DM11_pt3", "shape_mTauFake_DM11_pt4",
+         "shape_jTauFake_DM0_pt1","shape_jTauFake_DM0_pt2","shape_jTauFake_DM0_pt3", "shape_jTauFake_DM0_pt4",
+         "shape_jTauFake_DM1_pt1","shape_jTauFake_DM1_pt2","shape_jTauFake_DM1_pt3", "shape_jTauFake_DM1_pt4",
+         "shape_jTauFake_DM10_pt1","shape_jTauFake_DM10_pt2","shape_jTauFake_DM10_pt3", "shape_jTauFake_DM10_pt4",
+         "shape_jTauFake_DM11_pt1","shape_jTauFake_DM11_pt2","shape_jTauFake_DM11_pt3", "shape_jTauFake_DM11_pt4",
+         "shape_dy"
+        ],
       "rateParam":
-        [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2","trackedParam_sf_W_DM0_pt3", "trackedParam_sf_W_DM1_pt1","trackedParam_sf_W_DM1_pt2","trackedParam_sf_W_DM1_pt3", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2","trackedParam_sf_W_DM10_pt3","trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2","trackedParam_sf_W_DM11_pt3"
+        [ "trackedParam_xsec_dy",
+         "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2","trackedParam_sf_W_DM0_pt3","trackedParam_sf_W_DM0_pt4",
+         "trackedParam_sf_W_DM1_pt1","trackedParam_sf_W_DM1_pt2","trackedParam_sf_W_DM1_pt3","trackedParam_sf_W_DM1_pt4",
+        "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2","trackedParam_sf_W_DM10_pt3","trackedParam_sf_W_DM10_pt4",
+         "trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2","trackedParam_sf_W_DM11_pt3","trackedParam_sf_W_DM11_pt4"
         ],
-      # "rateParam":
-      #   [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2"
-      #   ],
-      # "tid":
-      #   ["trackedParam_tid_SF_pt1","trackedParam_tid_SF_pt2","trackedParam_tid_SF_pt3","trackedParam_tid_SF_pt4","trackedParam_tid_SF_pt5","trackedParam_tid_SF_pt6","trackedParam_tid_SF_pt7"],
       "tid":
-        ["trackedParam_tid_SF_DM0","trackedParam_tid_SF_DM1","trackedParam_tid_SF_DM10","trackedParam_tid_SF_DM11"],
-      # "tid":
-      #   ["trackedParam_tid_SF_DM0_pt1","trackedParam_tid_SF_DM0_pt2", "trackedParam_tid_SF_DM1_pt1","trackedParam_tid_SF_DM1_pt2","trackedParam_tid_SF_DM10_pt1","trackedParam_tid_SF_DM10_pt2","trackedParam_tid_SF_DM11_pt1","trackedParam_tid_SF_DM11_pt2"],
-      # "tid":
-      #   ["trackedParam_tid_SF_DM0", "trackedParam_tid_SF_DM1","trackedParam_tid_SF_DM10","trackedParam_tid_SF_DM11"],
-      # "tid":
-      # ["trackedParam_tid_SF_DM0_pt1","trackedParam_tid_SF_DM0_pt2"],
-      # "tid":
-      # ["trackedParam_tid_SF_DM0_pt1", "trackedParam_tid_SF_DM0_pt2", "trackedParam_tid_SF_DM0_pt3","trackedParam_tid_SF_DM0_pt4",
-      # "trackedParam_tid_SF_DM1_pt1","trackedParam_tid_SF_DM1_pt2", "trackedParam_tid_SF_DM1_pt3","trackedParam_tid_SF_DM1_pt4",
-      # "trackedParam_tid_SF_DM10_pt1","trackedParam_tid_SF_DM10_pt2", "trackedParam_tid_SF_DM10_pt3","trackedParam_tid_SF_DM10_pt4",
-      # "trackedParam_tid_SF_DM11_pt1","trackedParam_tid_SF_DM11_pt2", "trackedParam_tid_SF_DM11_pt3","trackedParam_tid_SF_DM11_pt4"]
-      # "tes":
-      #   [ "tes_DM0","tes_DM1","tes_DM10","tes_DM11"]
-      # "tes":
-      #   [ "tes_DM0_pt1","tes_DM0_pt2","tes_DM0_pt3","tes_DM0_pt4","tes_DM1_pt1","tes_DM1_pt2","tes_DM1_pt3","tes_DM1_pt4","tes_DM10_pt1","tes_DM10_pt2","tes_DM10_pt3","tes_DM10_pt4","tes_DM0_pt1","tes_DM0_pt2","tes_DM11_pt3","tes_DM11_pt4"],
-      #  "tes":
-      #   [ "tes_DM0_pt1","tes_DM0_pt2","tes_DM0_pt3","tes_DM1_pt1","tes_DM1_pt2","tes_DM1_pt3","tes_DM10_pt1","tes_DM10_pt2","tes_DM10_pt3","tes_DM11_pt1","tes_DM11_pt2","tes_DM11_pt3"]
+        ["trackedParam_tid_SF_DM0_pt1", "trackedParam_tid_SF_DM0_pt2", "trackedParam_tid_SF_DM0_pt3","trackedParam_tid_SF_DM0_pt4",
+        "trackedParam_tid_SF_DM1_pt1","trackedParam_tid_SF_DM1_pt2", "trackedParam_tid_SF_DM1_pt3","trackedParam_tid_SF_DM1_pt4",
+        "trackedParam_tid_SF_DM10_pt1","trackedParam_tid_SF_DM10_pt2", "trackedParam_tid_SF_DM10_pt3","trackedParam_tid_SF_DM10_pt4",
+        "trackedParam_tid_SF_DM11_pt1","trackedParam_tid_SF_DM11_pt2", "trackedParam_tid_SF_DM11_pt3","trackedParam_tid_SF_DM11_pt4"
+        ],
+      "tes":
+        ["tes_DM0_pt1","tes_DM0_pt2","tes_DM0_pt3","tes_DM0_pt4","tes_DM1_pt1","tes_DM1_pt2","tes_DM1_pt3","tes_DM1_pt4","tes_DM10_pt1","tes_DM10_pt2","tes_DM10_pt3","tes_DM10_pt4","tes_DM11_pt1","tes_DM11_pt2","tes_DM11_pt3","tes_DM11_pt4"
+        ]
     }
+
+    fulllist = compare["norm"] + compare["shapes"] + compare["rateParam"] + compare["tid"] + compare["tes"]
     
     # fulllist  = [
     #   "tes_DM0","tes_DM1","tes_DM10","tes_DM11", "trackedParam_xsec_dy", "trackedParam_sf_W_DM0", "trackedParam_sf_W_DM1", "trackedParam_sf_W_DM10", "trackedParam_sf_W_DM11",
@@ -740,39 +765,39 @@ def main(args):
     #   "muonFakerate_DM10_pt1", "muonFakerate_DM10_pt2", "muonFakerate_DM10_pt3", "muonFakerate_DM10_pt4",
     #   "muonFakerate_DM11_pt1", "muonFakerate_DM11_pt2", "muonFakerate_DM11_pt3", "muonFakerate_DM11_pt4"
     # ]
-    fulllist  = [
-      "tes_DM0",
-      "tes_DM1",
-      "tes_DM10",
-      "tes_DM11",
-      "trackedParam_xsec_dy",
-      "trackedParam_sf_W_DM0",
-      "trackedParam_sf_W_DM1", 
-      "trackedParam_sf_W_DM10",
-      "trackedParam_sf_W_DM11",
-      "trackedParam_tid_SF_DM0"
-      "trackedParam_tid_SF_DM1"
-      "trackedParam_tid_SF_DM10",
-      "trackedParam_tid_SF_DM11",
-      "shape_mTauFake_DM0",
-      "shape_mTauFake_DM1",
-      "shape_mTauFake_DM10"
-      "shape_mTauFake_DM11"
-      "shape_jTauFake_DM0",
-      "shape_jTauFake_DM1",
-      "shape_jTauFake_DM10"
-      "shape_jTauFake_DM11"
-      "shape_dy",
-      "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "eff_m",
-      "rate_jTauFake_DM0", 
-      "rate_jTauFake_DM1", 
-      "rate_jTauFake_DM10",
-      "rate_jTauFake_DM11",
-      # "muonFakerate_DM0", 
-      # "muonFakerate_DM1", 
-      # "muonFakerate_DM10", 
-      # "muonFakerate_DM11"
-    ]
+    # fulllist  = [
+    #   "tes_DM0",
+    #   "tes_DM1",
+    #   "tes_DM10",
+    #   "tes_DM11",
+    #   "trackedParam_xsec_dy",
+    #   "trackedParam_sf_W_DM0",
+    #   "trackedParam_sf_W_DM1", 
+    #   "trackedParam_sf_W_DM10",
+    #   "trackedParam_sf_W_DM11",
+    #   "trackedParam_tid_SF_DM0"
+    #   "trackedParam_tid_SF_DM1"
+    #   "trackedParam_tid_SF_DM10",
+    #   "trackedParam_tid_SF_DM11",
+    #   "shape_mTauFake_DM0",
+    #   "shape_mTauFake_DM1",
+    #   "shape_mTauFake_DM10"
+    #   "shape_mTauFake_DM11"
+    #   "shape_jTauFake_DM0",
+    #   "shape_jTauFake_DM1",
+    #   "shape_jTauFake_DM10"
+    #   "shape_jTauFake_DM11"
+    #   "shape_dy",
+    #   "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "eff_m",
+    #   "rate_jTauFake_DM0", 
+    #   "rate_jTauFake_DM1", 
+    #   "rate_jTauFake_DM10",
+    #   "rate_jTauFake_DM11",
+    #   # "muonFakerate_DM0", 
+    #   # "muonFakerate_DM1", 
+    #   # "muonFakerate_DM10", 
+    #   # "muonFakerate_DM11"
+    # ]
     procsBBB  = [ 'QCD', 'W', 'TTT', 'ZTT' ] # 'JTF' ]
     indir     = "output_%s"%year
     

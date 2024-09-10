@@ -1001,7 +1001,7 @@ def main(args):
     customSummary = args.customSummary
     ensureDirectory(outdir)
 
-    CMSStyle.setCMSEra(year)
+    CMSStyle.setCMSEra(year,extra="WIP")
     
     fittag  = "_fit_asymm" if asymmetric else "_fit"
     tag += args.extratag

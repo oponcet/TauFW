@@ -153,7 +153,8 @@ def plotParabola(setup,var,region,year,**kwargs):
     canvas.cd()
     
     if poi == 'tid_SF' or poi == 'trackedParam_tid_SF':
-          xmin, xmax = 0.55, 1.05
+          # xmin, xmax = 0.55, 1.05
+          xmin, xmax = 0.7, 1.1
     if poi == 'tes' :
           xmin, xmax = min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]) 
     ymin, ymax   = 0.0,  10.
@@ -195,9 +196,11 @@ def plotParabola(setup,var,region,year,**kwargs):
       if asymmetric:
         yline = 1+para.GetParameter(2)
         print("yline = " ,yline)
-        print("para.GetParameter(1) = " ,para.GetParameter(1))
-        poif_errDown = poif-para.GetX(yline,poif-0.05,poif)
-        poif_errUp   = para.GetX(yline,poif,poif+0.05)-poif
+        print("poif = " ,poif) # poif of the fit
+        print("para = " ,para)
+        poif_errDown = poif-para.GetX(yline,poif-0.08,poif)
+        print("poif_errDown = ", poif_errDown)
+        poif_errUp   = para.GetX(yline,poif,poif+0.08)-poif
       else:
         poif_errUp   = round( sqrt( 1./(1000.*para.GetParameter(0)) )*10000)/10000 # TODO: propagate fit uncertainties with GetParError(i) !
         poif_errDown = round( sqrt( 1./(1000.*para.GetParameter(0)) )*10000)/10000        

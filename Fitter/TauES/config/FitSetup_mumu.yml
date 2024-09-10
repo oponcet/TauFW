@@ -4,21 +4,15 @@
 channel: mumu
 
 #tag: "_mumu"
-#tag: "_mumu_zptD"
-#tag: "_mumu_zptDY"
-#tag: "_mumu_zptDY_etacut"
-#tag: "_mumu_trigger"
-#tag: "_mumu_v10"
-#tag: "_mumu_Dt2p5_2022"
-#tag: "_mumu_Dt2p5_202-test"
-tag: "_mumu_Dt2p5_puppiMET"
-
+tag: "_mumu_Dt2p5_puppiMET" # tag used for derivation of TauES SFs for 2022_preEE and 2022_postEE
+# tag: "_mumu_Dt2p5" # tag used for derivation of TauES SFs for UL2018_v10 and 2022_postEE
 
 baselineCuts: "q_1*q_2<0 && iso_1<0.15 && iso_2<0.15 && !lepton_vetoes && metfilter"
 
 
 samples:
     filename: "$PICODIR/$SAMPLE_$CHANNEL$TAG.root"
+    join: ["VV","TT","ST"]
     split:
         DY: [ ["ZTT","genmatch_2==5"], ["ZL","genmatch_2>0 && genmatch_2<5"], ["ZJ","genmatch_2==0"] ]
     data: "data_obs"
@@ -32,12 +26,12 @@ observables:
             rrange: 0.08
         fitRegions: ["baseline"]
 
-processes: ['ZTT','ZL','ZJ','data_obs'] #enlever les bruits de fond 
+processes: ['ZTT','ZL','ZJ','data_obs'] 
 
 systematics:
     lumi:
         effect: "lnN"
-        processes: ["ZTT","ZL","ZJ"]
+        processes: ['ZTT','ZL','ZJ']
         scaleFactor: 1.025
     eff_m:
         effect: "lnN"

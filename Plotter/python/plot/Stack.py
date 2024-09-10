@@ -206,6 +206,7 @@ class Stack(Plot):
     self.setfillstyle(self.exphists,reset=resetcolors) # before adding to THStack!
     for hist in self.exphists:
       hist.SetMarkerStyle(1)
+      hist.SetLineColor(kBlack)
     if drawsignal:
       self.setlinestyle(self.sighists,colors=lcolors,styles=lstyles,mstyle=mstyle,width=lwidth,pair=pair,triple=triple)
     #if drawdata:

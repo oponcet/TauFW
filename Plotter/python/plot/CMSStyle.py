@@ -29,16 +29,16 @@ from ROOT import TStyle, TPad, TLatex, TASImage, kBlack, kWhite, TGaxis
 import re
 
 #cmsText        = "CMS"
-cmsText        = ""
+cmsText        = "CMS"
 cmsTextFont    = 61 # 60: Arial bold (helvetica-bold-r-normal)
 # Guidelines for labels:
 #   https://twiki.cern.ch/twiki/bin/view/CMS/Internal/FigGuidelines#Use_of_the_Preliminary_Simulatio
 #   https://twiki.cern.ch/twiki/bin/view/CMS/PhysicsApprovals#Student_presentations_of_unappro
 #   E.g. "Preliminary", "Simulation", "Simulation Preliminary", "Supplementary", "Work in progress", ...
 #extraText      = "Preliminary"
-extraText      = ""
+extraText      = "W.I.P."
 lumiText       = ""
-extraTextFont  = 52 # 50: Arial italics (helvetica-medium-o-normal)
+extraTextFont  = 50 # 50: Arial italics (helvetica-medium-o-normal) 52
 lumiTextSize   = 0.90
 lumiTextOffset = 0.20
 cmsTextSize    = 1.00
@@ -179,6 +179,8 @@ def setCMSLumiStyle(pad, iPosX, **kwargs):
   if verbosity>=2:
     print(">>> setCMSLumiStyle: cmsText=%r, extraText=%r, lumiText=%r"%(cmsText,extraText_,lumiText))
   
+  print("outOfFrame",outOfFrame)
+
   # https://root.cern.ch/doc/master/classTAttText.html#ATTTEXT1
   alignY_ = 3 # align top
   alignX_ = 2 # align center

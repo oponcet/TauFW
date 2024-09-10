@@ -418,6 +418,8 @@ class Plot(object):
   def close(self,keep=False,**kwargs):
     """Close canvas and delete the histograms."""
     verbosity = LOG.getverbosity(self,kwargs)
+    verbosity = 2
+    print(">>> Plot.close: Closing plot %r..."%(self.name))
     if self.canvas:
       LOG.verb("Plot.close: Closing canvas...",verbosity,3)
       self.canvas.Close()

@@ -18,8 +18,8 @@ import yaml
 
 def calculate_shape_syst():
 
-    year = "2022_preEE"
-    tag= "_mutau_mt40cut_DM_Dt2p5_JetM_muVT_puppimet"
+    year = "UL2018_v10"
+    tag= "_mutau_mt65_DM_Dt2p5"
     
     
     for region in ["DM0", "DM1", "DM10", "DM11"]:
@@ -41,7 +41,7 @@ def calculate_shape_syst():
                 #print("Parameter : %s with value : %s"  %(param_name_txt,param_value))  
                 # Replace regions according to mapping
                 if "shape_mTauFake" in param_name_txt:
-                    var = 0.05
+                    var = 0.03
                     param_postfit_ltf = 1 + (var * param_value)
                 elif "shape_jTauFake":
                     var = 0.1

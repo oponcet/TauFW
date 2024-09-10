@@ -112,6 +112,7 @@ def deletehist(*hists,**kwargs):
   for hist in hists:
     hclass  = hist.__class__.__name__
     hname   = hist.GetName() if hasattr(hist,'GetName') else None
+    verbosity = 2
     LOG.verb("deletehist: deleting %s %r"%(hclass,hname or hist),verbosity,3)
     #try:
     if hist:

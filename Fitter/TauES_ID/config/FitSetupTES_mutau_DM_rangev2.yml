@@ -126,14 +126,14 @@ systematics:
         effect: "shape"
         processes: ["ZL", "TTL"]
         name: "shape_mTauFake_$BIN"
-        title: "+/- 2% LTF shape"
+        title: "+/- 3% LTF shape"
         variations: ["Up", "Down"]
         sampleAppend: ["_LTFUp","_LTFDown"]
     JTF:
         effect: "shape"
         processes: ["ZJ", "TTJ", "W"]
         name: "shape_jTauFake_$BIN"
-        title: "+/- 5% JTF"
+        title: "+/- 10% JTF"
         variations: ["Up", "Down"]
         sampleAppend: ["_JTFUp","_JTFDown"]
     shape_mTauFake:

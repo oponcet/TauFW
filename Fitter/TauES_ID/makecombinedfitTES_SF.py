@@ -69,10 +69,10 @@ def merge_datacards_ZmmCR(setup, setup_mumu, era,extratag,region):
 def run_combined_fit(setup, setup_mumu, option, **kwargs):
     # tes_range    = kwargs.get('tes_range',    "0.930,1.300")
     tes_range    = kwargs.get('tes_range',    "%s,%s" %(min(setup["TESvariations"]["values"]), max(setup["TESvariations"]["values"]))                         )
-    tid_SF_range = kwargs.get('tid_SF_range', "0.7,1.3") #"0.7,1.1"
+    tid_SF_range = kwargs.get('tid_SF_range', "0.7,1.1") #"0.7,1.1"
     extratag     = kwargs.get('extratag',     "_DeepTau")
-    algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1  ")
-    npts_fit     = kwargs.get('npts_fit',     "--points=61") ## 66 and 96
+    algo         = kwargs.get('algo',         "--algo=grid --alignEdges=1  ") 
+    npts_fit     = kwargs.get('npts_fit',     "--points=96") ## 66 and 96 --points=61 101 
     fit_opts     = kwargs.get('fit_opts',     "--robustFit=1 --setRobustFitAlgo=Minuit2 --setRobustFitStrategy=2 --setRobustFitTolerance=0.00001 %s" %(npts_fit))
     xrtd_opts    = kwargs.get('xrtd_opts',    "--X-rtd FITTER_NEW_CROSSING_ALGO --X-rtd FITTER_NE")
     cmin_opts    = kwargs.get('cmin_opts',    "--cminFallbackAlgo Minuit2,Migrad,0:0.0001 --cminPreScan"                                            ) #--cminPreScan
@@ -180,7 +180,7 @@ def run_combined_fit(setup, setup_mumu, option, **kwargs):
             # NP = "rgx{.*tes.*}" 
             print(">>>>>>> Scan of "+POI)
             #POI_OPTS = "-P %s  --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tid.*}=1,rgx{.*tes.*}=1 --freezeParameters r,tes_%s --redefineSignalPOIs tes_%s --floatOtherPOIs 1" % (POI, POI, tid_SF_range,r,tes_range,r,r)  # tes_DM
-            POI_OPTS = "-P %s  --setParameterRanges %s=%s:tes_%s=%s -m 90 --setParameters r=1,rgx{.*tid.*}=1,rgx{.*tes.*}=1 --freezeParameters r --redefineSignalPOIs tes_%s,%s --floatOtherPOIs=1" % (POI,POI, tid_SF_range, r,tes_range,r,POI)  # tes_DM
+            POI_OPTS = "-P %s  --setParameterRanges %s=%s:tes_%s=%s:sf_W_%s=0.0,10.0 -m 90 --setParameters r=1,rgx{.*tid.*}=1,rgx{.*tes.*}=1 --freezeParameters r --redefineSignalPOIs tes_%s,%s --floatOtherPOIs=1" % (POI,POI, tid_SF_range, r,r,tes_range,r,POI)  # tes_DM
             MultiDimFit_opts = " %s %s %s -n .%s %s %s %s %s --trackParameters rgx{.*tid.*},rgx{.*W.*},rgx{.*dy.*} --saveInactivePOI=1 " %(workspace, algo, POI_OPTS, BINLABELoutput,fit_opts, xrtd_opts, cmin_opts, save_opts)
             os.system("combine -M MultiDimFit %s " %(MultiDimFit_opts))
 

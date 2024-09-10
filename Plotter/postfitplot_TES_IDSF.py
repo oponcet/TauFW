@@ -8,15 +8,14 @@
 #>>>>IMPORTANT!!
 #>>>>Run with --serial option if using py3:
 #   ./plot_v10.py -y 2018 -c mutau --serial
-# from config.samples_v12 import *
-from config.samples_v10 import *
+from config.samples_v12 import *
 from TauFW.Plotter.plot.string import filtervars
 from TauFW.Plotter.plot.utils import LOG as PLOG
 from TauFW.Plotter.plot.Plot import Plot, deletehist
 import yaml
 
 
-def plot(sampleset,setup,parallel=False,tag="",extratext="",outdir="plots",era="",
+def plot(sampleset,setup,parallel=True,tag="",extratext="",outdir="plots",era="",
          varfilter=None,selfilter=None,fraction=False,pdf=False):
   """Test plotting of SampleSet class for data/MC comparison."""
   LOG.header("plot")
@@ -41,32 +40,30 @@ def plot(sampleset,setup,parallel=False,tag="",extratext="",outdir="plots",era="
   
   # VARIABLES
   variables = [
-    Var('pt_1',  "Muon pt",    40,  0, 120, ctitle={'etau':"Electron pt",'tautau':"Leading tau_h pt",'mumu':"Leading muon pt",'emu':"Electron pt"},cbins={"nbtag\w*>":(40,0,200)}),
-    Var('pt_2',  "tau_h pt",   40,  0, 120, ctitle={'tautau':"Subleading tau_h pt",'mumu':"Subleading muon pt",'emu':"Muon pt"},cbins={"nbtag\w*>":(40,0,200)}),
-    Var('eta_1', "Muon eta",   30, -3,   3, ctitle={'etau':"Electron eta",'tautau':"Leading tau_h eta",'mumu':"Leading muon eta",'emu':"Electron eta"},ymargin=1.7,pos='T',ncols=2),
-    Var('eta_2', "tau_h eta",  30, -3,   3, ctitle={'etau':"Electron eta",'tautau':"Subleading tau_h eta",'mumu':"Subleading muon eta",'emu':"Muon eta"},ymargin=1.7,pos='T',ncols=2),
-    Var('mt_1',  "mt(mu,MET)", 40,  0, 200, ctitle={'etau':"mt(mu,MET)",'tautau':"mt(tau,MET)",'emu':"mt(e,MET)"},cbins={"nbtag\w*>":(50,0,250)}),
-    Var("jpt_1",  29,   10,  300, veto=[r"njets\w*==0"]),
-    Var("jpt_2",  29,   10,  300, veto=[r"njets\w*==0"]),
-    Var("jeta_1", 53, -5.4,  5.2, ymargin=1.6,pos='T',ncols=2,veto=[r"njets\w*==0"]),
-    Var("jeta_2", 53, -5.4,  5.2, ymargin=1.6,pos='T',ncols=2,veto=[r"njets\w*==0"]),
-    Var('npv',    40,  0,  80),
-    Var('njets',   8,  0,   8),
-    Var('nbtag', "Number of b jets (Medium, pt > 30 GeV)", 8, 0, 8),
-    Var('met',    50,  0, 150,cbins={"nbtag\w*>":(50,0,250)}),
-    #Var('genmet', 50,  0, 150, fname="$VAR_log", logyrange=4, data=False, logy=True, ncols=2, pos='TT'),
-    Var('pt_ll',   "p_{T}(mutau_h)", 25, 0, 200, ctitle={'etau':"p_{T}(etau_h)",'tautau':"p_{T}(tau_htau_h)",'emu':"p_{T}(emu)"}),
-    Var('dR_ll',   "DR(mutau_h)",    30, 0, 6.0, ctitle={'etau':"DR(etau_h)",'tautau':"DR(tau_htau_h)",'emu':"DR(emu)"}),
-    Var('deta_ll', "deta(mutau_h)",  20, 0, 6.0, ctitle={'etau':"deta(etau_h)",'tautau':"deta(tautau)",'emu':"deta(emu)"},logy=True,pos='TRR',cbins={"abs(deta_ll)<":(10,0,3)}), #, ymargin=8, logyrange=2.6
-    Var('dzeta',  56, -180, 100, pos='L;y=0.87',units='GeV',cbins={"nbtag\w*>":(35,-220,130)}),
+    # Var('pt_1',  "Muon pt",    40,  0, 120, ctitle={'etau':"Electron pt",'tautau':"Leading tau_h pt",'mumu':"Leading muon pt",'emu':"Electron pt"},cbins={"nbtag\w*>":(40,0,200)}),
+    # Var('pt_2',  "tau_h pt",   40,  0, 120, ctitle={'tautau':"Subleading tau_h pt",'mumu':"Subleading muon pt",'emu':"Muon pt"},cbins={"nbtag\w*>":(40,0,200)}),
+    # Var('eta_1', "Muon eta",   30, -3,   3, ctitle={'etau':"Electron eta",'tautau':"Leading tau_h eta",'mumu':"Leading muon eta",'emu':"Electron eta"},ymargin=1.7,pos='T',ncols=2),
+    # Var('eta_2', "tau_h eta",  30, -3,   3, ctitle={'etau':"Electron eta",'tautau':"Subleading tau_h eta",'mumu':"Subleading muon eta",'emu':"Muon eta"},ymargin=1.7,pos='T',ncols=2),
+    # Var('mt_1',  "mt(mu,MET)", 40,  0, 200, ctitle={'etau':"mt(mu,MET)",'tautau':"mt(tau,MET)",'emu':"mt(e,MET)"},cbins={"nbtag\w*>":(50,0,250)}),
+    # Var("jpt_1",  29,   10,  300, veto=[r"njets\w*==0"]),
+    # Var("jpt_2",  29,   10,  300, veto=[r"njets\w*==0"]),
+    # Var("jeta_1", 53, -5.4,  5.2, ymargin=1.6,pos='T',ncols=2,veto=[r"njets\w*==0"]),
+    # Var("jeta_2", 53, -5.4,  5.2, ymargin=1.6,pos='T',ncols=2,veto=[r"njets\w*==0"]),
+    # Var('npv',    40,  0,  80),
+    #Var('njets',   8,  0,   8),
+    # Var('nbtag', "Number of b jets (Medium, pt > 30 GeV)", 8, 0, 8),
+    # Var('met',    50,  0, 150,cbins={"nbtag\w*>":(50,0,250)}),
+    # #Var('genmet', 50,  0, 150, fname="$VAR_log", logyrange=4, data=False, logy=True, ncols=2, pos='TT'),
+    #Var('pt_ll',   "p_{T}(mutau_h)", 25, 0, 200, ctitle={'etau':"p_{T}(etau_h)",'tautau':"p_{T}(tau_htau_h)",'emu':"p_{T}(emu)"}),
+    # Var('dR_ll',   "DR(mutau_h)",    30, 0, 6.0, ctitle={'etau':"DR(etau_h)",'tautau':"DR(tau_htau_h)",'emu':"DR(emu)"}),
+    # Var('deta_ll', "deta(mutau_h)",  20, 0, 6.0, ctitle={'etau':"deta(etau_h)",'tautau':"deta(tautau)",'emu':"deta(emu)"},logy=True,pos='TRR',cbins={"abs(deta_ll)<":(10,0,3)}), #, ymargin=8, logyrange=2.6
+    # Var('dzeta',  56, -180, 100, pos='L;y=0.87',units='GeV',cbins={"nbtag\w*>":(35,-220,130)}),
   ]
   if 'tau' in channel: # mutau, etau, tautau
     loadmacro("python/macros/mapDecayModes.C") # for mapRecoDM
     dmlabels  = ["h^{#pm}","h^{#pm}h^{0}","h^{#pm}h^{#mp}h^{#pm}","h^{#pm}h^{#mp}h^{#pm}h^{0}","Other"]
     variables += [
       Var('m_vis',          40,  0, 200, fname="mvis",ctitle={'mumu':"m_mumu",'emu':"m_emu"},logy=False, cbins={"pt_\d>":(50,0,250),"nbtag\w*>":(60,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
-      Var('m_vis',          30,  0, 300, fname="mvis_large",ctitle={'mumu':"m_mumu",'emu':"m_emu"},logy=False, cbins={"pt_\d>":(50,0,250),"nbtag\w*>":(60,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
-      Var('m_vis',          30,0,300, fname="mvis_300",ctitle={'mumu':"m_mumu",'emu':"m_emu"},logy=False, cbins={"pt_\d>":(30,0,300),"nbtag\w*>":(30,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
       #Var('m_vis',          20,  0, 200, fname="mvis_coarse",ctitle={'mumu':"m_mumu",'emu':"m_emu"},logy=False, cbins={"pt_\d>":(25,0,250),"nbtag\w*>":(30,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
       # Var("m_2",            30,  0,   3, title="m_tau",veto=["njet","nbtag","dm_2==0"]),
       # Var("dm_2",           14,  0,  14, fname="dm_2",title="Reconstructed tau_h decay mode",veto="dm_2==",position="TMC",ymargin=1.2),
@@ -101,16 +98,16 @@ def plot(sampleset,setup,parallel=False,tag="",extratext="",outdir="plots",era="
     ]
   elif 'mumu' in channel:
     variables += [
-      Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR", cbins={"m_vis>200":(40,200,1000)}), # alias: m_ll alias of m_vis
-      Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR_log", logy=True, ymin=1e2, cbins={"m_vis>200":(40,200,1000)} ),
+      # Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR", cbins={"m_vis>200":(40,200,1000)}), # alias: m_ll alias of m_vis
+      # Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR_log", logy=True, ymin=1e2, cbins={"m_vis>200":(40,200,1000)} ),
       Var('m_ll', "m_mumu", 40, 70,  110, fname="$VAR_Zmass", veto=["m_vis>200"] ),
-      Var('m_ll', "m_mumu",  1, 70,  110, fname="$VAR_1bin", veto=["m_vis>200"] ),
+      # Var('m_ll', "m_mumu",  1, 70,  110, fname="$VAR_1bin", veto=["m_vis>200"] ),
     ]
   variables  = filtervars(variables,varfilter)  # filter variable list with -V/--var flag
   
   # PLOT
   outdir = ensuredir(repkey(outdir,CHANNEL=channel,ERA=era))
-  exts   = ['png','pdf','root'] if pdf else ['png'] # extensions
+  exts   = ['png','pdf'] if pdf else ['png'] # extensions
   for selection in selections:
     print(">>> Selection %r: %r"%(selection.title,selection.selection))
     stacks = sampleset.getstack(variables,selection,method='QCD_OSSS',scale=1, parallel=parallel)
@@ -126,132 +123,6 @@ def plot(sampleset,setup,parallel=False,tag="",extratext="",outdir="plots",era="
       stack.drawtext(text)
       stack.saveas(fname,ext=exts,tag=tag)
       stack.close()
-
-    '''
-    #ratio plot between DeepTau 2.1 and 2.5
-    for sample in sampleset.expsamples:
-      splitsamples = sample.splitsamples
-      for splits in splitsamples:
-          print("-----------------------------")
-          print("TEST")
-          print(splits) 
-           
-          #if "DY" in str(sample):
-          #jet
-          print("var: ", variables[0].name)
-          fname2 = "%s/compareDeepTauVSjet_%s-%s-%s-%s$TAG"%(outdir,channel.replace('mu','m').replace('tau','t'),selection.filename,era,str(splits))
-          vars  = [v for v in variables if "rawDeepTau" in v.name and "VSjet" in v.name ]
-          names = [v.name.replace('rawDeepTau', '').replace('VSjet_2','') for v in variables if "rawDeepTau" in v.name and "VSjet" in v.name ]  
-          hists = splits.gethist(vars,selection,parallel=parallel)
-               
-          for norm in [True]:
-	      #print norm, hists
-	      ntag = '_norm' if norm else "_lumi"
-	      plot = Plot(hists,norm=norm, xtitle="rawDeepTauVSjet")
-	      plot.draw(ratio=True,lstyle=1, logy=True)
-	      plot.drawlegend(header=str(splits),entries=names)
-	      plot.drawtext(text)
-	      plot.saveas(fname2,ext=['png'],tag=ntag) #,'pdf'
-	      plot.close(keep=True)
-          deletehist(hists)
-
-        
-          #mu
-          fname2 = "%s/compareDeepTauVSmu_%s-%s-%s-%s$TAG"%(outdir,channel.replace('mu','m').replace('tau','t'),selection.filename,era, str(splits))
-
-          vars  = [v for v in variables if "rawDeepTau" in v.name and "VSmu" in v.name ]
-          names = [v.name.replace('rawDeepTau', '').replace('VSmu_2','') for v in variables if "rawDeepTau" in v.name and "VSmu" in v.name ]  
-          hists = splits.gethist(vars,selection,parallel=parallel)
-        
-          for norm in [True]:
-              #print norm, hists
-              ntag = '_norm' if norm else "_lumi"
-              plot = Plot(hists,norm=norm, xtitle="rawDeepTauVSmu")
-              plot.draw(ratio=True,lstyle=1, logy=True, ymin = 1e-5)
-              plot.drawlegend(header=str(splits),entries=names)
-              plot.drawtext(text)
-              plot.saveas(fname2,ext=['png'],tag=ntag) #,'pdf'
-              plot.close(keep=True)
-          deletehist(hists)
-
-     
-          #e
-          fname2 = "%s/compareDeepTauVSe_%s-%s-%s-%s$TAG"%(outdir,channel.replace('mu','m').replace('tau','t'),selection.filename,era, str(splits))
-
-          vars  = [v for v in variables if "rawDeepTau" in v.name and "VSe" in v.name ]
-          names = [v.name.replace('rawDeepTau', '').replace('VSe_2','') for v in variables if "rawDeepTau" in v.name and "VSe" in v.name ]  
-          hists = splits.gethist(vars,selection,parallel=parallel)
-        
-          for norm in [True]:
-              #print norm, hists
-              ntag = '_norm' if norm else "_lumi"
-              plot = Plot(hists,norm=norm, xtitle="rawDeepTauVSe")
-              plot.draw(ratio=True,lstyle=1, logy=True)
-              plot.drawlegend(header=str(splits),entries=names)
-              plot.drawtext(text)
-              plot.saveas(fname2,ext=['png'],tag=ntag) #,'pdf'
-              plot.close(keep=True)
-          deletehist(hists)
-
-      
-      if "SingleMuon_Run2018" in str(sample):
-        #jet
-        print("var: ", variables[0].name)
-        fname2 = "%s/compareDeepTauVSjet_%s-%s-%s-%s$TAG"%(outdir,channel.replace('mu','m').replace('tau','t'),selection.filename,era,str(sample))
-        vars  = [v for v in variables if "rawDeepTau" in v.name and "VSjet" in v.name ]
-        names = [v.name.replace('rawDeepTau', '').replace('VSjet_2','') for v in variables if "rawDeepTau" in v.name and "VSjet" in v.name ]  
-        hists = sample.gethist(vars,selection,parallel=parallel)
-        
-        for norm in [True]:
-		  #print norm, hists
-		  ntag = '_norm' if norm else "_lumi"
-		  plot = Plot(hists,norm=norm, xtitle="rawDeepTauVSjet")
-		  plot.draw(ratio=True,lstyle=1, logy=True)
-		  plot.drawlegend(header=str(sample),entries=names)
-		  plot.drawtext(text)
-		  plot.saveas(fname2,ext=['png'],tag=ntag) #,'pdf'
-		  plot.close(keep=True)
-        deletehist(hists)
-
-
-        #mu
-        fname2 = "%s/compareDeepTauVSmu_%s-%s-%s-%s$TAG"%(outdir,channel.replace('mu','m').replace('tau','t'),selection.filename,era, str(sample))
-
-        vars  = [v for v in variables if "rawDeepTau" in v.name and "VSmu" in v.name ]
-        names = [v.name.replace('rawDeepTau', '').replace('VSmu_2','') for v in variables if "rawDeepTau" in v.name and "VSmu" in v.name ]  
-        hists = sample.gethist(vars,selection,parallel=parallel)
-        
-        for norm in [True]:
-                  #print norm, hists
-                  ntag = '_norm' if norm else "_lumi"
-                  plot = Plot(hists,norm=norm, xtitle="rawDeepTauVSmu")
-                  plot.draw(ratio=True,lstyle=1, logy=True)
-                  plot.drawlegend(header=str(sample),entries=names)
-                  plot.drawtext(text)
-                  plot.saveas(fname2,ext=['png'],tag=ntag) #,'pdf'
-                  plot.close(keep=True)
-        deletehist(hists)
-
-     
-        #e
-        fname2 = "%s/compareDeepTauVSe_%s-%s-%s-%s$TAG"%(outdir,channel.replace('mu','m').replace('tau','t'),selection.filename,era, str(sample))
-
-        vars  = [v for v in variables if "rawDeepTau" in v.name and "VSe" in v.name ]
-        names = [v.name.replace('rawDeepTau', '').replace('VSe_2','') for v in variables if "rawDeepTau" in v.name and "VSe" in v.name ]  
-        hists = sample.gethist(vars,selection,parallel=parallel)
-        
-        for norm in [True]:
-                  #print norm, hists
-                  ntag = '_norm' if norm else "_lumi"
-                  plot = Plot(hists,norm=norm, xtitle="rawDeepTauVSe")
-                  plot.draw(ratio=True,lstyle=1, logy=True)
-                  plot.drawlegend(header=str(sample),entries=names)
-                  plot.drawtext(text)
-                  plot.saveas(fname2,ext=['png'],tag=ntag) #,'pdf'
-                  plot.close(keep=True)
-        deletehist(hists)
-        '''
-  
 
 def main(args):
   configs   = args.configs
@@ -278,7 +149,7 @@ def main(args):
     
     for era in eras:
       setera(era) # set era for plot style and lumi-xsec normalization
-      addsfs = [] #"getTauIDSF(dm_2,genmatch_2)"]
+      addsfs = [ ] #"getTauIDSF(dm_2,genmatch_2)"]
       rmsfs  = [ ] if (setup['channel']=='mumu' or not notauidsf) else ['idweight_2','ltfweight_2'] # remove tau ID SFs
       split  = ['DY'] if 'tau' in setup['channel'] else [ ] # split these backgrounds into tau components
       sampleset = getsampleset(setup['channel'],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split)
@@ -289,7 +160,7 @@ def main(args):
 
 if __name__ == "__main__":
   from argparse import ArgumentParser, RawTextHelpFormatter
-  eras = ['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','UL2018_v10','2022_preEE','2022_postEE']
+  eras = ['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','2022_preEE','2022_postEE']
   description = """Simple plotting script for pico analysis tuples"""
   parser = ArgumentParser(prog="plot",description=description,epilog="Good luck!")
   parser.add_argument('-y', '--era',     dest='eras', nargs='*', choices=eras, default=['2017'],

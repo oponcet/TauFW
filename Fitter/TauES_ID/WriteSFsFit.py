@@ -125,9 +125,9 @@ def calculate_SFpostfit(config, year, output_file):
 
 
 
-year = "2022_preEE" #2022_preEE
+year = "UL2018_v10" #2022_preEE
 
-config = "./TauES_ID/config/Default_FitSetupTES_mutau_DM_mt40_JetM_muVT.yml"
+config = "./TauES_ID/config/FitSetupTES_mutau_DM_mt65_v2.yml"
 # Load config file
 with open(config, 'r') as config_file:
     setup = yaml.safe_load(config_file)
