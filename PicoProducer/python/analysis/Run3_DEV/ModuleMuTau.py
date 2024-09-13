@@ -31,9 +31,9 @@ class ModuleMuTau(ModuleTauPair):
       self.trigger    = lambda e: e.HLT_IsoMu24 or e.HLT_IsoMu27#e.HLT_IsoMu27 #or e.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1
       self.muonCutPt  = lambda e: 25
       self.muonCutEta = lambda e: 2.4
-    elif self.year==2022:
+    elif self.year==2022 or self.year==2023:
       self.trigger    = lambda e: e.HLT_IsoMu24 or e.HLT_IsoMu27#e.HLT_IsoMu27 #or e.HLT_IsoMu20_eta2p1_LooseChargedIsoPFTau27_eta2p1_CrossL1
-      self.muonCutPt  = lambda e: 25
+      self.muonCutPt  = lambda e: 26
       self.muonCutEta = lambda e: 2.4
     self.tauCutPt     = 20
     self.tauCutEta    = 2.5 # 2.3 DeepTau2p1 and 2.5 for DeepTau2p5
@@ -51,6 +51,7 @@ class ModuleMuTau(ModuleTauPair):
     #self.out.cutflow.addcut('muonveto',     "muon veto"                  )
     #self.out.cutflow.addcut('elecveto',     "electron veto"              )
     self.out.cutflow.addcut('lepvetoes',     "lep vetoes"              )
+    self.out.cutflow.addcut('jetvetoes',     "jet vetoes"              )
     self.out.cutflow.addcut('weight',       "no cut, weighted", 15       )
     self.out.cutflow.addcut('weight_no0PU', "no cut, weighted, PU>0", 16 ) # use for normalization
     ## Important cutflow entries to make stitching with exclusive mutauh sample
@@ -168,6 +169,9 @@ class ModuleMuTau(ModuleTauPair):
     #cutflow on veto
     if self.out.lepton_vetoes[0] and self.out.lepton_vetoes_notau[0]: return False
     self.out.cutflow.fill('lepvetoes')
+
+    if self.jetveto(event): return False
+    self.out.cutflow.fill('jetvetoes')
    
  
     # EVENT
@@ -249,16 +253,16 @@ class ModuleMuTau(ModuleTauPair):
       self.out.trigweight[0]          = self.muSFs.getTriggerSF(muon.pt,muon.eta) # assume leading muon was triggered on
       self.out.idisoweight_1[0]       = self.muSFs.getIdIsoSF(muon.pt,muon.eta)
       
-      print("eta: ", muon.eta)
-      print("pt: ",  muon.pt)
-      #print("idiso sf: ", self.out.idisoweight_1[0])
-      #print("trig sf: ", self.out.trigweight[0])
-      print("===>>> ID&ISO SF")
-      print("sf wo abs: ", self.muSFs.getIdIsoSF(muon.pt,muon.eta))
-      print("sf w abs: ", self.muSFs.getIdIsoSF(muon.pt,abs(muon.eta)))
-      print("===>>> TRIG SF")
-      print("sf wo abs: ", self.muSFs.getTriggerSF(muon.pt,muon.eta))
-      print("sf w abs: ", self.muSFs.getTriggerSF(muon.pt,abs(muon.eta)))
+      #print("eta: ", muon.eta)
+      #print("pt: ",  muon.pt)
+      ##print("idiso sf: ", self.out.idisoweight_1[0])
+      ##print("trig sf: ", self.out.trigweight[0])
+      #print("===>>> ID&ISO SF")
+      #print("sf wo abs: ", self.muSFs.getIdIsoSF(muon.pt,muon.eta))
+      #print("sf w abs: ", self.muSFs.getIdIsoSF(muon.pt,abs(muon.eta)))
+      #print("===>>> TRIG SF")
+      #print("sf wo abs: ", self.muSFs.getTriggerSF(muon.pt,muon.eta))
+      #print("sf w abs: ", self.muSFs.getTriggerSF(muon.pt,abs(muon.eta)))
 
       # DEFAULTS
       self.out.idweight_2[0]          = 1.

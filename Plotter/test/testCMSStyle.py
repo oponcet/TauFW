@@ -37,14 +37,27 @@ def testCMSera(verb=0):
   print(">>> testCMSera")
   erasets = [
    '7', '8', '2012', (7,8),
-   2016, 2017, 2018, (2016,2017,2018), 'Run2',
+   2016, 2017, 2018, 'UL2016_preVFP', 'UL2018',
+   (2016,2017,2018), 'Run2',
+   2022, '2022_preEE',
    'Phase2',
+  ]
+  kwargsets = [ # only show lumi & cme
+    (138,13), (123.456,13), (138,None), (None,13), (None,None),
+    (123.4,13), (1234,13), (1234.56,14),
+    ((11,12),(7,8)),  ((36,45),(None,13)),
   ]
   for eras in erasets:
     eras   = ensurelist(eras)
     args   = ','.join(repr(y) for y in eras)
-    result = CMSStyle.setCMSEra(*eras,verb=verb)
-    print(">>> CMSStyle.setCMSera(%s) = %r"%(args,result))
+    for showEra in [True,False]:
+      result = CMSStyle.setCMSEra(*eras,showEra=showEra,verb=verb)
+      print(">>> CMSStyle.setCMSera(%sshowEra=%-5r) = %r"%((str(args)+',').ljust(16),showEra,result))
+  for lumi, cme in kwargsets:
+    result = CMSStyle.setCMSEra(lumi=lumi,cme=cme,verb=verb)
+    print(">>> CMSStyle.setCMSera(lumi=%scme=%s) = %r"%(
+      (str(lumi)+',').ljust(9),(str(cme)).ljust(6),result))
+  print(">>> ")
   
 
 def testCMSlogo(iPosX=0,width=800,height=750,lmargin=0.14,rmargin=0.04,tmargin=0.06,out=True,verb=0,**kwargs):
@@ -54,7 +67,7 @@ def testCMSlogo(iPosX=0,width=800,height=750,lmargin=0.14,rmargin=0.04,tmargin=0
   
   # SETTING
   bmargin = 0.10
-  outdir  = ensuredir("plots/")
+  outdir  = ensuredir("plots/test/")
   fname   = 'testCMSStyle_CMSlogo_pos%s_%sx%s_L%s-R%s-T%s'%(iPosX,width,height,lmargin,rmargin,tmargin)
   if out:
     fname += "_out"
@@ -176,7 +189,7 @@ def main(args):
 if __name__ == "__main__":
   from argparse import ArgumentParser
   description = """Test CMSStyle module."""
-  parser = ArgumentParser(prog="plot",description=description,epilog="Good luck!")
+  parser = ArgumentParser(description=description,epilog="Good luck!")
   parser.add_argument('-v', '--verbose', dest='verbosity', type=int, nargs='?', const=1, default=0, action='store',
                                          help="set verbosity" )
   args = parser.parse_args()

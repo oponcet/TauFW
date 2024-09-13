@@ -8,13 +8,8 @@
 #>>>>IMPORTANT!!
 #>>>>Run with --serial option if using py3:
 #   ./plot_v10.py -y 2018 -c mutau --serial
-<<<<<<< HEAD
-# from config.samples_v12 import *
-from config.samples_v10 import *
-=======
 
 from config.samples_v12 import *
->>>>>>> 5655f83874c6694cfc1292faaafa0a999a6c7502
 from TauFW.Plotter.plot.string import filtervars
 from TauFW.Plotter.plot.utils import LOG as PLOG
 from TauFW.Plotter.plot.Plot import Plot, deletehist
@@ -50,6 +45,8 @@ def plot(sampleset,setup,parallel=False,tag="",extratext="",outdir="plots",era="
     Var('pt_2',  "tau_h pt",   40,  0, 120, ctitle={'tautau':"Subleading tau_h pt",'mumu':"Subleading muon pt",'emu':"Muon pt"},cbins={"nbtag\w*>":(40,0,200)}),
     Var('eta_1', "Muon eta",   30, -3,   3, ctitle={'etau':"Electron eta",'tautau':"Leading tau_h eta",'mumu':"Leading muon eta",'emu':"Electron eta"},ymargin=1.7,pos='T',ncols=2),
     Var('eta_2', "tau_h eta",  30, -3,   3, ctitle={'etau':"Electron eta",'tautau':"Subleading tau_h eta",'mumu':"Subleading muon eta",'emu':"Muon eta"},ymargin=1.7,pos='T',ncols=2),
+    Var('phi_1', "Muon phi",   30, -3,   3, ctitle={'etau':"Electron phi",'tautau':"Leading tau_h phi",'mumu':"Leading muon phi",'emu':"Electron phi"},ymargin=1.7,pos='T',ncols=2),
+    Var('phi_2', "tau_h phi",  30, -3,   3, ctitle={'etau':"Electron phi",'tautau':"Subleading tau_h phi",'mumu':"Subleading muon phi",'emu':"Muon phi"},ymargin=1.7,pos='T',ncols=2),
     Var('mt_1',  "mt(mu,MET)", 40,  0, 200, ctitle={'etau':"mt(mu,MET)",'tautau':"mt(tau,MET)",'emu':"mt(e,MET)"},cbins={"nbtag\w*>":(50,0,250)}),
     Var("jpt_1",  29,   10,  300, veto=[r"njets\w*==0"]),
     Var("jpt_2",  29,   10,  300, veto=[r"njets\w*==0"]),
@@ -70,45 +67,10 @@ def plot(sampleset,setup,parallel=False,tag="",extratext="",outdir="plots",era="
     dmlabels  = ["h^{#pm}","h^{#pm}h^{0}","h^{#pm}h^{#mp}h^{#pm}","h^{#pm}h^{#mp}h^{#pm}h^{0}","Other"]
     variables += [
       Var('m_vis',          40,  0, 200, fname="mvis",ctitle={'mumu':"m_mumu",'emu':"m_emu"},logy=False, cbins={"pt_\d>":(50,0,250),"nbtag\w*>":(60,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
-<<<<<<< HEAD
-      Var('m_vis',          30,  0, 300, fname="mvis_large",ctitle={'mumu':"m_mumu",'emu':"m_emu"},logy=False, cbins={"pt_\d>":(50,0,250),"nbtag\w*>":(60,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
-      Var('m_vis',          30,0,300, fname="mvis_300",ctitle={'mumu':"m_mumu",'emu':"m_emu"},logy=False, cbins={"pt_\d>":(30,0,300),"nbtag\w*>":(30,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
-      #Var('m_vis',          20,  0, 200, fname="mvis_coarse",ctitle={'mumu':"m_mumu",'emu':"m_emu"},logy=False, cbins={"pt_\d>":(25,0,250),"nbtag\w*>":(30,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
-      # Var("m_2",            30,  0,   3, title="m_tau",veto=["njet","nbtag","dm_2==0"]),
-      # Var("dm_2",           14,  0,  14, fname="dm_2",title="Reconstructed tau_h decay mode",veto="dm_2==",position="TMC",ymargin=1.2),
-      #Var("mapRecoDM(dm_2)", 5,  0,   5, fname="dm_2_label",title="Reconstructed tau_h decay mode",veto="dm_2==",position="TT",labels=dmlabels,ymargin=1.2),
-      #Var("pzetavis", 50,    0, 200 ),
-      #Var('rawDeepTau2017v2p1VSjet_2', "rawDeepTau2017v2p1VSjet", 50, 0.00, 1, ymin = 1e3, ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5,cbins={"VSjet_2>":(60,0.4,1)}),
-      # Var('rawDeepTau2017v2p1VSjet_2', "rawDeepTau2017v2p1VSjet", 60, 0.85, 1, ymin = 1e2, fname="$VAR_zoom",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2017v2p1VSjet_2', "rawDeepTau2017v2p1VSjet", 35, 0.88, 1, ymin = 1e2, fname="$VAR_zoom1",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2017v2p1VSjet_2', "rawDeepTau2017v2p1VSjet", 63, 0.88, 1, ymin = 1e2, fname="$VAR_zoom2",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2017v2p1VSjet_2', "rawDeepTau2017v2p1VSjet", 125, 0.88, 1, ymin = 1e2, fname="$VAR_zoom3",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2017v2p1VSe_2',   "rawDeepTau2017v2p1VSe",   90, 0.10, 1, ymin = 1e2, fname="$VAR_zoom",ncols=2,logy=True,logyrange=4,pos='L;y=0.85'),
-      # Var('rawDeepTau2017v2p1VSmu_2',  "rawDeepTau2017v2p1VSmu",  50, 0.80, 1, ymin = 1e1, fname="$VAR_zoom",ncols=2,logy=True,logyrange=5,pos='L;y=0.85'),
-
-      # #Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 50, 0.00, 1, ymin = 1e3, ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5,cbins={"VSjet_2>":(60,0.4,1)}),
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 20, 0.95, 1, ymin = 1e2, fname="$VAR_zoom",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 21, 0.96, 1, ymin = 1e2, fname="$VAR_zoom0",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 42, 0.96, 1, ymin = 1e2, fname="$VAR_zoom1",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 84, 0.96, 1, ymin = 1e2, fname="$VAR_zoom2",ncols=2,pos='L;y=0.85'),
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 250, 0.96, 1, ymin = 1e2, fname="$VAR_zoom3",ncols=2,pos='L;y=0.85'),
-
-      # Var('rawDeepTau2018v2p5VSe_2',   "rawDeepTau2018v2p5VSe",   80, 0.20, 1, ymin = 1e2, fname="$VAR_zoom",ncols=2,logy=True,logyrange=4,pos='L;y=0.85'),
-      # Var('rawDeepTau2018v2p5VSmu_2',  "rawDeepTau2018v2p5VSmu",  25, 0.90, 1, ymin = 1e1, fname="$VAR_zoom",ncols=2,logy=True,logyrange=5,pos='L;y=0.85'),
-
-      # Var('rawDeepTau2017v2p1VSjet_2', "rawDeepTau2017v2p1VSjet", 50, 0.00, 1, ymin = 1e1, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
-      # #Var('rawDeepTau2017v2p1VSe_2',   "rawDeepTau2017v2p1VSe",   50, 0.00, 1, ymin = 1e3, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
-      # #Var('rawDeepTau2017v2p1VSmu_2',  "rawDeepTau2017v2p1VSmu",  50, 0.00, 1, ymin = 1e3, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
-
-      # Var('rawDeepTau2018v2p5VSjet_2', "rawDeepTau2018v2p5VSjet", 50, 0.00, 1, ymin = 1e1, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
-      #Var('rawDeepTau2018v2p5VSe_2',   "rawDeepTau2018v2p5VSe",   50, 0.00, 1, ymin = 1e3, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
-      #Var('rawDeepTau2018v2p5VSmu_2',  "rawDeepTau2018v2p5VSmu",  50, 0.00, 1, ymin = 1e3, fname="$VAR_allRange", ncols=2,pos='L;y=0.85',logy=True,ymargin=1.5),
-=======
       Var('m_vis',  1, 60,  120, fname="$VAR_1bin", veto=["m_vis>200"] ),
       Var('m_vis',          11,  60, 120, fname="mvis_coarse",ctitle={'mumu':"m_mumu",'emu':"m_emu"},logy=False, cbins={"pt_\d>":(25,0,250),"nbtag\w*>":(30,0,300)},cpos={"pt_\d>[1678]0":'LL;y=0.88'}),
       Var("m_2",            30,  0,   3, title="m_tau",veto=["njet","nbtag","dm_2==0"]),
       Var("dm_2",           14,  0,  14, fname="dm_2",title="Reconstructed tau_h decay mode",veto="dm_2==",position="TMC",ymargin=1.2),
->>>>>>> 5655f83874c6694cfc1292faaafa0a999a6c7502
 
     ]
   elif 'mumu' in channel or 'ee' in channel:
@@ -117,11 +79,8 @@ def plot(sampleset,setup,parallel=False,tag="",extratext="",outdir="plots",era="
       Var('m_ll', "m_mumu", 40,  0,  200, fname="$VAR_log", logy=True, ymin=1e2, cbins={"m_vis>200":(40,200,1000)} ),
       Var('m_ll', "m_mumu", 40, 70,  110, fname="$VAR_Zmass", veto=["m_vis>200"] ),
       Var('m_ll', "m_mumu",  1, 70,  110, fname="$VAR_1bin", veto=["m_vis>200"] ),
-<<<<<<< HEAD
-=======
       Var('iso_1', 50, 0.,1., ymin = 1e2,logy=True),
       Var('iso_2', 50, 0.,1., ymin = 1e2,logy=True),
->>>>>>> 5655f83874c6694cfc1292faaafa0a999a6c7502
     ]
   variables  = filtervars(variables,varfilter)  # filter variable list with -V/--var flag
   
@@ -301,12 +260,12 @@ def main(args):
       sampleset = getsampleset(setup['channel'],era,fname=fname,rmsf=rmsfs,addsf=addsfs,split=split)
       plot(sampleset,setup,parallel=parallel,tag=tag,extratext=extratext,outdir=outdir,era=era,
            varfilter=varfilter,selfilter=selfilter,fraction=fraction,pdf=pdf)
-      sampleset.close()
+      #sampleset.close()
   
 
 if __name__ == "__main__":
   from argparse import ArgumentParser, RawTextHelpFormatter
-  eras = ['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','UL2018_v10','2022_preEE','2022_postEE']
+  eras = ['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018','2022_preEE','2022_postEE', '2023C', '2023D']
   description = """Simple plotting script for pico analysis tuples"""
   parser = ArgumentParser(prog="plot",description=description,epilog="Good luck!")
   parser.add_argument('-y', '--era',     dest='eras', nargs='*', choices=eras, default=['2017'],

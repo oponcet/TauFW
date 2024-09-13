@@ -44,7 +44,7 @@ def plotCorrelation(channel,var,region,year,*parameters,**kwargs):
     title       = kwargs.get('title',     ""                )
     name        = kwargs.get('name',      ""                )
     indir       = kwargs.get('indir',     "output_%s"%year  )
-    outdir      = kwargs.get('outdir',    "postfit_%s"%year )
+    outdir      = indir.replace('output', 'postfit') #kwargs.get('outdir',    "postfit_%s"%year )
     tag         = kwargs.get('tag',       ""                )
     plotlabel   = kwargs.get('plotlabel', ""                )
     order       = kwargs.get('order',     False             )
@@ -145,7 +145,6 @@ def getParameters(filename,*parameters,**kwargs):
     tree      = file.Get('limit')
     N         = tree.GetEntries()
     #tree.GetListOfBranches()
-    
     parlist = [ ]
     for parameter in parameters:
       branch = parameter
@@ -180,7 +179,7 @@ def writeParametersFitVal(channel,var,region,year,*parameters,**kwargs):
     poi         = kwargs.get('poi',       ""                )
     era         = "%s-13TeV"%year
     filename    = '%s/higgsCombine.%s_%s-%s%s-%s.MultiDimFit.mH90.root'%(indir,channel,var,region,tag,era)
-    outdir      = kwargs.get('outdir',    "postfit_%s"%year )
+    outdir      = indir.replace('output', 'postfit') #kwargs.get('outdir',    "postfit_%s"%year )
     outfile = "%s/FitparameterValues_%s_%s_%s.txt" %(outdir,tag,era,region)
     
     # remove file to not append to it 
@@ -241,7 +240,6 @@ class Parameter(object):
         self.N     = len(self.list)
         self.mean  = sum(self.list) / float(self.N)
         self.sigma = sqrt(sum((x-self.mean)**2 for x in self.list)/float(self.N-1)) 
-        
     def corr(self,opar,poiBestFit,poi):
         """Correlation coefficient with another parameter."""
         covariance = 0
@@ -257,8 +255,8 @@ class Parameter(object):
         
     def getfitVal(self,poiBestFit,poi):
         for paramVal, poiVal in zip(self.list,poi.list):
-          # print("poiVal = ", poiVal)
-          # print("poiBestFit = ", poiBestFit)
+          #print("poiVal = ", poiVal)
+          #print("poiBestFit = ", poiBestFit)
           if poiVal == poiBestFit :
             self.fitVal = paramVal
         #print(self.title, self.fitVal)
@@ -277,7 +275,7 @@ def plotPostFitValues(channel,var,region,year,paramfull_list,*parameters,**kwarg
     title       = kwargs.get('title',     ""    )
     name        = kwargs.get('name',      ""    )
     indir       = kwargs.get('indir',     "output_%s"%year  )
-    outdir      = kwargs.get('outdir',    "postfit_%s"%year )
+    outdir      = indir.replace('output', 'postfit') #kwargs.get('outdir',    "postfit_%s"%year )
     tag         = kwargs.get('tag',       ""    )
     plotlabel   = kwargs.get('plotlabel', ""    )
     poi         = kwargs.get('poi',       ""    )
@@ -325,6 +323,8 @@ def plotPostFitValues(channel,var,region,year,paramfull_list,*parameters,**kwarg
     if poi == 'tid_SF':
       xtitle  = 'tau identification scale factor'
     ytitle  = "%s post-fit value"%(parameters[0] if N==1 else "MultiDimFit")
+    print('*tvals: ', tvals)
+    print('*pvals: ', pvals)
     xmin, xmax = min(tvals), max(tvals)
     ymin, ymax = min(pvals), max(pvals)
     colors  = [ kBlack, kBlue, kRed, kGreen, kMagenta, kOrange, kTeal, kAzure+2, kYellow-3 ]
@@ -396,7 +396,7 @@ def plotPostFitValues(channel,var,region,year,paramfull_list,*parameters,**kwarg
         legend.AddEntry(graph, "MultiDimFit", 'l')
       else:
         legend.AddEntry(graph, parameter, 'l')
-    
+    if tes_name not in paramfull_list: paramfull_list.append(tes_name) 
     parlist = getParameters(filename,paramfull_list)
 
     latex = TLatex()
@@ -405,9 +405,6 @@ def plotPostFitValues(channel,var,region,year,paramfull_list,*parameters,**kwarg
     N = len(parlist) # Number of parameters 
     iPOI = -1 # save position of POI in the parlist(here: TES)
 
-    print("N = ", N)
-    print("parlist = ", parlist)
-
     for ipar in range(N):
       print("parlist[ipar].title = ",parlist[ipar].title  )
       print("tes_name = ", tes_name)
@@ -415,11 +412,8 @@ def plotPostFitValues(channel,var,region,year,paramfull_list,*parameters,**kwarg
           iPOI = ipar
           print("iPOI= ",iPOI)
 
-    print("parameter = ", parameter)
     for ipar in range(N):
       if parlist[ipar].title == parameter:
-        print("tes = ", tes)
-        print("parlist[iPOI] = ", parlist[iPOI])
         parVal = parlist[ipar].getfitVal(tes,parlist[iPOI])
         print("%s : %s" %(parlist[ipar].title,parVal )) 
         latex.DrawLatex(tes-0.04*(xmax-xmin),ymax-0.09*(ymax-ymin),parameter+" = %.3f"%parVal) #combine DM
@@ -632,6 +626,7 @@ def main(args):
     channel   = setup["channel"].replace("mu","m").replace("tau","t")
     tag       = setup["tag"] if "tag" in setup else ""
     tag += args.extratag
+    indir = args.indir
     CMSStyle.setCMSEra(year)
 
     # Leave hard-coded this part as this is purely a plotting choice
@@ -799,8 +794,6 @@ def main(args):
     #   # "muonFakerate_DM11"
     # ]
     procsBBB  = [ 'QCD', 'W', 'TTT', 'ZTT' ] # 'JTF' ]
-    indir     = "output_%s"%year
-    
 
     for var in setup["observables"]:
         variable = setup["observables"][var]
@@ -840,13 +833,14 @@ if __name__ == '__main__':
     argv = sys.argv
     description = '''This script makes datacards with CombineHarvester.'''
     parser = ArgumentParser(prog="LowMassDiTau_Harvester",description=description,epilog="Succes!")
-    parser.add_argument('-y', '--year', dest='year', choices=['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018', 'UL2018_v10','2022_postEE','2022_preEE'], type=str, default='2017', action='store', help="select year")
+    parser.add_argument('-y', '--year', dest='year', choices=['2016','2017','2018','UL2016_preVFP','UL2016_postVFP','UL2017','UL2018', 'UL2018_v10','2022_postEE','2022_preEE', '2023C', '2023D'], type=str, default='2017', action='store', help="select year")
     parser.add_argument('-c', '--config', dest='config', type=str, default='TauES/config/defaultFitSetupTES_mutau.yml', action='store', help="set config file containing sample & fit setup" )
     parser.add_argument('-e', '--extra-tag', dest='extratag', type=str, default="", action='store', metavar="TAG", help="extra tag for output files")
     parser.add_argument('-r', '--shift-range', dest='shiftRange', type=str, default="0.940,1.060", action='store', metavar="RANGE", help="range of TES shifts")
     parser.add_argument('-p', '--pdf', dest='pdf', default=False, action='store_true', help="save plot as pdf as well")
     parser.add_argument('-v', '--verbose', dest='verbose', default=False, action='store_true', help="set verbose")
     parser.add_argument('-poi', '--poi',         dest='poi', default='poi', type=str, action='store', help='use this parameter of interest')
+    parser.add_argument('-i', '--indir',         dest='indir', type=str, help='indir')
     args = parser.parse_args()
 
 

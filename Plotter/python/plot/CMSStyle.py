@@ -28,7 +28,6 @@ from __future__ import print_function # for python3 compatibility
 from ROOT import TStyle, TPad, TLatex, TASImage, kBlack, kWhite, TGaxis
 import re
 
-#cmsText        = "CMS"
 cmsText        = "CMS"
 cmsTextFont    = 61 # 60: Arial bold (helvetica-bold-r-normal)
 # Guidelines for labels:
@@ -36,28 +35,33 @@ cmsTextFont    = 61 # 60: Arial bold (helvetica-bold-r-normal)
 #   https://twiki.cern.ch/twiki/bin/view/CMS/PhysicsApprovals#Student_presentations_of_unappro
 #   E.g. "Preliminary", "Simulation", "Simulation Preliminary", "Supplementary", "Work in progress", ...
 #extraText      = "Preliminary"
-extraText      = "W.I.P."
+extraText      = "Internal"
 lumiText       = ""
-extraTextFont  = 50 # 50: Arial italics (helvetica-medium-o-normal) 52
+extraTextFont  = 52 # 50: Arial italics (helvetica-medium-o-normal)
 lumiTextSize   = 0.90
 lumiTextOffset = 0.20
 cmsTextSize    = 1.00
 cmsTextOffset  = 0.15
 extraOverCmsTextSize = 0.78
-relPosX        = 0.045
+relPosX        = 0.044 # relative x position of "extraText" w.r.t. cmsText
 relPosY        = 0.035
 relExtraDY     = 1.2
 drawLogo       = False
-outOfFrame     = False
+outOfFrame     = True
 lumi_dict      = {
   '7':      5.1,  '2016': 36.3, 'UL2016_preVFP':  19.5,
   '8':      19.7, '2017': 41.5, 'UL2016_postVFP': 16.8,
   '2012':   19.7, '2018': 59.7, 'UL2016': 36.3, # actually 19.5+16.8=36.3
   'Run2':   138,                'UL2017': 41.5,
-  'Phase2': 3000,               'UL2018': 59.8,
+                                'UL2018': 59.8,
+  'Run3':   64.0, # to be updated
+  'Phase2': 3000,
   '2022': 35.0842,
   '2022_preEE': 8.077,
   '2022_postEE': 27.0072,
+  '2023': 26.585,
+  '2023C' : 17.060,
+  '2023D' : 9.525
 }
 cme_dict       = {
   '7':      7,    '2016': 13,
@@ -74,12 +78,14 @@ era_dict       = {
   'Phase1': "Phase I",
   'Phase2': "Phase II",
   'UL2016_preVFP': "UL2016", #(pre VFP)
-  'UL2016_postVFP': "UL2016", #(pre VFP)
+  'UL2016_postVFP': "UL2016", #(post VFP)
   'UL2016': "UL2016",
   'UL2017': "UL2017",
   'UL2018': "UL2018",
   '2022_preEE': "2022 (preEE)",
   '2022_postEE': "2022 (postEE)",
+  '2023C': "2023C (pre BPix)",
+  '2023D': "2023D (post BPix)"
 }
 
 
@@ -87,78 +93,135 @@ def getyear(era):
   """If possible, return string of year without extra text.
   E.g. 'UL2016_preVFP' -> '2016', 'UL2018' -> '2018', etc.
   """
-  match = re.search(r"(?<!\d)(20\d{2})(?!\d)",era)
-  if match:
-    return match.group(1)
+  if era:
+    match = re.search(r"(?<!\d)(20\d{2})(?!\d)",era)
+    if match:
+      return match.group(1)
   return era
   
 
+def setCMSText(**kwargs):
+  """Set global CMS text and extra text."""
+  global cmsText, extraText, cmsTextSize, cmsTextFont, extraTextFont, lumiText, lumiTextSize, relPosX
+  if kwargs.get('thesis',False): # special labels for results not approved, nor unendorsed by CMS
+    # Set CMS style for thesis with for results not approved, nor unendorsed by CMS.
+    # https://twiki.cern.ch/twiki/bin/view/CMS/PhysicsApprovals#Thesis_endorsement
+    kwargs.setdefault('cms',          "Private work" )
+    kwargs.setdefault('extra',        "(CMS data/simulation)" )
+    kwargs.setdefault('cmsTextFont',  42         ) # 40: Arial (helvetica-medium-r-normal)
+    kwargs.setdefault('extraTextFont',42         ) # 40: Arial (helvetica-medium-r-normal)
+    kwargs.setdefault('cmsTextSize',  0.74       )
+    kwargs.setdefault('lumiTextSize', 0.84       )
+    kwargs.setdefault('relPosX',      2.36*0.045 )
+  if 'cms' in kwargs:
+    cmsText = kwargs['cms'] # CMS text in bold, e.g. "CMS"
+  if 'cmsTextSize' in kwargs:
+    cmsTextSize = kwargs['cmsTextSize']
+  if 'cmsTextFont' in kwargs:
+    cmsTextFont = kwargs['cmsTextFont']
+  if 'extra' in kwargs:
+    extraText = kwargs['extra'] # extra text, e.g. 'Preliminary'
+  if 'extraTextFont' in kwargs:
+    extraTextFont = kwargs['extraTextFont']
+  if 'lumiText' in kwargs:
+    lumiText = kwargs['lumiText'] # luminosity text, e.g. '138 fb^{#minus1} (13 TeV)'
+  if 'lumiTextSize' in kwargs:
+    lumiTextSize = kwargs['lumiTextSize'] # text size for both extraText & lumiText
+  if 'relPosX' in kwargs:
+    relPosX = kwargs['relPosX'] # relative x position between 'CMS' and extra text
+  if kwargs.get('verb',0)>=2:
+    print(">>> setCMSText: cmsText=%r, extraText=%r, lumiText=%r"%(cmsText,extraText,lumiText))
+  return extraText
+  
+
 def setCMSEra(*eras,**kwargs):
-  """Set CMS era(s) and luminosity."""
-  global cmsText, extraText, lumiText, cmsTextSize, lumiTextSize, relPosX
-  cms       = kwargs.get('cms',    None) # CMS text in bold, e.g. "CMS"
-  extra     = kwargs.get('extra',  None) # extra text, e.g. "Preliminary"
-  thesis    = kwargs.get('thesis', False) # special labels for results not approved, nor unendorsed by CMS
-  verbosity = kwargs.get('verb',   0)
-  if thesis:
-    setThesisStyle(**kwargs)
-  cmsTextSize  = kwargs.get('cmsTextSize',cmsTextSize)
-  lumiTextSize = kwargs.get('lumiTextSize',lumiTextSize)
-  relPosX      = kwargs.get('relPosX',relPosX)
-  if cms!=None:
-    cmsText = cms
-  if extra!=None:
-    extraText = extra
-  strings  = [ ]
+  """Set global CMS lumiText for given era(s)."""
+  global cmsText, extraText, lumiText
+  strings = [ ]
   if 'lumiText' in kwargs: # set by user
-    lumiText = kwargs['lumiText']
+    strings.append(kwargs['lumiText'])
   elif eras: # set automatically based on given era(s)
     for i, era in enumerate(eras):
-      era    = str(era) # string
-      year   = getyear(era) # get year from e.g. "UL2016_preVFP", "UL2018"
-      string = era_dict.get(era,   era   )
-      lumi   = lumi_dict.get(era,  False )
-      cme    = cme_dict.get(era,   False ) # center-of-mass energy, e.g. 13
-      if not lumi: # try again with year
-        lumi = lumi_dict.get(year, lumi  )
-      if not cme: # try again with year
-        cme  = cme_dict.get(year,  cme   )
-      lumi   = kwargs.get('lumi',  lumi  ) # allow override by user
-      cme    = kwargs.get('cme',   cme   ) # allow override by user
-      if isinstance(cme,(list,tuple)):
-        cme  = cme[i]
-      if lumi:
-        if string:
-          string += ", "
-        string += ("%#.3g"%lumi).rstrip('.') + " fb^{#minus1}" # three significant digits
-      if cme:
-        string += " (%s TeV)"%(cme)
-      strings.append(string.strip())
-      if verbosity>=3:
-        print(">>> setCMSEra: era=%r, lumi=%r, cme=%r, lumiText=%r"%(eras,lumi,lumiText,cme))
-    lumiText = ' + '.join(strings)
-  elif 'cme' in kwargs: # only print CME
-    lumiText = "(%s TeV)"%(kwargs['cme'])
-  if verbosity>=2:
+      cmes = kwargs.get('cme',None)
+      if cmes and isinstance(cmes,(list,tuple)):
+        kwargs['cme'] = cmes[i] # asumme same length as eras
+      strings.append(getCMSLumiText(era,**kwargs))
+  else: # try to set lumiText with just lumi & cme
+    return setCMSLumi(**kwargs)
+  verb = kwargs.pop('verb', 0 ) # verbosity level, disable for setCMSText
+  setCMSText(**kwargs) # set cmsText, extraText
+  lumiText = ' + '.join(s for s in strings if s) # set globally
+  if verb>=2:
     print(">>> setCMSEra: cmsText=%r, extraText=%r, eras=%r, lumiText=%r"%(cmsText,extraText,eras,lumiText))
   return lumiText
   
 
-def setThesisStyle(**kwargs):
-  """Set CMS style for thesis with for results not approved, nor unendorsed by CMS."""
-  # https://twiki.cern.ch/twiki/bin/view/CMS/PhysicsApprovals#Thesis_endorsement
-  global cmsText, extraText, cmsTextFont, cmsTextSize, extraTextFont, lumiTextSize, relPosX
-  cmsText       = kwargs.get('cms',  "Private work")
-  extraText     = kwargs.get('extra',"(CMS data/simulation)")
-  cmsTextFont   = 42 # 40: Arial (helvetica-medium-r-normal)
-  extraTextFont = 42 # 40: Arial (helvetica-medium-r-normal)
-  cmsTextSize   = 0.74
-  lumiTextSize  = 0.84
-  relPosX       = 2.36*0.045
+def setCMSLumi(lumi=None,cme=None,**kwargs):
+  """Set global CMS lumiText for given integrated luminosity & CME."""
+  global cmsText, extraText, lumiText
+  strings = [ ]
+  verb = kwargs.pop('verb', 0 ) # verbosity level, disable for setCMSText
+  if 'lumiText' in kwargs: # set by user
+    strings.append(kwargs['lumiText'])
+  elif lumi: # print lumi
+    lumis = lumi if isinstance(lumi,(list,tuple)) else [lumi] # ensure list
+    cmes  = cme if isinstance(cme,(list,tuple)) else [cme] # ensure list
+    for i, lumi_ in enumerate(lumis):
+      kwargs['lumi'] = lumi_
+      kwargs['cme']  = cmes[i] if i<len(cmes) else cmes[-1]
+      strings.append(getCMSLumiText(**kwargs))
+  elif cme: # only print CME
+    strings = ["(%s TeV)"%cme]
+  elif verb>=1:
+    print(">>> setCMSLumi: Warning! No lumi or CME passed !?")
+  setCMSText(**kwargs) # set cmsText, extraText
+  lumiText = ' + '.join(s for s in strings if s) # set globally
+  if verb>=2:
+    print(">>> setCMSLumi: cmsText=%r, extraText=%r, lumiText=%r"%(cmsText,extraText,lumiText))
+  return lumiText
   
 
-def setCMSLumiStyle(pad, iPosX, **kwargs):
-  """Set CMS style for given TPad."""
+def getCMSLumiText(era=None,showEra=True,showYear=False,**kwargs):
+  """Help function to create lumiText (string containing integrated luminosity)
+  and center-of-mass energy for top right corner of CMS plots.
+  E.g. UL2016_preVFP, 19.5 fb^{#minus1} (13 TeV)"""
+  text = "" # return value
+  year = None
+  lumi = None
+  cme  = None
+  verb = kwargs.get('verb', 0 ) # verbosity level
+  if era:
+    era  = str(era) # ensure string
+    year = getyear(era) # get year from e.g. 'UL2016_preVFP' -> '2016', '2018' -> '2018'
+    if showYear: # print year in lumiText, e.g. "2016, 19.5 fb^{#minus1} (13 TeV)"
+      text = era_dict.get(year,year)
+    elif showEra: # print era in lumiText, e.g. "UL2016_preVFP, 19.5 fb^{#minus1} (13 TeV)"
+      text = era_dict.get(era,era)
+  if 'lumi' in kwargs: # allow override by user, incl. lumi=None/False to suppress
+    lumi = kwargs['lumi']
+  else: # lookup given era/year in global dictionary
+    lumi = lumi_dict[era] if era in lumi_dict else lumi_dict.get(year,None)
+  if 'cme' in kwargs: # allow override by user, incl. lumi=None/False to suppress
+    cme  = kwargs['cme'] # center-of-mass energy in TeV, e.g. 13
+  else: # lookup given era/year in global dictionary
+    cme  = cme_dict[era] if era in cme_dict else cme_dict.get(year,None)
+  if lumi: # print if defined
+    if text: # add comma after era/year
+      text += ", "
+    lumi3sd = ("%#.3g"%lumi) if lumi<1000 else ("%d"%float("%.3g"%lumi)) # three significant digits
+    text += lumi3sd.rstrip('.') + " fb^{#minus1}"
+  if cme: # print if defined
+    if text:
+      text += " "
+    text += "(%s TeV)"%(cme)
+  text = text.strip() # remove empty spaces in front/back
+  if verb>=4:
+    print(">>> getCMSLumiText: era=%r, lumi=%r, cme=%r, lumiText=%r"%(era,lumi,lumiText,cme))
+  return text
+  
+
+def setCMSLumiStyle(pad, iPosX=0, **kwargs):
+  """Set CMS style for a given TPad."""
   global outOfFrame, lumiTextSize, lumiText, extraText
   if 'era' in kwargs: # one era
     era = kwargs.get('era')
@@ -169,18 +232,16 @@ def setCMSLumiStyle(pad, iPosX, **kwargs):
   if iPosX/10==0:
     outOfFrame  = True
   lumiTextSize_ = lumiTextSize
-  relPosX_      = kwargs.get('relPosX',    relPosX)
-  lumiText_     = kwargs.get('lumiText',   lumiText)
-  extraText_    = kwargs.get('extraText',  extraText) # Preliminary, Simulation, ...
-  outOfFrame    = kwargs.get('outOfFrame', outOfFrame)
-  verbosity     = kwargs.get('verb',       0)
+  relPosX_      = kwargs.get('relPosX',    relPosX    ) # relative position between 'CMS' and extra text
+  lumiText_     = kwargs.get('lumiText',   lumiText   ) # luminosity text, e.g. '138 fb^{#minus1} (13 TeV)'
+  extraText_    = kwargs.get('extraText',  extraText  ) # 'Preliminary', 'Simulation', ...
+  outOfFrame    = kwargs.get('outOfFrame', outOfFrame ) # print CMS text outside frame
+  verbosity     = kwargs.get('verb',       0          ) # verbosity level
   if outOfFrame:
     lumiTextSize_ *= 0.90
   if verbosity>=2:
     print(">>> setCMSLumiStyle: cmsText=%r, extraText=%r, lumiText=%r"%(cmsText,extraText_,lumiText))
   
-  print("outOfFrame",outOfFrame)
-
   # https://root.cern.ch/doc/master/classTAttText.html#ATTTEXT1
   alignY_ = 3 # align top
   alignX_ = 2 # align center
@@ -283,7 +344,12 @@ def fixOverlay():
   gPad.RedrawAxis()
   
 
-def setTDRStyle():
+def setTDRStyle(**kwargs):
+  global outOfFrame, extraText
+  if 'outOfFrame' in kwargs:
+    outOfFrame = kwargs['outOfFrame']
+  if 'extra' in kwargs:
+    extraText = kwargs['extra']
   
   tdrStyle = TStyle("tdrStyle","Style for P-TDR")
   

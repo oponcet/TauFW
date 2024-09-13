@@ -7,6 +7,7 @@ from ROOT import TLorentzVector, TVector3
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection, Event
 from TauFW.PicoProducer.corrections.PileupTool import *
+from TauFW.PicoProducer.corrections.JetVetoMapTool import *
 from TauFW.PicoProducer.corrections.RecoilCorrectionTool import *
 #from TauFW.PicoProducer.corrections.PreFireTool import *
 from TauFW.PicoProducer.corrections.BTagTool import BTagWeightTool, BTagWPs
@@ -44,13 +45,14 @@ class ModuleTauPair(Module):
     self.tauwp      = kwargs.get('tauwp',    1              ) # minimum DeepTau WP, e.g. 1 = VVVLoose, etc.
     self.dotoppt    = kwargs.get('toppt',    'TT' in fname  ) # top pT reweighting
     self.dozpt      = kwargs.get('zpt',      'DY' in fname  ) # Z pT reweighting
+    self.domutau    = kwargs.get('domutau',  'DY' in fname or self.dozpt ) # mutau genfilter for stitching DY sample
     self.dopdf      = kwargs.get('dopdf',    False          ) and self.ismc # store PDF & scale weights
     self.dorecoil   = kwargs.get('recoil',   False          ) and self.ismc # recoil corrections #('DY' in name or re.search(r"W\d?Jets",name)) and self.year==2016) # and self.year==2016 
     self.dosys      = self.tessys in [None,''] and self.ltf in [1,None] and self.jtf in [1,None] # include systematic variations of weight
     self.dosys      = kwargs.get('sys',      self.dosys     ) # store fewer branches to save disk space
     self.dotight    = self.tes not in [1,None] or not self.dosys # tighten pre-selection to store fewer events
     self.dotight    = kwargs.get('tight',    self.dotight   ) # store fewer events to save disk space
-    self.dojec      = kwargs.get('jec',      True           ) and self.ismc #and self.year==2016 #False
+    self.dojec      = kwargs.get('jec',      False          ) and self.ismc #and self.year==2016 #False
     self.dojecsys   = kwargs.get('jecsys',   self.dojec     ) and self.ismc and self.dosys #and self.dojec #and False
     self.useT1      = kwargs.get('useT1',    False          ) # MET T1 for backwards compatibility with old nanoAOD-tools JME corrector
     self.verbosity  = kwargs.get('verb',     0              ) # verbosity
@@ -58,7 +60,7 @@ class ModuleTauPair(Module):
     self.bjetCutEta = 2.4 if self.year==2016 else 2.5
     self.isUL       = 'UL' in self.era
     
-    assert self.year in [2016,2017,2018,2022], "Did not recognize year %s! Please choose from 2016, 2017 and 2018."%self.year
+    assert self.year in [2016,2017,2018,2022,2023], "Did not recognize year %s! Please choose from 2016, 2017 and 2018."%self.year
     assert self.dtype in ['mc','data','embed'], "Did not recognize data type '%s'! Please choose from 'mc', 'data' and 'embed'."%self.dtype
     
     # YEAR-DEPENDENT IDs
@@ -66,12 +68,13 @@ class ModuleTauPair(Module):
     self.filter     = getmetfilters(self.era,self.isdata,verb=self.verbosity)
     
     # CORRECTIONS
+    self.ismutau      = False # event passes gen mutau filter (to avoid computing twice)
     self.ptnom        = lambda j: j.pt # use 'pt' as nominal jet pt (not corrected)
     self.jecUncLabels = [ ]
     self.metUncLabels = [ ]
     if self.ismc:
-      self.puTool     = PileupWeightTool(era=self.era,sample=self.filename,verb=self.verbosity)
-      self.btagTool   = BTagWeightTool('DeepJet','medium',era=self.era,channel=self.channel,maxeta=self.bjetCutEta) #,loadsys=not self.dotight
+      self.puTool      = PileupWeightTool(era=self.era,sample=self.filename,verb=self.verbosity)
+      self.btagTool    = BTagWeightTool('DeepJet','medium',era=self.era,channel=self.channel,maxeta=self.bjetCutEta) #,loadsys=not self.dotight
       if self.dozpt:
         self.zptTool  = ZptCorrectionTool(era=self.era)
       #if self.dorecoil:
@@ -83,10 +86,12 @@ class ModuleTauPair(Module):
       if self.dojecsys:
        self.jecUncLabels = [ u+v for u in ['JER','JES'] for v in ['Down','Up']]
        self.metUncLabels = [ u+v for u in ['JER','JES','Unclustered'] for v in ['Down','Up']]
-       self.met_vars     = { u: getmet(self.year,u,useT1=self.useT1) for u in self.metUncLabels }
+       self.met_vars     = { u: getmet(self.era,u,useT1=self.useT1) for u in self.metUncLabels }
       #if self.isUL and self.tes==None:
       #  self.tes = 1.0 # placeholder
-    
+    self.jetvetoTool = None
+    if '202' in self.era: # only mandatory for Run 3: 2022, 2023, ... (see https://cms-jerc.web.cern.ch/Recommendations/#jet-veto-maps)
+      self.jetvetoTool = JetVetoMapTool(era=self.era,verb=self.verbosity) 
     self.deepjet_wp = BTagWPs('DeepJet',era=self.era)
     
   
@@ -111,6 +116,7 @@ class ModuleTauPair(Module):
     print(">>> %-12s = %s"%('dotoppt',   self.dotoppt))
     print(">>> %-12s = %s"%('dopdf',     self.dopdf))
     print(">>> %-12s = %s"%('dozpt',     self.dozpt))
+    print(">>> %-12s = %s"%('domutau',   self.domutau))
     #print ">>> %-12s = %s"%('dorecoil',  self.dorecoil)
     print(">>> %-12s = %s"%('dojec',     self.dojec))
     print(">>> %-12s = %s"%('dojecsys',  self.dojecsys))
@@ -145,7 +151,13 @@ class ModuleTauPair(Module):
       ('Electron_mvaFall17V2noIso_WP90', 'Electron_mvaNoIso_WP90' ),
       ('Tau_idDecayMode',                [True]*32               ), 
       ('Tau_idDecayModeNewDMs',          [True]*32               ),
-      ]
+      ('Tau_idDeepTau2018v2p5VSe','Tau_idDeepTau2017v2p1VSe'), 
+      ('Tau_idDeepTau2018v2p5VSmu','Tau_idDeepTau2017v2p1VSmu'),  
+      ('Tau_idDeepTau2018v2p5VSjet','Tau_idDeepTau2017v2p1VSjet'),
+      ('Tau_rawDeepTau2018v2p5VSe','Tau_rawDeepTau2017v2p1VSe'), 
+      ('Tau_rawDeepTau2018v2p5VSmu','Tau_rawDeepTau2017v2p1VSmu'),  
+      ('Tau_rawDeepTau2018v2p5VSjet','Tau_rawDeepTau2017v2p1VSjet')
+    ]
     # for v9
     branches = [
       ('Electron_mvaFall17V2Iso',        'Electron_mvaFall17Iso'        ),
@@ -161,6 +173,12 @@ class ModuleTauPair(Module):
       #('Tau_rawAntiEle',                 [0.]*30                        ), #  # not available anymore in nanoAODv9
       #('Tau_rawMVAoldDM2017v2',          [0.]*30                        ), # not available anymore in nanoAODv9
       #('Tau_rawMVAnewDM2017v2',          [0.]*30                        ), # not available anymore in nanoAODv9
+      ('Tau_idDeepTau2018v2p5VSe','Tau_idDeepTau2017v2p1VSe'), 
+      ('Tau_idDeepTau2018v2p5VSmu','Tau_idDeepTau2017v2p1VSmu'),  
+      ('Tau_idDeepTau2018v2p5VSjet','Tau_idDeepTau2017v2p1VSjet'),
+      ('Tau_rawDeepTau2018v2p5VSe','Tau_rawDeepTau2017v2p1VSe'), 
+      ('Tau_rawDeepTau2018v2p5VSmu','Tau_rawDeepTau2017v2p1VSmu'),  
+      ('Tau_rawDeepTau2018v2p5VSjet','Tau_rawDeepTau2017v2p1VSjet')
     ]
     if self.year==2016:
       branches += [
@@ -176,8 +194,25 @@ class ModuleTauPair(Module):
        ensurebranches(inputTree,branchesV10)
     else: #v9
        ensurebranches(inputTree,branches) # make sure Event object has these branches
-    
-  
+
+  def jetveto(self, event):
+    """Return number of vetoed jets. Jet veto maps are mandatory for Run 3 analyses.
+    The safest procedure would be to veto events if ANY jet with a loose selection lies in the veto regions.
+    See https://cms-jerc.web.cern.ch/Recommendations/#jet-veto-maps
+    """
+    if not self.jetvetoTool:
+      return 0 # assume no jet veto required (e.g. for Run 2)
+    vetojets = [ ]
+    muons = [m for m in Collection(event,'Muon') if m.isPFcand]
+    for jet in Collection(event,'Jet'):
+      if abs(jet.pt) <= 15: continue
+      if jet.jetId < 2: continue
+      if (jet.chEmEF + jet.neEmEF) > 0.90: continue
+      if not self.jetvetoTool.applyJetVetoMap(jet.eta, jet.phi): continue
+      if any(jet.DeltaR(m)<0.2 for m in muons): continue # overlap
+      vetojets.append(jet)
+    return len(vetojets)
+
   def fillhists(self,event):
     """Help function to fill common histograms (cutflow etc.) before any cuts."""
     self.out.cutflow.fill('none')
@@ -205,22 +240,24 @@ class ModuleTauPair(Module):
         self.out.cutflow.fill('weight_no0PU',event.genWeight)
       else: # bug in pre-UL 2017 caused small fraction of events with nPU<=0
         return False
-      # Specific selections to compute mutau filter efficiencies for stitching of different DY samples
-      isMuTau = filtermutau(event)
-      self.out.cutflow.fill('weight_mutaufilter',event.genWeight*isMuTau)
-      try:
-        if event.LHE_Njets==0 or event.LHE_Njets>4:
-          self.out.cutflow.fill('weight_mutaufilter_NUP0orp4',event.genWeight*isMuTau)
-        elif event.LHE_Njets==1:
-          self.out.cutflow.fill('weight_mutaufilter_NUP1',event.genWeight*isMuTau)
-        elif event.LHE_Njets==2:
-          self.out.cutflow.fill('weight_mutaufilter_NUP2',event.genWeight*isMuTau)
-        elif event.LHE_Njets==3:
-          self.out.cutflow.fill('weight_mutaufilter_NUP3',event.genWeight*isMuTau)
-        elif event.LHE_Njets==4:
-          self.out.cutflow.fill('weight_mutaufilter_NUP4',event.genWeight*isMuTau)
-      except RuntimeError:
-        no_LHE_Njets_var = True
+      # Specific selections to compute mutau filter efficiencies for stitching of different DY samples (DYJetsToTauTauToMuTauh)
+      if self.domutau:
+        self.ismutau = filtermutau(event) # event passes gen mutau filter
+        self.out.cutflow.fill('weight_mutaufilter',event.genWeight*self.ismutau)
+        try:
+          if event.LHE_Njets==0 or event.LHE_Njets>4:
+            self.out.cutflow.fill('weight_mutaufilter_NUP0orp4',event.genWeight*self.ismutau)
+          elif event.LHE_Njets==1:
+            self.out.cutflow.fill('weight_mutaufilter_NUP1',event.genWeight*self.ismutau)
+          elif event.LHE_Njets==2:
+            self.out.cutflow.fill('weight_mutaufilter_NUP2',event.genWeight*self.ismutau)
+          elif event.LHE_Njets==3:
+            self.out.cutflow.fill('weight_mutaufilter_NUP3',event.genWeight*self.ismutau)
+          elif event.LHE_Njets==4:
+            self.out.cutflow.fill('weight_mutaufilter_NUP4',event.genWeight*self.ismutau)
+        except RuntimeError:
+          print(">>> WARNING: RuntimeError! Setting domutau=False !")
+          self.domutau = False
       self.out.pileup.Fill(event.Pileup_nTrueInt)
     
     return True

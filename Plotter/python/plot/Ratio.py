@@ -5,7 +5,6 @@
 #   https://twiki.cern.ch/twiki/bin/view/CMS/StatComWideBins
 #   https://twiki.cern.ch/twiki/bin/view/CMS/DataMCComparison
 import os, re
-from TauFW.common.tools.root import rootrepr
 from TauFW.Plotter.plot.utils import *
 from TauFW.Plotter.plot.string import makehistname
 import ROOT
@@ -17,36 +16,41 @@ class Ratio(object):
   
   def __init__(self, *hists, **kwargs):
     """Make a ratio of two histograms bin by bin. Second hist may be a stack, to do data / MC stack.
-    Initiate as:
+    There are several ways to initiate this object, depending on which histograms/stacks/graphs
+    should be taken as numerator and which should be taken as denominator:
       Ratio(hnum,hden)               # hnum / hden and 1 = hden / hden
-      Ratio( h1,h2,...,hN)           # hists[i]   / hists[-1],  where hists=[h1,h2,...]
-      Ratio([h1,h2,...,hN])          # hists[i]   / hists[-1],  where hists=[h1,h2,...]
-      Ratio( h1,h2,...,hN ,denom=X)  # hists[i]   / hists[X-1], where hists=[h1,h2,...]
-      Ratio([h1,h2,...,hN],denom=X)  # hists[i]   / hists[X-1], where hists=[h1,h2,...]
-      Ratio( h1,h2,...,hN ,num=X)    # hists[X-1] / hists[X-1], where hists=[h1,h2,...]
-      Ratio([h1,h2,...,hN],num=X)    # hists[X-1] / hists[X-1], where hists=[h1,h2,...]
-      Ratio([hnum1,...], hden)       # hnums[i] / hden
-      Ratio([hnum1,...],[hden1,...]) # hnums[i] / hdens[i]
-      Ratio( hnum,      [hden1,...]) # hnum     / hdens[i]
+      Ratio( h1,h2,...,hN)           # hists[i]   / hists[-1]
+      Ratio([h1,h2,...,hN])          # hists[i]   / hists[-1]
+      Ratio( h1,h2,...,hN ,denom=X)  # hists[i]   / hists[X-1]
+      Ratio([h1,h2,...,hN],denom=X)  # hists[i]   / hists[X-1]
+      Ratio( h1,h2,...,hN ,num=X)    # hists[X-1] / hists[i]
+      Ratio([h1,h2,...,hN],num=X)    # hists[X-1] / hists[i]
+      Ratio([hnum1,...], hden)       # hnums[i] / hden,     single & common den histogram
+      Ratio([hnum1,...],[hden1,...]) # hnums[i] / hdens[i], pairwise num/den histograms
+      Ratio( hnum,      [hden1,...]) # hnum     / hdens[i], single & common num histogram
+    where
+      hists = [h1,h2,...,hN] is a python list of histograms/stacks/graphs,
+      index X is a single integer between 1<=X<=N, and
+      index i loops between 0<=i<=N-1.
     """
-    verbosity     = LOG.getverbosity(kwargs)
-    self.ratios   = [ ]
-    self.errband  = None
-    self.drawden  = kwargs.get('drawden',     False       ) # draw denominator (with error bars)
-    self.title    = kwargs.get('title',       "ratio"     )
-    self.line     = kwargs.get('line',   not self.drawden ) # draw line at 1.0
-    self.drawzero = kwargs.get('drawzero',    True        ) # draw ratio of two zero bins as 1
-    errband       = kwargs.get('errband',     None        ) # draw error band (e.g. stat. and/or sys. unc.)
-    errbars       = kwargs.get('errbars',     False       ) # draw error bars
-    option        = kwargs.get('option',      ""          )
-    num           = kwargs.get('num',         None        ) # index of common numerator histogram (count from 1)
-    denom         = kwargs.get('den',         None        ) # index of common denominator histogram (count from 1)
-    denom         = kwargs.get('denom',       None        ) # alias
-    errorX        = kwargs.get('errorX', gStyle.GetErrorX() ) # horizontal error bars
-    fraction      = kwargs.get('fraction',    None        ) # make stacked fraction from stack (normalize each bin to 1)
-    hists         = unwraplistargs(hists) # ensure list of histograms
-    LOG.verb("Ratio.init: hists=%s, denom=%s, num=%s, drawden=%r, errband=%r"%(
-      rootrepr(hists),rootrepr(denom),rootrepr(num),self.drawden,errband),verbosity,1)
+    self.verbosity = LOG.getverbosity(kwargs)
+    self.ratios    = [ ]
+    self.errband   = None
+    self.drawden   = kwargs.get('drawden',     False       ) # draw denominator (with error bars)
+    self.title     = kwargs.get('title',       "ratio"     ) # title for ratio histogram/graph
+    self.line      = kwargs.get('line',   not self.drawden ) # draw line at 1.0
+    self.drawzero  = kwargs.get('drawzero',    True        ) # draw ratio of two zero bins as 1
+    errband        = kwargs.get('errband',     None        ) # draw error band (e.g. stat. and/or sys. unc.)
+    errbars        = kwargs.get('errbars',     False       ) # draw error bars
+    option         = kwargs.get('option',      ""          ) # draw option
+    num            = kwargs.get('num',         None        ) # index of common numerator histogram (count from 1)
+    denom          = kwargs.get('den',         None        ) # index of common denominator histogram (count from 1)
+    denom          = kwargs.get('denom',       None        ) # alias
+    errorX         = kwargs.get('errorX', gStyle.GetErrorX() ) # horizontal error bars
+    fraction       = kwargs.get('fraction',    None        ) # make stacked fraction from stack (normalize each bin to 1)
+    hists          = unpacklistargs(hists) # ensure list of histograms
+    LOG.verb("Ratio.init: hists=%r, denom=%r, num=%r, drawden=%r, errband=%r"%(
+      hists,denom,num,self.drawden,errband),self.verbosity,1)
     
     # CONVERT SPECIAL OBJECTS
     for i, hist in enumerate(hists[:]):
@@ -54,8 +58,6 @@ class Ratio(object):
         if isinstance(fraction,bool) and fraction: # only once
           fraction = normalizebins(hist) # create stack with normalized bins
         hists[i] = hist.GetStack().Last() # should have correct bin content and error
-      ###elif isinstance(hist,TGraph):
-      ###  LOG.error("Ratio.init: TGraph not implemented")
       elif isinstance(hist,TProfile):
         histtemp = hist.ProjectionX(hist.GetName()+"_projx",'E')
         copystyle(histtemp,hist)
@@ -126,27 +128,21 @@ class Ratio(object):
       if self.drawden: # include denominator histogram in numerator list
         histnums.insert(0,histden) # reinsert as first item to draw first
       histdens = [histden]*len(histnums) # match number of numerators for zip loop below
-    LOG.verb("Ratio.init: histnums=%s, histdens=%s, denom=%r, num=%r"%(
-      rootrepr(histnums),rootrepr(histdens),denom,num),verbosity,2)
+    LOG.verb("Ratio.init: histnums=%r, histdens=%r, denom=%r, num=%r"%(
+      histnums,histdens,denom,num),self.verbosity,2)
     
     # MAKE RATIOS
     if len(histnums)!=len(histdens):
       LOG.warn("Ratio.init: len(histnums) = %s != %s = len(histdens)"%(len(histnums),len(histdens)))
     for i, (histnum,histden) in enumerate(zip(histnums,histdens)):
       tag = str(i)
+      if histnum==None or histden==None:
+        LOG.warn("Ratio.init: Cannot make ratio for histnum=%r / histden=%r (i=%s)! Ignoring..."%(histnum,histden,i))
+        continue
       if isinstance(histnum,(TH1,THStack)):
         ratio = gethistratio(histnum,histden,tag=tag,drawzero=self.drawzero,errorX=errorX)
       elif isinstance(histnum,TGraph):
-        #LOG.warn("Ratio.init: TGraph ratio not validated! Please check verbose output...")
-        ratio = getgraphratio(histnum,histden,tag=tag,drawzero=self.drawzero,errorX=errorX)
-      #if isinstance(hist,TH1) and 'h' in option.lower():
-      #  ratio = hist.Clone("ratio_%s-%s_%d"%(histden.GetName(),hist.GetName(),i))
-      #  ratio.Reset()
-      #else:
-      #  ratio = TGraphAsymmErrors()
-      #  copystyle(ratio,hist)
-      #  ratio.SetName("ratio_%s-%s_%d"%(histden.GetName(),hist.GetName(),i))
-      #  ratio.SetTitle(self.title)
+        ratio = getgraphratio(histnum,histden,tag=tag,drawzero=self.drawzero,errorX=kwargs.get('errorX',True))
       copystyle(ratio,histnum if num==None else histden)
       ratio.SetFillStyle(0)
       self.ratios.append(ratio)
@@ -162,37 +158,43 @@ class Ratio(object):
     # STORE
     self.frame    = histdens[0] if num==None else histnums[0] # use as frame
     self.fraction = fraction
-    #self.frame   = self.histden.Clone("frame_ratio_%s"%(self.histden.GetName()))
+    #self.frame    = self.histden.Clone("frame_ratio_%s"%(self.histden.GetName()))
     #self.frame.Reset() # make empty
     #self.frame.SetLineColor(0)
     #self.frame.SetLineWidth(0)
     #self.frame.SetMarkerSize(0)
-    self.garbage = [self.fraction,self.errband]
+    if isinstance(self.frame,TH1): # set default xmin/xmax
+      self.xmin  = self.frame.GetXaxis().GetXmin()
+      self.xmax  = self.frame.GetXaxis().GetXmax()
+    else: # assume TGraph(Asymm)(Errors)
+      xvals     = self.frame.GetX()
+      self.xmin = min(xvals)
+      self.xmax = max(xvals)
+    self.garbage  = [self.fraction,self.errband]
     
   
   def draw(self, option=None, **kwargs):
     """Draw all objects."""
-    verbosity   = LOG.getverbosity(kwargs,self)
-    ratios      = self.ratios
-    if isinstance(self.frame,TH1):
-      xmin      = self.frame.GetXaxis().GetXmin()
-      xmax      = self.frame.GetXaxis().GetXmax()
-    else: # assume TGraph(Asymm)(Errors)
-      xvals     = self.frame.GetX()
-      xmin      = min(xvals)
-      xmax      = max(xvals)
-    xmin        = kwargs.get('xmin',   xmin  )
-    xmax        = kwargs.get('xmax',   xmax  )
-    ymin        = kwargs.get('ymin',   0.5   ) #default = 0.5
-    ymax        = kwargs.get('ymax',   1.5   ) #default = 1.5
-    data        = kwargs.get('data',   False )
-    xtitle      = kwargs.get('xtitle', ""    )
-    ytitle      = kwargs.get('ytitle', "Obs. / Exp." if data else "Ratio" )
-    size        = 1.0 if data else 0.0 #0.9
-    #self.frame  = gPad.DrawFrame(xmin,ymin,xmax,ymax)
-    frame       = getframe(gPad,self.frame,xmin=xmin,xmax=xmax)
+    verbosity = LOG.getverbosity(kwargs,self)
+    ratios = self.ratios
+    xmin   = kwargs.get('xmin', self.xmin  )
+    xmax   = kwargs.get('xmax', self.xmax  )
+    ymin   = kwargs.get('ymin',   0.5      ) #default = 0.5
+    ymax   = kwargs.get('ymax',   1.5      ) #default = 1.5
+    data   = kwargs.get('data',   False    )
+    line   = kwargs.get('line',  self.line ) # draw horizontal line
+    lines  = kwargs.get('lines',  [ ]      ) # draw other lines
+    boxes  = kwargs.get('boxes',  [ ]      ) # draw boxes
+    yline  = kwargs.get('yline',  1.0      ) # y coordinate of line
+    xtitle = kwargs.get('xtitle', ""       )
+    ytitle = kwargs.get('ytitle', "Obs. / Exp." if data else "Ratio" )
+    size   = 1.0 if data else 0.0 #0.9
+    frame  = getframe(gPad,self.frame,xmin=xmin,xmax=xmax,verb=verbosity)
     self.garbage.append(frame)
+    LOG.verb("Ratio.draw: (xmin,xmax,ymin,ymax)=(%.3g,%.3g,%.3g,%.3g), option=%r, frame=%r, data=%r"%(
+             xmin,xmax,ymin,ymax,option,frame,data),verbosity,2)
     
+    # FRAME
     frame.GetYaxis().SetTitle(ytitle)
     frame.GetXaxis().SetTitle(xtitle)
     #frame.GetYaxis().SetLabelSize(0.10)
@@ -207,16 +209,21 @@ class Ratio(object):
     #frame.SetNdivisions(505)
     frame.Draw('HIST') # 'AXIS' breaks grid
     
-    if self.fraction:
+    # DRAW OTHER
+    if self.fraction: # stacked fraction histograms
       self.fraction.Draw('HIST SAME')
-    
-    if self.errband:
+    if self.errband: # uncertainty band
       self.errband.Draw('2 SAME')
+    for box in boxes:
+      box.Draw(box.option)
+    for line in lines:
+      line.Draw(line.option)
     
-    if self.line:
-      self.line = TGraph(2) #TLine(xmin,1,xmax,1)
-      self.line.SetPoint(0,xmin,1.)
-      self.line.SetPoint(1,xmax,1.)
+    # HORIZONTAL LINE
+    if line or not isinstance(line,bool): # horizontal line at y = yline
+      self.line = TGraph(2) #TLine(xmin,1,xmax,1) # use TGraph to stay inside frame
+      self.line.SetPoint(0,xmin,yline)
+      self.line.SetPoint(1,xmax,yline)
       if data:
         self.line.SetLineColor(12)
         self.line.SetLineWidth(1)
@@ -228,20 +235,36 @@ class Ratio(object):
       self.line.Draw('LSAME') # only draw line if a histogram has been drawn!
       self.garbage.append(self.line)
     
-    for ratio in self.ratios:
-      ratio.SetMaximum(ymax*1e10)
-      if option:
-        roption = option
-      elif (ratio.GetLineWidth()==0 or 'E' in ratio.GetOption()) and ratio.GetMarkerSize()>0.05:
-        roption = ratio.GetOption() if 'E' in ratio.GetOption() else 'E'
-      else:
-        roption = 'HIST' if isinstance(ratio,TH1) else 'PE0'
-      roption += 'SAME'
-      ratio.Draw(roption)
-      LOG.verb("Ratio.draw: ratio=%s, roption=%r"%(ratio,roption),verbosity,2)
+    # DRAW ACTUAL RATIOS
+    if self.ratios: # draw actual ratio(s) histograms/graphs
+      self.drawratios(option)
     
     self.frame = frame
+    self.xmin  = xmin
+    self.xmax  = xmax
     return frame
+    
+  
+  def drawratios(self, option=None, **kwargs):
+    """Help function to just draw ratios."""
+    verbosity = LOG.getverbosity(kwargs,self)
+    for ratio in self.ratios:
+      goption = ratio.GetOption() if hasattr(ratio,'GetOption') else '' # previous
+      ratio.SetMaximum(1e50)
+      if option!=None: # user option
+        roption = option
+      elif (ratio.GetLineWidth()==0 or 'E' in goption) and ratio.GetMarkerSize()>0.05:
+        roption = goption if 'E' in goption else 'E'
+      else: # '][' prevents the first/last vertical bars to 0
+        roption = '][ HIST' if isinstance(ratio,TH1) else 'PE0'
+      if isinstance(ratio,TGraph):
+        roption = roption.replace('HIST','P').strip() or 'PE0'
+      roption += 'SAME'
+      ratio.Draw(roption)
+      LOG.verb("Ratio.draw: ratio=%r, goption=%r, roption=%r"%(ratio,goption,roption),verbosity,2)
+    if kwargs.get('redraw',False):
+      gPad.RedrawAxis()
+    return self.ratios
     
   
   def close(self):
