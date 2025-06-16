@@ -109,6 +109,7 @@ samples  = [
   #W+Jets
   M('WJ','WtoLNu-4Jets',
     "/WtoLNu_madgraphMLM",
+    "/WtoLNu_madgraphMLM_ext1",
     store=storage,url=url,files=filelist,opts="useT1=False"),
   M('WJ','WJetstoLNu-4Jets_1J',
     "/WtoLNu_1J_madgraphMLM",
@@ -119,19 +120,22 @@ samples  = [
   M('WJ','WJetstoLNu-4Jets_3J',
     "/WtoLNu_3J_madgraphMLM",
     store=storage,url=url,files=filelist,opts="useT1=False"),
-  M('WJ','WtoLNu-4Jets_4J',
+  M('WJ','WJetstoLNu-4Jets_4J',
     "/WtoLNu_4J_madgraphMLM",
     store=storage,url=url,files=filelist,opts="useT1=False"),
   
   # TTBAR
   M('TT','TTto2L2Nu',
     "/TTto2L2Nu",
+    '/TTto2L2Nu_ext1',
     store=storage,url=url,files=filelist,opts="useT1=False,toppt=True"),
   M('TT','TTto4Q',
     "/TTto4Q",
+    '/TTto4Q_ext1',
     store=storage,url=url,files=filelist,opts="useT1=False,toppt=True"),
   M('TT','TTtoLNu2Q',
     "/TTtoLNu2Q",
+    '/TTtoLNu2Q_ext1',
     store=storage,url=url,files=filelist,opts="useT1=False,toppt=True"),
   
   # ST
@@ -143,15 +147,19 @@ samples  = [
     store=storage,url=url,files=filelist,opts="useT1=False"),
   M('ST','ST_tW_top_LNu2Q',
     "/ST_tW_top_LNu2Q",
+    '/ST_tW_top_LNu2Q_ext1',
     store=storage,url=url,files=filelist,opts="useT1=False"),
   M('ST','ST_tW_top_2L2Nu',
     "/ST_tW_top_2L2Nu",
+    '/ST_tW_top_2L2Nu_ext1',
     store=storage,url=url,files=filelist,opts="useT1=False"),
   M('ST','ST_tW_antitop_LNu2Q',
     "/ST_tW_antitop_LNu2Q",
+    '/ST_tW_antitop_LNu2Q_ext1',
     store=storage,url=url,files=filelist,opts="useT1=False"),
   M('ST','ST_tW_antitop_2L2Nu',
-    "/ST_tW_antitop_2L2N",
+    "/ST_tW_antitop_2L2Nu",
+    '/ST_tW_antitop_2L2Nu_ext1',
     store=storage,url=url,files=filelist,opts="useT1=False"),
 
   # DIBOSON
@@ -184,4 +192,6 @@ samples  = [
    store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'mutau','mumu','emu']),
   D('Data','Muon_Run2022D',"/Muon_Run2022D",
    store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'mutau','mumu','emu']),
+  D('Data','SingleMuon_Run2022C',"/SingleMuon_Run2022C",
+  store=storage,url=url,files=filelist,opts="useT1=False",channels=["skim*",'mutau','mumu','emu']),
 ]
