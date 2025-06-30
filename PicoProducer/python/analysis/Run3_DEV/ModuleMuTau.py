@@ -141,6 +141,9 @@ class ModuleMuTau(ModuleTauPair):
     if len(taus)==0:
       return False
     self.out.cutflow.fill('tau')
+
+    # self.out.leadTkPtOverTauPt_2[0]        = tau.leadTkPtOverTauPt
+
     
     
     ##### MUTAU PAIR #################################
