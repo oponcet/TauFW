@@ -31,7 +31,7 @@ def getsampleset(channel,era,**kwargs):
   if '2022_preEE' in era or '2022_postEE' in era: # so far same samples and cross sections are used for preEE and postEE, if event numbers are set elsewhere then we don't need to add seperate numbers for both eras
     # for now nevts is set to 1 so it isn't taken into account in the scaling of the samples as this will be done elsewhere
     
-    kfactor_dy=6282.6/6731.99 # LO->NNLO+NLO_EW k-factor computed for 13.6 TeV [https://twiki.cern.ch/twiki/bin/viewauth/CMS/MATRIXCrossSectionsat13p6TeV]
+    kfactor_dy= 6282.6/6731.99 # LO->NNLO+NLO_EW k-factor computed for 13.6 TeV [https://twiki.cern.ch/twiki/bin/viewauth/CMS/MATRIXCrossSectionsat13p6TeV]
     kfactor_wj=63425.1/55300 # LO->NNLO+NLO_EW k-factor computed for 13.6 TeV
     kfactor_ttbar=923.6/762.1 # NLO->NNLO k-factor computed for 13.6 TeV
     kfactor_ww=1.524 # LO->NNLO+NLO_EW computed for 13.6 TeV
@@ -180,7 +180,7 @@ def getsampleset(channel,era,**kwargs):
   elif 'etau'   in channel: dataset = "EGamma_Run%d?"%year if (year==2018 or year==2022) else "SingleElectron_Run%d?"%year
   elif 'mumu'   in channel:
     if era=='2022_preEE':        
-      dataset = "Muon_Run%d?"%year
+      dataset = "*Muon_Run%d?"%year
     elif era=='2022_postEE': dataset = "Muon_Run%d?"%year
     else: dataset = "SingleMuon_Run%d?"%year       
   elif 'emu'    in channel: dataset = "SingleMuon_Run%d?"%year
@@ -216,9 +216,9 @@ def getsampleset(channel,era,**kwargs):
   sampleset = _getsampleset(datasample,expsamples,channel=channel,era=era,**kwargs)
   LOG.verb("weight = %r"%(weight),verbosity,1)
 
-  for expsamples in sampleset.expsamples:
+  # for expsamples in sampleset.expsamples:
     # print all information about the sample
-    print("Sample: %s, title: %s, xsec: %s, nevts: %s, weight: %s"%(expsamples.name, expsamples.title, expsamples.xsec, expsamples, expsamples.weight))
+    # print("Sample: %s, title: %s, xsec: %s, nevts: %s, weight: %s"%(expsamples.name, expsamples.title, expsamples.xsec, expsamples, expsamples.weight))
   
   # STITCH
   # Note: titles are set via STYLE.sample_titles
