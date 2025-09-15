@@ -31,7 +31,7 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
       self.muonCutPt  = lambda e: 25
       self.muonCutEta = lambda e: 2.4
     self.tauCutPt     = 20
-    self.tauCutEta    = 2.3
+    self.tauCutEta    = 2.5
     
     # CORRECTIONS
     if self.ismc:
@@ -242,10 +242,10 @@ class ModuleMuTau_nanoV10_DeepTau2p5(ModuleTauPair):
     self.out.idDeepTau2018v2p5VSmu_2[0]    = tau.idDeepTau2018v2p5VSmu
     self.out.idDeepTau2018v2p5VSjet_2[0]   = tau.idDeepTau2018v2p5VSjet
 
-    #self.out.chargedIso_2[0]               = tau.chargedIso
-    #self.out.neutralIso_2[0]               = tau.neutralIso
-    #self.out.leadTkPtOverTauPt_2[0]        = tau.leadTkPtOverTauPt
-    #self.out.photonsOutsideSignalCone_2[0] = tau.photonsOutsideSignalCone
+    # self.out.chargedIso_2[0]               = tau.chargedIso
+    # self.out.neutralIso_2[0]               = tau.neutralIso
+    self.out.leadTkPtOverTauPt_2[0]        = tau.leadTkPtOverTauPt
+    # self.out.photonsOutsideSignalCone_2[0] = tau.photonsOutsideSignalCone
     #self.out.puCorr_2[0]                   = tau.puCorr
     
     

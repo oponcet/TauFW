@@ -28,7 +28,8 @@ class ZptCorrectionTool:
       if "2022" in era:
          print("Zpt entered 2022postEE")
          histname = "zptmass_histo"
-         filename = zptpath+"zpt_reweighting_LO_2022.root"
+        #  filename = zptpath+"zpt_reweighting_LO_2022.root"
+         filename = zptpath+"zpt_reweighting_POWHEG.root"  ## Test with Danny's weights  #zptmass_weights_UL2018.root"
       else:
          histname = "zptmass_histo"
          filename = zptpath+"zpt_reweighting_LO.root"  ## Test with Danny's weights  #zptmass_weights_UL2018.root"

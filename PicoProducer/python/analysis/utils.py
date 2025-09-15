@@ -294,9 +294,12 @@ def getmetfilters(era,isdata,verb=0):
     'Flag_goodVertices',
     'Flag_globalSuperTightHalo2016Filter',
     'Flag_HBHENoiseFilter',
-    'Flag_HBHENoiseIsoFFlag_eeBadScFilterlter',
+    'Flag_HBHENoiseIsoFilter',
+    'Flag_eeBadScFilter',
     'Flag_EcalDeadCellTriggerPrimitiveFilter',
     'Flag_BadPFMuonFilter',
+    'Flag_BadPFMuonDzFilter',
+    'Flag_ecalBadCalibFilter'
   ]
   if isdata:
     filters.extend(['Flag_eeBadScFilter']) # eeBadScFilter "not suggested" for MC
@@ -309,7 +312,7 @@ def getmetfilters(era,isdata,verb=0):
     filters.extend(['Flag_eeBadScFilter'])
     filters.extend(['Flag_ecalBadCalibFilter'])
     filters.remove('Flag_HBHENoiseFilter')
-    filters.remove('Flag_HBHENoiseIsoFFlag_eeBadScFilterlter')
+    # filters.remove('Flag_HBHENoiseIsoFFlag_eeBadScFilterlter')
 
   funcstr = "lambda e: e."+' and e.'.join(filters)
   if verb>=1:
@@ -361,12 +364,15 @@ def getlepvetoes(event, electrons, muons, taus, channel, era='2018'):
   looseElectrons = [ ]
   for electron in Collection(event,'Electron'):
     
-    if '2022' in era:
-      electronIso90=electron.mvaIso_Fall17V2_WP90
-      electronIso=electron.mvaIso_Fall17V2_WPL
-    else:
-      electronIso90=electron.mvaFall17V2Iso_WP90
-      electronIso=electron.mvaFall17V2Iso_WPL
+    # if '2022' in era:
+    #   electronIso90=electron.mvaIso_Fall17V2_WP90 mvaFall17V2Iso_WP90
+    #   electronIso=electron.mvaIso_Fall17V2_WPL
+    # else:
+    #   electronIso90=electron.mvaFall17V2Iso_WP90
+    #   electronIso=electron.mvaFall17V2Iso_WPL
+
+    electronIso90=electron.mvaFall17V2Iso_WP90
+    electronIso=electron.mvaFall17V2Iso_WPL
 
     if electron.pt<10: continue
     if abs(electron.eta)>2.5: continue
@@ -435,7 +441,7 @@ def getTotalWeight(file): #This function was proposed by Konstantin Androsov to 
     total_w = 0.
     for tree_name in [ 'Events', 'EventsNotSelected' ]:
         df = RDataFrame(tree_name, file)
-        df = df.Define('genWeightD', 'std::copysign<double>(1., genWeight)')
+        df = df.Define('genWeightD', 'std::copysign<double>(1., genWeight)') 
         w = df.Sum('genWeightD')
         total_w += w.GetValue()
     return total_w

@@ -8,6 +8,7 @@ from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection, Event
 from TauFW.PicoProducer.corrections.PileupTool import *
 from TauFW.PicoProducer.corrections.RecoilCorrectionTool import *
+from TauFW.PicoProducer.corrections.DYandRecoilCorrlib import *
 #from TauFW.PicoProducer.corrections.PreFireTool import *
 from TauFW.PicoProducer.corrections.BTagTool import BTagWeightTool, BTagWPs
 from TauFW.common.tools.log import header
@@ -71,6 +72,8 @@ class ModuleTauPair(Module):
       self.btagTool   = BTagWeightTool('DeepJet','medium',era=self.era,channel=self.channel,maxeta=self.bjetCutEta) #,loadsys=not self.dotight
       if self.dozpt:
         self.zptTool  = ZptCorrectionTool(era=self.era)
+      if self.year in [2022,2023,2024]: # Run 3Add commentMore actions
+          self.zptTool_json =DYandRecoilCorrlib(era=self.era)
       #if self.dorecoil:
       #  self.recoilTool   = RecoilCorrectionTool(year=self.year)
       #if self.year in [2016,2017]:
@@ -134,7 +137,7 @@ class ModuleTauPair(Module):
       ('Muon_isTracker',                  [True]*32     ),
       #('Electron_mvaFall17V217Iso',      [1.]*32       ), #not available anymore
       ('Electron_lostHits',               [0]*32        ),
-      ('Electron_mvaFall17V2Iso_WPL',    'Electron_mvaIso_WPL'    ),
+      ('Electron_mvaFall17V2Iso_WPL',    'Electron_mvaIso'    ),
       ('Electron_mvaFall17V2Iso_WP80',   'Electron_mvaIso_WP80'   ),
       ('Electron_mvaFall17V2Iso_WP90',   'Electron_mvaIso_WP90'   ),
       ('Electron_mvaFall17V2noIso_WPL',  'Electron_mvaNoIso_WPL'  ),
@@ -169,6 +172,13 @@ class ModuleTauPair(Module):
  
     #check
     fullbranchlist = inputTree.GetListOfBranches()
+    # print list of branches
+    fullbranchlist = [b.GetName() for b in fullbranchlist]
+    # print(">>> %s: branches in inputTree:"%self.__class__.__name__)
+    # for b in fullbranchlist:
+    #   print(">>>   %s"%b)
+
+
     if 'Electron_mvaFall17Iso_WPL' not in fullbranchlist: #v10
        ensurebranches(inputTree,branchesV10)
     else: #v9
@@ -395,6 +405,10 @@ class ModuleTauPair(Module):
       self.out.m_moth[0]      = zboson.M()
       self.out.pt_moth[0]     = zboson.Pt()
       self.out.zptweight[0]   = self.zptTool.getZptWeight(zboson.Pt(),zboson.M())
+      if self.year in [2022,2023,2024]: # Run 3Add commentMore actions
+          self.out.zptweight_lo[0] = self.zptTool_json.getDYpTCorr(self.era,zboson.Pt())
+          self.out.zptweight_nlo[0] = self.zptTool_json.getDYpTCorr(self.era,zboson.Pt(),order='NLO')
+          self.out.zptweight_nnlo[0] = self.zptTool_json.getDYpTCorr(self.era,zboson.Pt(),order='NNLO')
     
     elif self.dotoppt:
       toppt1, toppt2          = gettoppt(event)
