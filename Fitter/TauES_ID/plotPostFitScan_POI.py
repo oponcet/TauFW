@@ -37,7 +37,7 @@ PLOTS_DIR   = "postfit"
 
 def plotCorrelation(channel,var,region,year,*parameters,**kwargs):
     """Calculate and plot correlation between parameters."""
-    print green("\n>>> plotCorrelation %s, %s"%(region, var))
+    # print green("\n>>> plotCorrelation %s, %s"%(region, var))
     if len(parameters)==1 and isinstance(parameters[0],list): parameters = parameters[0]
     parameters  = [p.replace('$CAT',region).replace('$CHANNEL',channel) for p in list(parameters)]
     
@@ -165,7 +165,7 @@ def getParameters(filename,*parameters,**kwargs):
 
 def writeParametersFitVal(channel,var,region,year,*parameters,**kwargs):
     """Write the value of the parameter after the fit in a txt file"""
-    print green("\n>>> Write parameter %s, %s"%(region, var))
+    # print green("\n>>> Write parameter %s, %s"%(region, var))
 
     # define the parameter
     if len(parameters)==1 and isinstance(parameters[0],list): parameters = parameters[0]
@@ -266,7 +266,7 @@ class Parameter(object):
 
 def plotPostFitValues(channel,var,region,year,paramfull_list,*parameters,**kwargs):
     """Draw post-fit values for parameter using MultiDimFit and FitDiagnostics output."""
-    print green("\n>>> plotPostFitValues %s, %s"%(region, var))
+    # print green("\n>>> plotPostFitValues %s, %s"%(region, var))
     if len(parameters)==1 and isinstance(parameters[0],list): parameters = parameters[0]
     
     parameters  = [p.replace('$CAT',region).replace('$CHANNEL',channel) for p in list(parameters)]
@@ -641,40 +641,52 @@ def main(args):
         [ "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd"
         ],
       "shapes":
-        ["shape_mTauFake_DM0_pt1","shape_mTauFake_DM0_pt2","shape_mTauFake_DM0_pt3", "shape_mTauFake_DM0_pt4",
-         "shape_mTauFake_DM1_pt1","shape_mTauFake_DM1_pt2","shape_mTauFake_DM1_pt3", "shape_mTauFake_DM1_pt4",
-         "shape_mTauFake_DM10_pt1","shape_mTauFake_DM10_pt2","shape_mTauFake_DM10_pt3", "shape_mTauFake_DM10_pt4",
-         "shape_mTauFake_DM11_pt1","shape_mTauFake_DM11_pt2","shape_mTauFake_DM11_pt3", "shape_mTauFake_DM11_pt4",
-         "shape_jTauFake_DM0_pt1","shape_jTauFake_DM0_pt2","shape_jTauFake_DM0_pt3", "shape_jTauFake_DM0_pt4",
-         "shape_jTauFake_DM1_pt1","shape_jTauFake_DM1_pt2","shape_jTauFake_DM1_pt3", "shape_jTauFake_DM1_pt4",
-         "shape_jTauFake_DM10_pt1","shape_jTauFake_DM10_pt2","shape_jTauFake_DM10_pt3", "shape_jTauFake_DM10_pt4",
-         "shape_jTauFake_DM11_pt1","shape_jTauFake_DM11_pt2","shape_jTauFake_DM11_pt3", "shape_jTauFake_DM11_pt4",
-         "shape_dy"
+        # ["shape_mTauFake_DM0_pt1","shape_mTauFake_DM0_pt2","shape_mTauFake_DM0_pt3", "shape_mTauFake_DM0_pt4",
+        #  "shape_mTauFake_DM1_pt1","shape_mTauFake_DM1_pt2","shape_mTauFake_DM1_pt3", "shape_mTauFake_DM1_pt4",
+        #  "shape_mTauFake_DM10_pt1","shape_mTauFake_DM10_pt2","shape_mTauFake_DM10_pt3", "shape_mTauFake_DM10_pt4",
+        #  "shape_mTauFake_DM11_pt1","shape_mTauFake_DM11_pt2","shape_mTauFake_DM11_pt3", "shape_mTauFake_DM11_pt4",
+        #  "shape_jTauFake_DM0_pt1","shape_jTauFake_DM0_pt2","shape_jTauFake_DM0_pt3", "shape_jTauFake_DM0_pt4",
+        #  "shape_jTauFake_DM1_pt1","shape_jTauFake_DM1_pt2","shape_jTauFake_DM1_pt3", "shape_jTauFake_DM1_pt4",
+        #  "shape_jTauFake_DM10_pt1","shape_jTauFake_DM10_pt2","shape_jTauFake_DM10_pt3", "shape_jTauFake_DM10_pt4",
+        #  "shape_jTauFake_DM11_pt1","shape_jTauFake_DM11_pt2","shape_jTauFake_DM11_pt3", "shape_jTauFake_DM11_pt4",
+        #  "shape_dy"
+        # ],
+        # DM only
+        [ "shape_jTauFake_DM0", "shape_jTauFake_DM1", "shape_jTauFake_DM10", "shape_jTauFake_DM11",
+          "shape_mTauFake_DM0", "shape_mTauFake_DM1", "shape_mTauFake_DM10", "shape_mTauFake_DM11",
+          "shape_dy"
         ],
       "rateParam":
-        [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2","trackedParam_sf_W_DM0_pt3", "trackedParam_sf_W_DM1_pt1","trackedParam_sf_W_DM1_pt2","trackedParam_sf_W_DM1_pt3", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2","trackedParam_sf_W_DM10_pt3","trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2","trackedParam_sf_W_DM11_pt3"
+        # [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2","trackedParam_sf_W_DM0_pt3", "trackedParam_sf_W_DM1_pt1","trackedParam_sf_W_DM1_pt2","trackedParam_sf_W_DM1_pt3", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2","trackedParam_sf_W_DM10_pt3","trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2","trackedParam_sf_W_DM11_pt3"
+        # ],
+        [ "trackedParam_xsec_dy", "trackedParam_sf_W_DM0_pt1","trackedParam_sf_W_DM0_pt2","trackedParam_sf_W_DM0_pt3", "trackedParam_sf_W_DM1_pt1","trackedParam_sf_W_DM1_pt2","trackedParam_sf_W_DM1_pt3", "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2","trackedParam_sf_W_DM10_pt3","trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2","trackedParam_sf_W_DM11_pt3",
+          "rate_jTauFake_DM0", "rate_jTauFake_DM1", "rate_jTauFake_DM10", "rate_jTauFake_DM11"
         ],
       "tid":
-      ["trackedParam_tid_SF_DM0_pt1", "trackedParam_tid_SF_DM0_pt2", "trackedParam_tid_SF_DM0_pt3","trackedParam_tid_SF_DM0_pt4",
-      "trackedParam_tid_SF_DM1_pt1","trackedParam_tid_SF_DM1_pt2", "trackedParam_tid_SF_DM1_pt3","trackedParam_tid_SF_DM1_pt4",
-      "trackedParam_tid_SF_DM10_pt1","trackedParam_tid_SF_DM10_pt2", "trackedParam_tid_SF_DM10_pt3","trackedParam_tid_SF_DM10_pt4",
-      "trackedParam_tid_SF_DM11_pt1","trackedParam_tid_SF_DM11_pt2", "trackedParam_tid_SF_DM11_pt3","trackedParam_tid_SF_DM11_pt4"]
+      ["trackedParam_tid_SF_DM0", "trackedParam_tid_SF_DM10", "trackedParam_tid_SF_DM1", "trackedParam_tid_SF_DM11"],
+      # ["trackedParam_tid_SF_DM0_pt1", "trackedParam_tid_SF_DM0_pt2", "trackedParam_tid_SF_DM0_pt3","trackedParam_tid_SF_DM0_pt4",
+      # "trackedParam_tid_SF_DM1_pt1","trackedParam_tid_SF_DM1_pt2", "trackedParam_tid_SF_DM1_pt3","trackedParam_tid_SF_DM1_pt4",
+      # "trackedParam_tid_SF_DM10_pt1","trackedParam_tid_SF_DM10_pt2", "trackedParam_tid_SF_DM10_pt3","trackedParam_tid_SF_DM10_pt4",
+      # "trackedParam_tid_SF_DM11_pt1","trackedParam_tid_SF_DM11_pt2", "trackedParam_tid_SF_DM11_pt3","trackedParam_tid_SF_DM11_pt4"]
 }
-    fulllist  = [
-      "tes_DM0_pt1","tes_DM0_pt2", "tes_DM0_pt3","tes_DM0_pt4","tes_DM1_pt1","tes_DM1_pt2","tes_DM1_pt3","tes_DM1_pt4",
-      "tes_DM10_pt1","tes_DM10_pt2","tes_DM10_pt3","tes_DM10_pt4",
-      "tes_DM11_pt1","tes_DM11_pt2","tes_DM11_pt3","tes_DM11_pt4",
-      "trackedParam_xsec_dy","trackedParam_sf_W_DM0_pt1", "trackedParam_sf_W_DM0_pt2",  "trackedParam_sf_W_DM0_pt3", "trackedParam_sf_W_DM0_pt4",
-      "trackedParam_sf_W_DM1_pt1", "trackedParam_sf_W_DM1_pt2",  "trackedParam_sf_W_DM1_pt3", "trackedParam_sf_W_DM1_pt4",
-      "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2",  "trackedParam_sf_W_DM10_pt3", "trackedParam_sf_W_DM10_pt4",
-      "trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2",  "trackedParam_sf_W_DM11_pt3", "trackedParam_sf_W_DM11_pt4",
-      "trackedParam_tid_SF_DM0_pt1","trackedParam_tid_SF_DM0_pt2", "trackedParam_tid_SF_DM0_pt3","trackedParam_tid_SF_DM0_pt4",
-      "trackedParam_tid_SF_DM1_pt1","trackedParam_tid_SF_DM1_pt2", "trackedParam_tid_SF_DM1_pt3","trackedParam_tid_SF_DM1_pt4",
-      "trackedParam_tid_SF_DM10_pt1","trackedParam_tid_SF_DM10_pt2", "trackedParam_tid_SF_DM10_pt3","trackedParam_tid_SF_DM10_pt4",
-      "trackedParam_tid_SF_DM11_pt1","trackedParam_tid_SF_DM11_pt2", "trackedParam_tid_SF_DM11_pt3","trackedParam_tid_SF_DM11_pt4",
-      "shape_dy", 
-      "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "eff_m"
-    ]
+    # fulllist  = [
+    #   "tes_DM0_pt1","tes_DM0_pt2", "tes_DM0_pt3","tes_DM0_pt4","tes_DM1_pt1","tes_DM1_pt2","tes_DM1_pt3","tes_DM1_pt4",
+    #   "tes_DM10_pt1","tes_DM10_pt2","tes_DM10_pt3","tes_DM10_pt4",
+    #   "tes_DM11_pt1","tes_DM11_pt2","tes_DM11_pt3","tes_DM11_pt4",
+    #   "trackedParam_xsec_dy","trackedParam_sf_W_DM0_pt1", "trackedParam_sf_W_DM0_pt2",  "trackedParam_sf_W_DM0_pt3", "trackedParam_sf_W_DM0_pt4",
+    #   "trackedParam_sf_W_DM1_pt1", "trackedParam_sf_W_DM1_pt2",  "trackedParam_sf_W_DM1_pt3", "trackedParam_sf_W_DM1_pt4",
+    #   "trackedParam_sf_W_DM10_pt1", "trackedParam_sf_W_DM10_pt2",  "trackedParam_sf_W_DM10_pt3", "trackedParam_sf_W_DM10_pt4",
+    #   "trackedParam_sf_W_DM11_pt1", "trackedParam_sf_W_DM11_pt2",  "trackedParam_sf_W_DM11_pt3", "trackedParam_sf_W_DM11_pt4",
+    #   "trackedParam_tid_SF_DM0_pt1","trackedParam_tid_SF_DM0_pt2", "trackedParam_tid_SF_DM0_pt3","trackedParam_tid_SF_DM0_pt4",
+    #   "trackedParam_tid_SF_DM1_pt1","trackedParam_tid_SF_DM1_pt2", "trackedParam_tid_SF_DM1_pt3","trackedParam_tid_SF_DM1_pt4",
+    #   "trackedParam_tid_SF_DM10_pt1","trackedParam_tid_SF_DM10_pt2", "trackedParam_tid_SF_DM10_pt3","trackedParam_tid_SF_DM10_pt4",
+    #   "trackedParam_tid_SF_DM11_pt1","trackedParam_tid_SF_DM11_pt2", "trackedParam_tid_SF_DM11_pt3","trackedParam_tid_SF_DM11_pt4",
+    #   "shape_dy", 
+    #   "xsec_tt", "xsec_st", "norm_qcd", "lumi", "xsec_vv", "norm_qcd", "eff_m"
+    # ]
+    
+    fulllist = compare.get('norm',[]) + compare.get('shapes',[]) + compare.get('rateParam',[]) + compare.get('tid',[])
+
     procsBBB  = [ 'QCD', 'W', 'TTT', 'ZTT' ] # 'JTF' ]
 
     for var in setup["observables"]:
@@ -727,7 +739,7 @@ if __name__ == '__main__':
 
 
     main(args)
-    print ">>>\n>>> done\n"
+    print(">>>\n>>> done\n")
     
 
 

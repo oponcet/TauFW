@@ -118,40 +118,51 @@ def run_combined_fit(setup, setup_mumu, option, **kwargs):
             POI = "tes_%s" % (r)
             NP = "rgx{.*tid.*}"
             # Here you can adjsut the range of the TES to constrain it in the FITDAIGNOSTICS 
-            if r == "DM0_pt1" :
-                tes_range = "0.840,0.880"
-            elif r == "DM0_pt2" :
-                tes_range = "0.890,0.920"
-            elif r == "DM0_pt3" :
-                tes_range = "0.942,0.960"
-            elif r == "DM0_pt4" :
-                tes_range = "0.942,0.962"
-            elif r == "DM1_pt1" :
-                tes_range = "0.960,0.980"
-            elif r == "DM1_pt2" :
-                tes_range = "0.970,0.990"
-            elif r == "DM1_pt3" :
-                tes_range = "0.982,1.012"
-            elif r == "DM1_pt4" :
-                tes_range = "0.990,1.010"
-            elif r == "DM10_pt1" :
-                tes_range = "0.994,1.010"
-            elif r == "DM10_pt2" :
-                tes_range = "0.970,1.000"
-            elif r == "DM10_pt3" :
-                tes_range = "0.984,1.010"
-            elif r == "DM10_pt4" :
-                tes_range = "0.984,1.010"
-            elif r == "DM11_pt1":
-                tes_range = "0.960,0.980"
-            elif r == "DM11_pt2":
-                tes_range = "0.930,0.990"
-            elif r == "DM11_pt3":
-                tes_range = "0.990,1.010"
-            elif r == "DM11_pt4":
-                tes_range = "1.020,1.030"
+            # if r == "DM0_pt1" :
+            #     tes_range = "0.840,0.880"
+            # elif r == "DM0_pt2" :
+            #     tes_range = "0.890,0.920"
+            # elif r == "DM0_pt3" :
+            #     tes_range = "0.942,0.960"
+            # elif r == "DM0_pt4" :
+            #     tes_range = "0.942,0.962"
+            # elif r == "DM1_pt1" :
+            #     tes_range = "0.960,0.980"
+            # elif r == "DM1_pt2" :
+            #     tes_range = "0.970,0.990"
+            # elif r == "DM1_pt3" :
+            #     tes_range = "0.982,1.012"
+            # elif r == "DM1_pt4" :
+            #     tes_range = "0.990,1.010"
+            # elif r == "DM10_pt1" :
+            #     tes_range = "0.994,1.010"
+            # elif r == "DM10_pt2" :
+            #     tes_range = "0.970,1.000"
+            # elif r == "DM10_pt3" :
+            #     tes_range = "0.984,1.010"
+            # elif r == "DM10_pt4" :
+            #     tes_range = "0.984,1.010"
+            # elif r == "DM11_pt1":
+            #     tes_range = "0.960,0.980"
+            # elif r == "DM11_pt2":
+            #     tes_range = "0.930,0.990"
+            # elif r == "DM11_pt3":
+            #     tes_range = "0.990,1.010"
+            # elif r == "DM11_pt4":
+            #     tes_range = "1.020,1.030"
+            # else:
+            #     tes_range = "0.900,1.300"
+
+            if r == "DM0": # 0.9728
+                tes_range = "0.970,0.980"
+            elif r == "DM1": # 0.9943
+                tes_range = "0.990,1.000"
+            elif r == "DM10": # 0.9921
+                tes_range = "0.990,1.000"
+            elif r == "DM11": # 0.9897
+                tes_range = "0.980,0.990"
             else:
-                tes_range = "0.900,1.300"
+                tes_range = "0.970,1.030"
 
             # Load the parameters from the text file
             param_file = kwargs.get('param_file', './postfit_%s/FitparameterValues_%s_DeepTau_%s-13TeV_%s.txt' % (era, setup["tag"],era, r))
